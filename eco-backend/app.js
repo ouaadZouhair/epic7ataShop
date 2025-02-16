@@ -1,34 +1,44 @@
 import express from 'express';
 import cors from 'cors';
-import connectDB from './Db/Connection.js';
-import AuthRoute from './Routes/AuthRoute.js';
 import dotenv from 'dotenv';
+import connectDB from './Db/Connection.js';
+// import Routes
+import AuthRoute from './Routes/AuthRoute.js';
+import productsAdminRouter from './Routes/ProductAdminRoute.js';
+import productsClientRouter from './Routes/ProductClientRoute.js';
+import orderRouter from './Routes/OrderRoute.js';
+import userRouter from './Routes/UserRoute.js';
+// import Middleware
+import { verifyToken, authorizeRoles } from './Middleware/authMiddleware.js';
+import { uploadMiddleware } from './Middleware/uploadMiddleware.js';
 
-dotenv.config();
 
+dotenv.config(); // Load env variables
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const app = express(); // Initialize express
+const { PORT } = process.env || 5000;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // Cross-Origin Resource Sharing
+app.use(express.json()); // Body parser 
 
-// Connect to MongoDB
-(async () => {
-    try {
-        await connectDB('zouhair');
-        console.log('Connected to MongoDB successfully');
-    } catch (error) {
-        console.error('Database connection error:', error);
-        process.exit(1); // Exit if DB connection fails
-    }
-})();
-
+// Connect to Database (mongoose)
+connectDB();
 
 
 // Routes
-app.use('/api/v1/auth', AuthRoute);
+app.use('/api/v1/auth', AuthRoute); // Auth Route
+
+app.use('/api/v1/admin/products', uploadMiddleware, verifyToken, authorizeRoles('admin'), productsAdminRouter); // Admin Products Route
+
+app.use('/api/v1/products', verifyToken, productsClientRouter) // Client Products Route
+
+app.use('/api/v1/orders', verifyToken, authorizeRoles('client'), orderRouter) // Orders Route
+
+app.use('/api/v1/users', verifyToken, authorizeRoles('admin'), userRouter) // Users Route
+
+// Server Static Files (Images) => Acess to uploads file for front end
+app.use('/uploads', express.static('uploads')); // Route => http://localhost:5000/uploads/imagename.jpg
 
 // Start the server
 app.listen(PORT, () => {

@@ -1,14 +1,20 @@
 import jwt from "jsonwebtoken";
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 import User from '../Models/User.js';
+import dotenv from "dotenv";
 
-const SECRET_KEY = 'EPIC7ATA';
+dotenv.config();
+
+const KEY_SECRET = process.env.JWT_SECRET;
 
 // Sign Up
-export const signUp = async (req, res) => {
-    const { fullName, email, password, role } = req.body;
+export const signUp = async (req, res, next) => {
+    const session = await mongoose.startSession();
+    session.startTransaction()
 
     try {
+        const { fullName, email, password, role } = req.body;
         // Check if the user already exists
         let existingUser = await User.findOne({ email });
 
@@ -20,17 +26,24 @@ export const signUp = async (req, res) => {
         // Save the user
         const newUser = await User.create({ fullName, email, password: hashedPassword, role });
 
+        await session.commitTransaction();
+        session.endSession()
+
         res.status(201).json({ msg: 'User registered successfully', newUser });
     } catch (err) {
+        await session.abortTransaction();
+        session.endSession()
         res.status(500).json({ msg: 'Server Error', error: err.message });
+    } finally {
+        session.endSession();
     }
 }
 
 // Log In
 export const logIn = async (req, res) => {
-    const { email, password } = req.body;
 
     try {
+        const { email, password } = req.body;
         // Check if the user exists
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ msg: 'Wrong Email or Password' });
@@ -40,9 +53,9 @@ export const logIn = async (req, res) => {
         if (!checkPassword) return res.status(400).json({ msg: 'Wrong Email or Password' });
 
         // Generate JWT token
-        const token = jwt.sign({ email: user.email, id: user._id }, SECRET_KEY, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, KEY_SECRET, { expiresIn: '1d' });
 
-        res.status(200).json({ msg: 'Login successful', token, user });
+        res.status(200).json({ success: true, msg: 'Login successful', data: { token, user } });
     } catch (error) {
         res.status(500).json({ msg: 'Server Error', error: error.message });
     }

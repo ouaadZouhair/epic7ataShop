@@ -21,7 +21,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3004/api/v1/auth/signUp', {
+      const response = await axios.post('http://localhost:3000/api/v1/auth/signUp', {
         fullName,
         email,
         password,
@@ -36,7 +36,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="relative bg-fixed h-screen w-full bg-gradient-to-bl from-blue-700 to-blue-500 flex items-center justify-center">
+    <div className="relative bg-fixed min-h-screen w-full bg-gradient-to-bl from-blue-700 to-blue-500 bottom-0 flex items-center justify-center">
       <nav className='absolute top-0 w-full h-16 flex justify-between items-center text-white px-4'>
         <div className='flex items-center group gap-2'>
           <FaArrowLeft className='text-xl text-white group-hover:text-2xl duration-100' />
@@ -47,7 +47,7 @@ const Signup = () => {
 
       <div className="bg-white rounded-2xl shadow-lg p-8 w-96 flex flex-col items-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Create an Account</h2>
-        
+
         {message && (
           <p className={`text-sm ${message.type === "error" ? "text-red-600" : "text-green-600"} mb-2`}>
             {message.text}
@@ -55,7 +55,7 @@ const Signup = () => {
         )}
 
         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
-          <input 
+          <input
             type="text"
             placeholder="Full Name"
             className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -102,7 +102,12 @@ const Signup = () => {
         </div>
 
         <p className="text-sm text-gray-600 mt-4">
-          Already have an account? <Link to="/login" className="text-blue-600 font-semibold hover:underline">Log in</Link>
+          Already have an account?
+          <Link
+            to="/login"
+            className="text-blue-600 font-semibold hover:underline"
+          >Log in
+          </Link>
         </p>
       </div>
     </div>

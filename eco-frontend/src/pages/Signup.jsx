@@ -1,7 +1,7 @@
 import axios from 'axios';
-import brandLogo from '../assets/epic7ata-logo-white.png';
+import brandLogo from '../assets/epic7ata-logo.png';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { FaArrowLeft, FaGoogle, FaApple, FaMeta } from "react-icons/fa6";
 
 const Signup = () => {
@@ -28,6 +28,7 @@ const Signup = () => {
       });
 
       setMessage({ type: "success", text: "User registered successfully!" });
+      Navigate()
       console.log("User Created:", response.data);
     } catch (err) {
       setMessage({ type: "error", text: "Something went wrong. Try again!" });
@@ -36,16 +37,17 @@ const Signup = () => {
   };
 
   return (
-    <div className="relative bg-fixed min-h-screen w-full bg-gradient-to-bl from-blue-700 to-blue-500 bottom-0 flex items-center justify-center">
+    <div className="relative bg-fixed min-h-screen w-full bg-white bottom-0 flex items-center justify-center">
       <nav className='absolute top-0 w-full h-16 flex justify-between items-center text-white px-4'>
-        <div className='flex items-center group gap-2'>
-          <FaArrowLeft className='text-xl text-white group-hover:text-2xl duration-100' />
-          <Link to='/' className='text-xl font-normal'>Home</Link>
-        </div>
+        <button className='flex items-center group gap-2 bg-transparent text-black group'>
+          <FaArrowLeft className='text-xl group-hover:text-3xl hover:text-blue-500 duration-100' />
+          <Link to='/' className='text-lg font-base group-hover:font-semibold duration-100 '>Go back to Home page</Link>
+        </button>
         <img src={brandLogo} alt="brand Logo" className='w-12 h-12 object-cover' />
       </nav>
 
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-96 flex flex-col items-center">
+
+      <div className="bg-gradient-to-t from-white to-gray-100 rounded-2xl shadow-lg shadow-gray-300 p-8 w-96 flex flex-col items-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Create an Account</h2>
 
         {message && (
@@ -83,29 +85,25 @@ const Signup = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <button type="submit" className="w-full bg-gray-950 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-            Sign Up
+          <button type="submit" className="flex justify-center items-center w-full bg-blue-700 text-white py-2 px-4 rounded-lg text-lg font-semibold hover:bg-blue-600 transition">
+            <Link to="/">Sign Up</Link>
           </button>
         </form>
 
         <p className="text-sm text-gray-600 mt-4">Or sign up with:</p>
-        <div className="flex gap-4 mt-2">
-          <button className="flex items-center justify-center gap-2 bg-white text-gray-700 border-2 border-gray-200 px-4 py-2 mx-auto rounded-lg text-lg font-semibold hover:text-white hover:bg-red-600 hover:border-red-600 transition">
-            <FaGoogle /> Gmail
+        <div className="flex justify-center items-center  gap-4 mt-2">
+          <button className="flex items-center justify-center gap-2 w-12 h-12 bg-red-500 text-white text-xl border-2 border-red-500 p-2 mx-auto rounded-full text-semibold hover:text-white hover:bg-red-600 hover:border-red-600 hover:scale-105 transition">
+            <FaGoogle />
           </button>
-          <button className="flex items-center justify-center gap-2 bg-white text-gray-700 border-2 border-gray-200 px-4 py-2 mx-auto rounded-lg text-lg font-semibold hover:text-white hover:bg-gray-950 hover:border-white transition">
-            <FaApple /> Apple
-          </button>
-          <button className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-4 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 hover:border-blue-700 hover:text-white transition">
-            <FaMeta /> Meta
+          <button className="flex items-center justify-center gap-2 w-12 h-12 bg-gray-950 text-white border-2 border-gray-950 p-2 mx-auto rounded-full text-xl text-semibold hover:text-white hover:bg-gray-800 hover:border-gray-800 hover:scale-105 transition">
+            <FaApple />
           </button>
         </div>
-
         <p className="text-sm text-gray-600 mt-4">
-          Already have an account?
+          Already have an account ?
           <Link
             to="/login"
-            className="text-blue-600 font-semibold hover:underline"
+            className="text-blue-600 mx-1 font-semibold hover:underline"
           >Log in
           </Link>
         </p>

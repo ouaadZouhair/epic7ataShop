@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { FaXmark } from "react-icons/fa6";
 import { MdRemoveShoppingCart } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 
 const CardShipping = ({ visibility, onClose, fnData }) => {
@@ -73,17 +74,17 @@ const CardShipping = ({ visibility, onClose, fnData }) => {
           </div>
 
           {/* Footer */}
-          <div className="py-4 flex flex-col justify-center items-center border-t-2 gap-3 border-gray-200 w-full">
+          <div className="py-2 flex flex-col justify-center items-center border-t-2 gap-2 border-gray-200 w-full">
             <div className="font-semibold text-gray-950 flex justify-between items-center w-[80%]">
               <h1 className="text-xl">Total:</h1>
               <h1 className="text-xl">{totalPrice} Dh</h1>
             </div>
-            <button className="bg-blue-600 py-2 md:py-3 text-white text-lg md:text-xl border-2 border-blue-600 font-semibold w-[90%] rounded-xl hover:bg-blue-500 hover:border-blue-500 duration-100">
+            <Link to='/checkout' onClick={onClose} className="bg-blue-700 py-1 md:py-3 flex justify-center items-center text-white text-lg md:text-xl border-2 border-blue-700 font-semibold w-[90%] rounded-xl hover:bg-blue-600 hover:border-blue-600 duration-100">
               Proceed to checkout
-            </button>
-            <button className="bg-transparent text-blue-600 py-2 md:py-3 border-2 border-blue-600 text-lg md:text-xl font-semibold w-[90%] rounded-xl hover:bg-blue-600 hover:text-white duration-100">
+            </Link>
+            <Link to='/shop' onClick={onClose} className="text-white bg-gray-950 py-1 md:py-3 flex justify-center items-center border-2 border-gray-950 text-lg md:text-xl font-semibold w-[90%] rounded-xl hover:bg-gray-900 hover:border-gray-900 hover:text-white duration-100">
               Shop more
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ const ImgsProduct = ({ product }) => {
             src={product.frontMockups}
             alt={`${product.title || 'Product'} Front`}
             className="w-[80px] sm:w-[100px] md:w-[130px] lg:w-[140px] aspect-square border-2 border-gray-100 hover:shadow-lg hover:scale-105 duration-100 cursor-pointer object-cover"
-            onClick={() => setCurrentImage(product.frontMockups)}
+            onMouseOver={() => setCurrentImage(product.frontMockups)}
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && setCurrentImage(product.frontMockups)}
           />
@@ -30,7 +30,7 @@ const ImgsProduct = ({ product }) => {
             src={product.backMockups}
             alt={`${product.title || 'Product'} Back`}
             className="w-[80px] sm:w-[100px] md:w-[130px] lg:w-[140px] aspect-square border-2 border-gray-100 hover:shadow-lg hover:scale-105 duration-100 cursor-pointer object-cover"
-            onClick={() => setCurrentImage(product.backMockups)}
+            onMouseOver={() => setCurrentImage(product.backMockups)}
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && setCurrentImage(product.backMockups)}
           />

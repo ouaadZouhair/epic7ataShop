@@ -68,7 +68,7 @@ const DetailsProduct = ({ product }) => {
             <p className="text-lg md:text-lg text-gray-500 text-justify">{product.description}</p>
 
             {/* Color Options */}
-            <div className="flex justify-start items-center w-[400px] md:w-1/3 gap-3">
+            <div className="flex justify-start items-center w-[400px] md:w-1/3 lg:w-[600px] gap-3">
             <IoIosColorPalette className='text-4xl text-blue-600'/>
                 {product.colors.map((color) => (
                     <div

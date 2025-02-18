@@ -10,6 +10,7 @@ import Contact from "./pages/Contact.jsx";
 import Product from "./pages/Product.jsx";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
+import Checkout from "./pages/Checkout.jsx";
 
 function MainLayout() {
   const productsData = useSelector(state => state.shop.products);
@@ -31,6 +32,7 @@ function MainLayout() {
         <Route path="/shop" element={<Shop Products={productsData} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id" element={<Product Products={productsData} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />

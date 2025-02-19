@@ -1,4 +1,4 @@
-import logo from '../../assets/epic7ata-logo-white.png'
+import logo from '../../../assets/epic7ata-logo-white.png'
 import { FaFacebook } from "react-icons/fa6";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { IoLogoTiktok } from "react-icons/io5";

@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaTrashAlt } from "react-icons/fa";
-import { removeItem } from '../../slice/CartShippingSlice';
+import { removeItem } from '../../redux/slice/CartShippingSlice';
 import { useDispatch } from 'react-redux';
 
 const CardItem = ({item}) => {

@@ -1,9 +1,6 @@
-import Footer from "../components/footer/Footer";
-import ImgsProduct from "../components/ImgsProduct/ImgsProduct";
-import DetailsProduct from "../components/detailsProduct/DetailsProduct";
+import { ImgsProduct, DetailsProduct, InfoProduct, Footer } from "../components/imports.jsx";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import InfoProduct from "../components/InfoProduct/InfoProduct";
 
 
 const Product = (props) => {

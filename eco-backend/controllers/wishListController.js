@@ -10,7 +10,7 @@ export const getWishlist = async (req, res) => {
 
         if (!wishlist) return res.status(200).send({ status: 'sucess', msg: "Wishlist is empty" });
 
-        res.status(200).send({ status: 'success', msg: "Wishlist imported successfully", data: wishlist });
+        res.status(200).send({ status: 'success', msg: "Wishlist imported successfully", wishlist });
     } catch (e) {
         res.status(500).send({ status: "Failed", msg: "server failed" })
     }
@@ -48,7 +48,7 @@ export const removeProductFromWishlist = async (req, res) => {
         const { productId } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(productId)) {
-            return res.status(400).json({ status: "Failed", msg: "Invalid product ID", data:productId });
+            return res.status(400).json({ status: "Failed", msg: "Invalid product ID", productId });
         }
 
         const wishlist = await Wishlist.findOne({ user: userId });
@@ -63,7 +63,7 @@ export const removeProductFromWishlist = async (req, res) => {
             { new: true } // Return updated wishlist
         );
 
-        res.status(200).json({ status: "success", msg: "Product removed from wishlist", data: updatedWishlist });
+        res.status(200).json({ status: "success", msg: "Product removed from wishlist", updatedWishlist });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: "Failed", msg: "Error removing product from wishlist", error });

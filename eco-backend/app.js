@@ -12,7 +12,7 @@ import wishlistRouter from './Routes/WishlistRoute.js';
 // import Middleware
 import { verifyToken, authorizeRoles } from './Middleware/authMiddleware.js';
 import { uploadMiddleware } from './Middleware/uploadMiddleware.js';
-
+import cookieParser from 'cookie-parser';
 
 dotenv.config(); // Load env variables
 
@@ -22,6 +22,7 @@ const { PORT } = process.env || 5000;
 // Middleware
 app.use(cors()); // Cross-Origin Resource Sharing
 app.use(express.json()); // Body parser 
+app.use(cookieParser())
 
 // Connect to Database (mongoose)
 connectDB();

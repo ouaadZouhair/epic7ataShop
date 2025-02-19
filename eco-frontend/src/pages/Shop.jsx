@@ -1,10 +1,8 @@
-import Footer from '../components/footer/Footer'
-import { GrFormNext } from "react-icons/gr";
-import { GrFormPrevious } from "react-icons/gr";
-import { CgUnavailable } from "react-icons/cg";
-import CartProduct from '../components/CartProduct/CartProduct';
+import { Footer, CartProduct } from '../components/imports.jsx';
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { CgUnavailable } from "react-icons/cg";
 
 function Shop({ Products }) {
   const [selectedProductType, setSelectedProductType] = useState("");

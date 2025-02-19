@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useDispatch } from "react-redux";
-import { addItem } from "../../slice/CartShippingSlice";
+import { addItem } from "../../../redux/slice/CartShippingSlice";
 import { FaCheck } from "react-icons/fa6";
-import { IoIosColorPalette } from "react-icons/io";
-import { IoMdResize } from "react-icons/io";
-import AlertNot from '../Alert/AlertNot';
+import { IoIosColorPalette, IoMdResize } from "react-icons/io";
+import { AlertNot } from '../../imports.jsx';
 
 const DetailsProduct = ({ product }) => {
     const [selectedColor, setSelectedColor] = useState(null);

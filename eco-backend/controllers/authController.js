@@ -55,8 +55,34 @@ export const logIn = async (req, res) => {
         // Generate JWT token
         const token = jwt.sign({ id: user._id, role: user.role }, KEY_SECRET, { expiresIn: '1d' });
 
-        res.status(200).json({ success: true, msg: 'Login successful', data: { token, user } });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: "Strict",
+            maxAge: 24 * 60 * 60 * 1000
+        })
+
+        res.status(200).json({ success: true, msg: 'Login successful', user :{
+            id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            role: user.role
+        } });
     } catch (error) {
         res.status(500).json({ msg: 'Server Error', error: error.message });
     }
+}
+
+export const logOut = async (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: "Strict",
+    });
+    res.json(
+        {
+            success: true,
+            msg: 'Logged out successfully'
+        }
+    )
 }

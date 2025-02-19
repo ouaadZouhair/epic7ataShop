@@ -6,14 +6,10 @@ dotenv.config();
 const KEY_SECRET = process.env.JWT_SECRET;
 
 export const verifyToken = (req, res, next) => {
-    let token = req.header("Authorization");
+    const token = req.cookies.token;
 
     if (!token) {
         return res.status(401).json({ msg: "Access Denied. No token provided." });
-    }
-
-    if (token.startsWith("Bearer ")) {
-        token = token.slice(7, token.length);
     }
 
     try {

@@ -108,7 +108,7 @@ export const deleteProduct = async (req, res) => {
         await session.commitTransaction()
         session.endSession()
 
-        res.status(200).send({ msg: 'Product deleted successfully', data: deletedProduct })
+        res.status(200).send({ msg: 'Product deleted successfully', product: deletedProduct })
 
 
     } catch (error) {

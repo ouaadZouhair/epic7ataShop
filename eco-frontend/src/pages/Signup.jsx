@@ -46,7 +46,7 @@ const Signup = () => {
 
       setMessage({ type: "success", text: "User registered successfully!" });
 
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/login"), 1000);
     } catch (err) {
       setMessage({ type: "error", text: err.response?.data?.message || "Something went wrong!" });
     } finally {
@@ -56,12 +56,12 @@ const Signup = () => {
 
   return (
     <div className="relative bg-fixed min-h-screen w-full flex items-center justify-center">
-      <nav className="absolute top-0 w-full h-16 flex justify-between items-center px-4">
-        <button className="flex items-center gap-2 text-black hover:text-blue-500 transition">
-          <FaArrowLeft className="text-xl hover:scale-110" />
-          <Link to="/" className="text-lg font-medium hover:underline">Go back to Home</Link>
+      <nav className='absolute top-0 w-full h-16 flex justify-between items-center text-white px-4'>
+        <button className='flex items-center group gap-2 bg-transparent text-black group hover:text-blue-600 duration-100' onClick={() => navigate('/')}>
+          <FaArrowLeft className='text-xl group-hover:text-3xl duration-100' />
+          <span className='text-lg font-base group-hover:font-semibold duration-100 '>Go back to Home page</span>
         </button>
-        <img src={brandLogo} alt="Brand Logo" className="w-12 h-12 object-cover" />
+        <img src={brandLogo} alt="brand Logo" className='w-12 h-12 object-cover' />
       </nav>
 
       <div className="bg-gradient-to-t from-white to-gray-100 rounded-2xl shadow-lg p-8 w-96 flex flex-col items-center">
@@ -115,6 +115,27 @@ const Signup = () => {
             {loading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
+
+        <p className="text-sm text-gray-600 mt-4">Or log in with:</p>
+
+        <div className="flex justify-center items-center gap-4 mt-2">
+          <button className="flex items-center justify-center gap-2 w-12 h-12 bg-red-500 text-white text-xl border-2 border-red-500 p-2 mx-auto rounded-full text-semibold hover:text-white hover:bg-red-600 hover:border-red-600 hover:scale-105 transition">
+            <FaGoogle />
+          </button>
+          <button className="flex items-center justify-center gap-2 w-12 h-12 bg-gray-950 text-white border-2 border-gray-950 p-2 mx-auto rounded-full text-xl text-semibold hover:text-white hover:bg-gray-800 hover:border-gray-800 hover:scale-105 transition">
+            <FaApple />
+          </button>
+        </div>
+
+        <p className="text-sm text-gray-600 mt-4">
+          Aready have an account
+          <Link
+            to="/login"
+            className="text-blue-600 mx-1 font-semibold hover:underline"
+          >
+            Log In
+          </Link>
+        </p>
       </div>
     </div>
   );

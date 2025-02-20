@@ -19,8 +19,13 @@ dotenv.config(); // Load env variables
 const app = express(); // Initialize express
 const { PORT } = process.env || 5000;
 
+const corsOptions = {
+    origin: 'http://localhost:5173', // This should match your frontend origin
+    credentials: true, // Allow credentials (cookies)
+};
+
 // Middleware
-app.use(cors()); // Cross-Origin Resource Sharing
+app.use(cors(corsOptions)); // Cross-Origin Resource Sharing
 app.use(express.json()); // Body parser 
 app.use(cookieParser())
 
@@ -40,6 +45,14 @@ app.use('/api/v1/orders', verifyToken, authorizeRoles('client'), orderRouter) //
 app.use('/api/v1/users', verifyToken, authorizeRoles('admin'), userRouter) // Users Route
 
 app.use('/api/v1/wishlist', wishlistRouter) // Wishlist Route
+
+app.get("/api/v1/auth/me",verifyToken, (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    res.json({ user: req.user, message: "Authenticated" });
+});
 
 
 

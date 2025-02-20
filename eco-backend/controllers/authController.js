@@ -53,13 +53,13 @@ export const logIn = async (req, res) => {
         if (!checkPassword) return res.status(400).json({ msg: 'Wrong Email or Password' });
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id, role: user.role }, KEY_SECRET, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role, fullName: user.fullName, email: user.email }, KEY_SECRET, { expiresIn: '1d' });
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: "Strict",
-            maxAge: 24 * 60 * 60 * 1000
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
         })
 
         res.status(200).json({ success: true, msg: 'Login successful', user :{

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import brandLogo from '../assets/epic7ata-logo.png';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../Context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa6";
 import { FaGoogle, FaApple } from "react-icons/fa";
@@ -10,14 +11,15 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { login, user } = useAuth()
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate('/');
+    if (user) {
+        navigate('/'); // Redirect if already logged in
     }
-  }, []);
+}, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,26 +27,31 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`http://localhost:3000/api/v1/auth/LogIn`, { email, password });
-      console.log(response.data)
-      localStorage.setItem("token", response.data.data.token);
-      setMessage({ type: "success", text: "Logged in successfully!" });
+      // const response = await axios.post(`http://localhost:3000/api/v1/auth/LogIn`, { email, password }, { withCredentials: true });
+      // console.log(response.data)
 
-      setTimeout(() => navigate("/"), 1000);
+      const success = await login(email, password);
+      console.log(email, password, success)
+      if (success) {
+        setMessage({ type: "success", text: "Logged in successfully!" });
+        setTimeout(() => navigate("/"), 1000);
+      } else {
+        setMessage({ type: "error", text: "Invalid email or password!" });
+      }
     } catch (err) {
-      setMessage({ type: "error", text: err.response?.data?.msg || "Login failed!" });
+      setMessage({ type: "error", text: err.message || "Login failed!" });
     } finally {
       setLoading(false);
-      
+
     }
   };
 
   return (
     <div className="relative bg-fixed h-screen w-full flex items-center justify-center">
-      <nav className='absolute top-0 w-full h-16 flex justify-between items-center text-white px-4'>
+      <nav className='absolute top-0 w-full h-16 flex justify-between items-center text-white px-4' onClick={() => navigate('/')}>
         <button className='flex items-center group gap-2 bg-transparent text-black group'>
           <FaArrowLeft className='text-xl group-hover:text-3xl duration-100' />
-          <Link to='/' className='text-lg font-base group-hover:font-semibold duration-100 '>Go back to Home page</Link>
+          <span className='text-lg font-base group-hover:font-semibold duration-100 '>Go back to Home page</span>
         </button>
         <img src={brandLogo} alt="brand Logo" className='w-12 h-12 object-cover' />
       </nav>
@@ -64,6 +71,7 @@ const Login = () => {
             placeholder="Email"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
@@ -72,6 +80,7 @@ const Login = () => {
             placeholder="Password"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
+            value = {password}
             onChange={(e) => setPassword(e.target.value)}
           />
 

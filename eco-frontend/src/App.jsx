@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Navbar, TopNav } from './components/imports.jsx';
-import {Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout} from "./pages/imports.js"
+import { AuthProvider } from './Context/AuthContext.jsx';
+import { Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout } from "./pages/imports.js"
 
 function MainLayout() {
   const productsData = useSelector(state => state.shop.products);
@@ -13,7 +14,7 @@ function MainLayout() {
   return (
     <>
       {!hideNavbarRoutes.includes(location.pathname) && <TopNav />}
-      
+
       {/* Conditionally render Navbar */}
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
@@ -34,9 +35,11 @@ function MainLayout() {
 
 function App() {
   return (
-    <Router>
-      <MainLayout />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <MainLayout />
+      </Router>
+    </AuthProvider>
   );
 }
 

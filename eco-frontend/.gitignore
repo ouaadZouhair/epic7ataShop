@@ -1,0 +1,15 @@
+# React build and dependencies
+node_modules/
+dist/
+build/
+.env.local
+.env.development.local
+.env.production.local
+
+# Editor-specific
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

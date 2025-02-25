@@ -1,0 +1,13 @@
+# Global ignores
+node_modules/
+dist/
+build/
+.env
+logs/
+*.log
+.DS_Store
+Thumbs.db
+
+# Ignore dependency lock files (if needed)
+package-lock.json
+yarn.lock

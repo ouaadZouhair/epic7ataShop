@@ -1,9 +1,5 @@
 // export Nav components
-export { TopNav, Navbar, BurgerMenu, CardShipping } from './Layout/Navbar/Nav.jsx';
-export { Profiel } from './Layout/Navbar/Profiel.jsx';
-
-// export Order
-export { Wishlist } from "./Layout/Navbar/Wishlist.jsx"
+export { TopNav, Navbar, BurgerMenu, CardShipping, Profiel, Wishlist } from './Layout/Navbar/Nav.jsx';
 
 // import Hero components
 export { default as HeroContainer} from './Layout/Hero/HeroContainer.jsx';
@@ -31,7 +27,7 @@ export {default as InfoProduct} from './Product/InfoProduct/InfoProduct.jsx';
 export {default as Container} from './Container/Container.jsx';
 
 // import Cart item
-export {default as CartItem} from './CardItem/CardItem.jsx';
+export {default as CartItem} from'./CardItem/CardItem.jsx';
 
 // import Alert
 export {default as AlertNot} from './Alert/AlertNot.jsx'

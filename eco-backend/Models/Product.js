@@ -33,10 +33,12 @@ const ProductSchema = new mongoose.Schema({
     imageUrls: {
         frontMockups: {
             type: String,
+            required: true
             
         },
         backMockups: {
             type: String,
+            required: true
         }
     },
 

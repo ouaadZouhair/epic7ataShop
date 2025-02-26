@@ -21,14 +21,20 @@ function Shop() {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+
  
   const navigate = useNavigate();
 
+  // Navigate to product details
+  const handleProductClick = (id) => {
+    navigate(`/product/${id}`);
+  };
+
   // Filter products based on selected type and category
-  const filteredProducts = products?.data? products.data.filter((product) =>
-      (!selectedProductType || product.productType === selectedProductType) &&
-      (!selectedCategory || product.category === selectedCategory)
-    )
+  const filteredProducts = products?.data ? products.data.filter((product) =>
+    (!selectedProductType || product.productType === selectedProductType) &&
+    (!selectedCategory || product.category === selectedCategory)
+  )
     : [];
 
   // Pagination logic
@@ -37,21 +43,18 @@ function Shop() {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Scroll to top when page changes
-  useEffect(() => {
+   // Scroll to top when page changes
+   useEffect(() => {
     window.scroll(0, 0);
   }, [currentProducts]);
 
-  // Handle filter changes
-  const handleFilterChange = (setter) => (e) => {
-    setter(e.target.value);
-    setCurrentPage(1); // Reset pagination
-  };
 
-  // Navigate to product details
-  const handleProductClick = (id) => {
-    navigate(`/product/${id}`);
-  };
+    // Handle filter changes
+    const handleFilterChange = (setter) => (e) => {
+      setter(e.target.value);
+      setCurrentPage(1); // Reset pagination
+    };
+
 
   return (
     <>
@@ -99,6 +102,7 @@ function Shop() {
             {currentProducts.map(({ _id, imageUrls, title, price }) => (
               <CartProduct
                 key={_id}
+                id={_id}
                 title={title}
                 backImg={imageUrls.backMockups ? `${BASE_URL}${imageUrls.backMockups}` : null}
                 frontImg={imageUrls.frontMockups ? `${BASE_URL}${imageUrls.frontMockups}` : null}
@@ -109,13 +113,13 @@ function Shop() {
           </div>
 
           {/* No Products Found */}
-          {filteredProducts.length === 0 && (
+          {loading && (
             <div className="w-full md:w-[60%] h-auto p-5 flex flex-col justify-between items-center">
               <svg className="pl" width="240" height="240" viewBox="0 0 240 240">
-                <circle className="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 660" stroke-dashoffset="-330" stroke-linecap="round"></circle>
-                <circle className="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 220" stroke-dashoffset="-110" stroke-linecap="round"></circle>
-                <circle className="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
-                <circle className="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" stroke-width="20" stroke-dasharray="0 440" stroke-linecap="round"></circle>
+                <circle className="pl__ring pl__ring--a" cx="120" cy="120" r="105" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 660" strokeDashoffset="-330" strokeLinecap="round"></circle>
+                <circle className="pl__ring pl__ring--b" cx="120" cy="120" r="35" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 220" strokeDashoffset="-110" strokeLinecap="round"></circle>
+                <circle className="pl__ring pl__ring--c" cx="85" cy="120" r="70" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 440" strokeLinecap="round"></circle>
+                <circle className="pl__ring pl__ring--d" cx="155" cy="120" r="70" fill="none" stroke="#000" strokeWidth="20" strokeDasharray="0 440" strokeLinecap="round"></circle>
               </svg>
             </div>
           )}

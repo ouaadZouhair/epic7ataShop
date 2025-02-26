@@ -1,6 +1,10 @@
+import { CartItem } from "../../imports.jsx";
+import logo from '../../../assets/epic7ata-logo.png';
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from "../../../Context/AuthContext.jsx";
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
-import { useSelector } from 'react-redux';
 import { IoSearch, IoLogoTiktok } from "react-icons/io5";
 import { FaXmark } from "react-icons/fa6";
 import { FiMenu, FiInstagram } from "react-icons/fi";
@@ -9,38 +13,50 @@ import { PiShoppingCartSimpleFill } from "react-icons/pi";
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
-import { useAuth } from "../../../Context/AuthContext.jsx";
-import logo from '../../../assets/epic7ata-logo.png';
-import CardItem from "../../CardItem/CardItem.jsx";
-import { Profiel, Wishlist } from "../../imports.jsx";
+import { FaTrashAlt } from "react-icons/fa";
+import { removeItemFromWishlist } from "../../../redux/slice/WishlistSlice.js";
+import { fetchProducts } from "../../../redux/slice/ProductsShopSlice.js";
+
+
 
 
 
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
-  const [isCardShippingVisible, setIsCardShippingVisible] = useState(0);
-  const [isMenuVisible, setIsMenuVisible] = useState(0);
+  const [wishlistCounter, setWishlistCounter] = useState(0)
+  const [isCardShippingVisible, setIsCardShippingVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isProfileMenuVisible, setIsProfileMenuVisible] = useState(false)
-  const [isOrderMenuVisible, setIsOrderMenuVisible] = useState(false)
+  const [isWishlistMenuVisible, setIsWishlistMenuVisible] = useState(false)
   const { user } = useAuth()
 
-  const openShippingCard = () => setIsCardShippingVisible(true);
-  const closeShippingCard = () => setIsCardShippingVisible(false);
+  // const wishlist = useSelector(state => state.wishlist.wishlist)
 
-  const toggleProfileMenu = () => setIsProfileMenuVisible(!isProfileMenuVisible);
-  const toggleOrderMenu = () => setIsOrderMenuVisible(!isOrderMenuVisible);
+  const toggleShippingCard = () => setIsCardShippingVisible(!isCardShippingVisible)
+  const toggleMenu = () => setIsMenuVisible(!isMenuVisible)
 
-  const openMenu = () => setIsMenuVisible(true);
-  const closeMenu = () => setIsMenuVisible(false);
+  const toggleProfileMenu = () => {
+    setIsProfileMenuVisible(!isProfileMenuVisible)
+    setIsWishlistMenuVisible(false)
+  };
+
+  const toggleWishlistMenu = () => {
+    setIsWishlistMenuVisible(!isWishlistMenuVisible)
+    setIsProfileMenuVisible(false)
+  };
 
   const handleCartCounter = (data) => {
     setCardCounter(data)
   }
 
+  const handelWishlistCounter = (data) => {
+    setWishlistCounter(data)
+  }
+
   return (
     <nav className="flex justify-around md:justify-center md:gap-5 items-center px-7 md:px-0 w-full py-3 z-50">
 
-      <button className=' flex justify-center items-center w-10 h-10 border-2 rounded-xl text-2xl border-black p-1 hover:bg-black hover:text-white duration-100 lg:hidden' onClick={openMenu}>
+      <button className=' flex justify-center items-center w-10 h-10 border-2 rounded-xl text-2xl border-black p-1 hover:bg-black hover:text-white duration-100 lg:hidden' onClick={toggleMenu}>
         <FiMenu />
       </button>
 
@@ -75,6 +91,7 @@ export const Navbar = () => {
           <input className="input rounded-full px-8 py-3 border-2 border-transparent focus:outline-none focus:border-blue-500 placeholder-gray-400 transition-all duration-300 shadow-md" placeholder="Search..." required type="text" />
           <button type="reset" className="absolute right-3 -translate-y-1/2 top-1/2 p-1">
             <FaXmark className="w-6 h-6 text-gray-700 hover:text-red-500 duration-100" />
+
           </button>
         </form>
 
@@ -92,23 +109,28 @@ export const Navbar = () => {
         ) : (
           <div className="relative w-28 flex justify-between items-center">
             <button className="group" onClick={toggleProfileMenu}><FaUserAlt className="text-2xl group-hover:text-blue-600 group-hover:scale-110 duration-100" /></button>
-            {isProfileMenuVisible && <Profiel data={user}/>}
-            <button className="group" onClick={toggleOrderMenu}><IoIosHeart className="text-3xl group-hover:text-red-600 group-hover:scale-110 duration-100 " /></button>
-            {isOrderMenuVisible && <Wishlist/>}
+            {isProfileMenuVisible && <Profiel data={user} />}
+            <button className="relative group" onClick={toggleWishlistMenu}>
+              <IoIosHeart className="text-3xl group-hover:text-red-600 group-hover:scale-110 duration-100 " />
+              <div className="bg-red-500 w-[18px] h-[18px] rounded-full absolute -top-3 -right-3">
+                <span className="text-sm text-white font-semibold absolute bottom-1/2 translate-y-1/2  left-1/2 -translate-x-1/2">{wishlistCounter}</span>
+              </div>
+            </button>
+            {isWishlistMenuVisible && <Wishlist counterData={handelWishlistCounter} />}
           </div>
         )}
 
 
       </div>
-      <button className=" relative text-4xl hover:text-blue-500 duration-100 " onClick={openShippingCard}>
+      <button className=" relative text-4xl hover:text-blue-500 duration-100 " onClick={toggleShippingCard}>
         <PiShoppingCartSimpleFill />
-        <div className="bg-red-500 w-[18px] h-[18px] rounded-full absolute -top-2 -right-2">
+        <div className="bg-red-500 w-[18px] h-[18px] rounded-full absolute -top-2 -right-3">
           <span className="text-sm text-white font-semibold absolute bottom-1/2 translate-y-1/2  left-1/2 -translate-x-1/2">{cardCounter}</span>
         </div>
       </button>
 
-      <CardShipping visibility={isCardShippingVisible} onClose={closeShippingCard} fnData={handleCartCounter} />
-      <BurgerMenu visibility={isMenuVisible} onClose={closeMenu} />
+      <CardShipping visibility={isCardShippingVisible} onClose={toggleShippingCard} fnData={handleCartCounter} />
+      <BurgerMenu visibility={isMenuVisible} onClose={toggleMenu} />
     </nav>
 
   )
@@ -139,28 +161,28 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
 
   const [totalPrice, setTotalPrice] = useState(0)
   const [itemsQuantity, setItemsQuantity] = useState(0)
-  const cardItems = useSelector(state => state.cart.items)
+  const cartItems = useSelector(state => state.cart.items)
 
 
   // Calculate the total price and items quantity
   useEffect(() => {
     let total = 0;
     let quantity = 0;
-    cardItems.forEach(item => {
+    cartItems.forEach(item => {
       total += item.price * item.quantity;
       quantity += item.quantity;
     })
     setTotalPrice(total);
     setItemsQuantity(quantity);
     fnData(quantity)
-  }, [cardItems])
+  }, [cartItems])
 
 
   return (
     <div className={`h-screen fixed z-50 top-0 right-0 ${visibility ? 'w-full' : "w-0"} transition-all duration-500`}>
       {/* Overlay */}
       <div
-        className={`absolute bg-black/20 w-full h-screen z-30 backdrop-blur-md top-0 ${visibility ? "right-0" : "-right-full"
+        className={`absolute bg-white/5 w-full h-screen z-30 backdrop-blur-md top-0 ${visibility ? "right-0" : "-right-full"
           } transition-all ease-in-out duration-300`}
         onClick={onClose} // Close the cart when clicking on the overlay
       ></div>
@@ -185,14 +207,14 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
           {/* Cart Items */}
           <div className="flex flex-col justify-start items-center h-[700px] md:h-[950px] lg:h-[700px] w-full gap-1 overflow-y-auto">
             {
-              cardItems.length === 0 ? (
+              cartItems.length === 0 ? (
                 <div className=' flex flex-col justify-center items-center  p-4 mt-4 h-[90%] gap-4'>
                   <MdRemoveShoppingCart className='text-black text-7xl' />
                   <p className="text-lg md:text-2xl lg:text-xl font-light text-black">They're any product in shipping card</p>
                 </div>
               ) : (
-                cardItems.map((item, i) => (
-                  <CardItem
+                cartItems.map((item, i) => (
+                  <CartItem
                     item={item}
                     key={i}
                   />
@@ -255,4 +277,87 @@ export const BurgerMenu = ({ visibility, onClose }) => {
     </div>
   )
 }
+
+export const Profiel = ({ data }) => {
+
+  const navigate = useNavigate()
+
+  const handleNavigation = (path) => {
+    navigate(path)
+  }
+
+
+  const { logout } = useAuth()
+  return (
+    <div className="absolute top-14 right-16 z-50 bg-white shadow-lg rounded-xl w-60 overflow-hidden">
+      <p className=" font-semibold px-4 py-2"> {data.fullName}</p>
+      <span className='text-base text-gray-700 px-4 capitalize' >{data.role}</span>
+      <p className="text-sm text-gray-500 px-4 py-2">{data.email}</p>
+      {data.role === 'admin' ? (
+        <button
+          className="text-white font-semibold mt-2 w-full py-2 bg-blue-600 hover:bg-blue-700 duration-100"
+          onClick={() => handleNavigation('/dashboard')}
+        >
+          My Dashboard
+        </button>
+      ) : (
+        <button
+          className="text-white font-semibold mt-2 w-full py-2 bg-blue-600 hover:bg-blue-700 duration-100"
+          onClick={() => handleNavigation('/orders')}
+        >
+          My Orders
+        </button>
+      )}
+
+      <button
+        className="text-white font-semibold  w-full py-2 bg-red-600 hover:bg-red-700 duration-100"
+        onClick={logout}
+      >
+        Logout
+      </button>
+    </div>
+  )
+}
+
+
+export const Wishlist = ({ counterData }) => {
+  const dispatch = useDispatch();
+  const wishlistItem = useSelector((state) => state.wishlist.wishlist);
+
+  console.log(wishlistItem)
+
+  useEffect(() => {
+    dispatch(fetchProducts()); // ✅ Fetch wishlist instead of products
+  }, [dispatch]);
+
+  const removeItem = async (itemId) => {
+    try {
+      await dispatch(removeItemFromWishlist({ id: itemId }));
+    } catch (error) {
+      console.error("Failed to remove item from wishlist:", error);
+    }
+  };
+
+  return (
+    <div className="absolute top-14 left-12 z-50 bg-white shadow-lg rounded-xl w-80 max-h-96 p-1 overflow-y-scroll">
+      {wishlistItem.length === 0 ? (
+        <p className="text-center text-gray-500 p-2">Your wishlist is empty</p>
+      ) : (
+        wishlistItem.map((item, i) => (
+          <div
+            key={i}
+            className="flex justify-between items-center p-1 my-1 w-full bg-blue-500 rounded-lg shadow-lg cursor-pointer hover:bg-blue-600 duration-100"
+          >
+            <img src={item.frontImg} className="w-20 h-20 rounded-lg" alt={item.title} />
+            <p className="text-gray-200 font-semibold w-1/2">{item.title}</p>
+            <button onClick={() => removeItem(item.id)}>
+              <FaTrashAlt className="text-gray-200 text-2xl hover:text-red-600 hover:scale-110 duration-100" />
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
+
 

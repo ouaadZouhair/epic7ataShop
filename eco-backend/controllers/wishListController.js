@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 export const getWishlist = async (req, res) => {
     try {
         const userId = req.user.id;
-        const wishlist = await Wishlist.findOne({ user: userId }).populate("products", "title price category").select("-createdAt -updatedAt");
+        const wishlist = await Wishlist.findOne({ user: userId }).populate("products", "title price imageUrls").select("-createdAt -updatedAt");
 
         if (!wishlist) return res.status(200).send({ status: 'sucess', msg: "Wishlist is empty" });
 

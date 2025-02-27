@@ -14,8 +14,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
-import { removeItemFromWishlist } from "../../../redux/slice/WishlistSlice.js";
-import { fetchProducts } from "../../../redux/slice/ProductsShopSlice.js";
+import { removeItemFromWishlist, fetchWishlist, deleteWishlist } from "../../../redux/slice/WishlistSlice.js";
 
 
 
@@ -324,15 +323,23 @@ export const Wishlist = ({ counterData }) => {
   const dispatch = useDispatch();
   const wishlistItem = useSelector((state) => state.wishlist.wishlist);
 
-  console.log(wishlistItem)
+
+
+  const BASE_URL = "http://localhost:3000";
 
   useEffect(() => {
-    dispatch(fetchProducts()); // ✅ Fetch wishlist instead of products
+      dispatch(fetchWishlist());
   }, [dispatch]);
+
+
+  useEffect(() => {
+    counterData(wishlistItem.length);
+  }, [wishlistItem, counterData]);
 
   const removeItem = async (itemId) => {
     try {
-      await dispatch(removeItemFromWishlist({ id: itemId }));
+      await dispatch(deleteWishlist(itemId)).unwrap(); 
+      dispatch(removeItemFromWishlist({ id: itemId }));
     } catch (error) {
       console.error("Failed to remove item from wishlist:", error);
     }
@@ -344,13 +351,10 @@ export const Wishlist = ({ counterData }) => {
         <p className="text-center text-gray-500 p-2">Your wishlist is empty</p>
       ) : (
         wishlistItem.map((item, i) => (
-          <div
-            key={i}
-            className="flex justify-between items-center p-1 my-1 w-full bg-blue-500 rounded-lg shadow-lg cursor-pointer hover:bg-blue-600 duration-100"
-          >
-            <img src={item.frontImg} className="w-20 h-20 rounded-lg" alt={item.title} />
+          <div key={i} className="flex justify-between items-center p-1 my-1 w-full bg-blue-500 rounded-lg shadow-lg cursor-pointer hover:bg-blue-600 duration-100"> 
+            <img src={`${BASE_URL}${item.imageUrls.frontMockups}`} className="w-20 h-20 rounded-lg" alt={item.title} />
             <p className="text-gray-200 font-semibold w-1/2">{item.title}</p>
-            <button onClick={() => removeItem(item.id)}>
+            <button onClick={() => removeItem(item._id)}>
               <FaTrashAlt className="text-gray-200 text-2xl hover:text-red-600 hover:scale-110 duration-100" />
             </button>
           </div>

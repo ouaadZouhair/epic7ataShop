@@ -10,17 +10,12 @@ import CartProduct from '../../Product/CartProduct/CartProduct';
 
 const TopSellsSlider = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const { products, loading, error } = useSelector(state => state.shop);
-     const BASE_URL = "http://localhost:3000";
 
 
     // Memoize Top Selling Products with safe optional chaining
     const TopSelling = useMemo(() => products?.data?.filter(product => product.isFavPr) || [], [products]);
 
-    // const handleAddToCart = useCallback((product) => {
-    //     dispatch(addItem({ ...product, quantity: 1 }));
-    // }, [dispatch]);
 
     const handleProductClick = useCallback( (_id) => {
         navigate(`/product/${_id}`);
@@ -43,7 +38,7 @@ const TopSellsSlider = () => {
                 loop={true}
                 spaceBetween={0}
                 slidesPerView={4}
-                autoplay={{ delay: 3000 }}
+                autoplay={{ delay: 5000 }}
                 navigation
                 breakpoints={{
                     320: { slidesPerView: 1 },
@@ -57,11 +52,12 @@ const TopSellsSlider = () => {
                 {TopSelling.map(({ _id, title, imageUrls, price }) => (
                     <SwiperSlide key={_id}>
                         <CartProduct
+                            id = {_id}
                             title={title}
-                            backImg={imageUrls.backMockups ? `${BASE_URL}${imageUrls.backMockups}` : null}
-                            frontImg={imageUrls.frontMockups ? `${BASE_URL}${imageUrls.frontMockups}` : null}
+                            backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
+                            frontMockups={imageUrls.frontMockups ? `${imageUrls.frontMockups}` : null}
                             price={price}
-                            onClick={() => handleProductClick(_id)}
+                            viewProduct={() => handleProductClick(_id)}
                         />
                     </SwiperSlide>
                 ))}

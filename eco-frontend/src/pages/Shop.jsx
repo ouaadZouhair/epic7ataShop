@@ -12,7 +12,6 @@ function Shop() {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
-  const BASE_URL = "http://localhost:3000";
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector(state => state.shop);
 
@@ -104,10 +103,10 @@ function Shop() {
                 key={_id}
                 id={_id}
                 title={title}
-                backImg={imageUrls.backMockups ? `${BASE_URL}${imageUrls.backMockups}` : null}
-                frontImg={imageUrls.frontMockups ? `${BASE_URL}${imageUrls.frontMockups}` : null}
+                frontMockups={imageUrls.frontMockups ? `${imageUrls.frontMockups}` : null}
+                backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
                 price={price}
-                onClick={() => handleProductClick(_id)}
+                viewProduct={() => handleProductClick(_id)}
               />
             ))}
           </div>

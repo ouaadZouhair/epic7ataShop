@@ -10,7 +10,8 @@ const URL_API = 'http://localhost:3000/api/v1/wishlist';
 export const fetchWishlist = createAsyncThunk('wishlist/fetchWishlist', async (_, { rejectWithValue }) => {
     try {
         const res = await axios.get(URL_API, { withCredentials: true });
-        return res.data;
+        console.log(res.data.wishlist.products)
+        return res.data.wishlist.products;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || 'Failed to fetch wishlist');
     }
@@ -25,7 +26,14 @@ export const storeWishlist = createAsyncThunk('wishlist/storeWishlist', async (W
     }
 });
 
-
+export const deleteWishlist = createAsyncThunk('wishlist/deleteWishlist', async (id, { rejectWithValue }) =>{
+    try {
+        const res = await axios.delete(`${URL_API}/${id}`, { withCredentials: true })
+        return id
+    } catch (error) {
+        return rejectWithValue(error.response.data.message || 'Failed to delete from wishlist')
+    }
+})
 
 
 const WishlistSlice = createSlice({
@@ -40,7 +48,7 @@ const WishlistSlice = createSlice({
         addItemToWishlist: (state, action) => {
 
             const item = action.payload;
-            const existingItem = state.wishlist.find(i => i.id === item.id);
+            const existingItem = state.wishlist.find(i => i.id === item._id);
         
             if (!existingItem) {
                 state.wishlist = [...state.wishlist, item];
@@ -52,7 +60,7 @@ const WishlistSlice = createSlice({
 
         removeItemFromWishlist: (state, action) => {
             const { id } = action.payload;
-            state.wishlist = state.wishlist.filter(item => item.id !== id)
+            state.wishlist = state.wishlist.filter(item => item._id !== id)
         }
     },
 
@@ -86,6 +94,23 @@ const WishlistSlice = createSlice({
         })
 
         .addCase(storeWishlist.rejected, (state, action) =>{
+            state.loading = false;
+            state.error = action.error.message
+        })
+
+        // handel delete wishlist
+
+        .addCase(deleteWishlist.pending, (state) =>{
+            state.loading = true;
+        })
+
+        .addCase(deleteWishlist.fulfilled, (state, action) => {
+            state.loading = false;
+            const deletedId = action.meta.arg; // This is the ID we sent
+            state.wishlist = state.wishlist.filter(item => item._id !== deletedId);
+        })
+
+        .addCase(deleteWishlist.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message
         })

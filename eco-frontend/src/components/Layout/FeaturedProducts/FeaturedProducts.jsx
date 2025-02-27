@@ -38,10 +38,10 @@ const FeaturedProducts = () => {
 
             {/* Swiper Slider */}
             <Swiper
-                key={NewProducts.length} // Force re-render when data changes
+                key={NewProducts.length}
                 modules={[Navigation, Autoplay]}
-                loop={NewProducts.length > 4} // Enable loop only if enough slides
-                autoplay={{ delay: 3000 }}
+                loop={NewProducts.length > 4} 
+                autoplay={{ delay: 5000 }}
                 spaceBetween={10}
                 slidesPerView={4}
                 navigation
@@ -57,11 +57,12 @@ const FeaturedProducts = () => {
                 {NewProducts.map(({ _id, price, title, imageUrls }, index) => (
                     <SwiperSlide key={_id || index}>
                         <CartProduct
+                            id={_id}
                             title={title}
-                            backImg={imageUrls.backMockups ? `${BASE_URL}${imageUrls.backMockups}` : null}
-                            frontImg={imageUrls.frontMockups ? `${BASE_URL}${imageUrls.frontMockups}` : null}
+                            backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
+                            frontMockups={imageUrls.frontMockups ? `${imageUrls.frontMockups}` : null}
                             price={price}
-                            onClick={() => handleProductClick(_id)}
+                            viewProduct={() => handleProductClick(_id)}
                         />
                     </SwiperSlide>
                 ))}

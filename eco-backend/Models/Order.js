@@ -26,6 +26,12 @@ const OrderSchema = new mongoose.Schema({
         required: true
     },
 
+    city:{
+        type: String,
+        required: true
+    },
+  
+
     status: {
         type: String,
         enum: ['Pending', 'Printing', 'Delivering', 'Completed', 'Canceled'],

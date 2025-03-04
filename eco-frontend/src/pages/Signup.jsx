@@ -129,12 +129,7 @@ const Signup = () => {
 
         <p className="text-sm text-gray-600 mt-4">
           Aready have an account
-          <Link
-            to="/login"
-            className="text-blue-600 mx-1 font-semibold hover:underline"
-          >
-            Log In
-          </Link>
+          <Link to="/login" className="text-blue-600 mx-1 font-semibold hover:underline"> Log In </Link>
         </p>
       </div>
     </div>

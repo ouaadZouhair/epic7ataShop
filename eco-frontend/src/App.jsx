@@ -1,14 +1,14 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar, TopNav } from './components/imports.jsx';
 import { AuthProvider } from './Context/AuthContext.jsx';
-import { Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout, Dashboard, Orders } from "./pages/imports.js"
+import { Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout, Dashboard, Orders } from "./pages/imports.jsx"
  
 function MainLayout() {
   
   const location = useLocation();
 
   // Define paths where the navbar should be hidden
-  const hideNavbarRoutes = ['/signup', '/login', '/dashboard', '/orders'];
+  const hideNavbarRoutes = ['/signup', '/login', '/dashboard', '/orders' , '/checkout'];
 
   return (
     <>

@@ -9,7 +9,6 @@ import orderRouter from './Routes/OrderRoute.js';
 import userRouter from './Routes/UserRoute.js';
 import wishlistRouter from './Routes/WishlistRoute.js';
 // import Middleware
-import { verifyToken, authorizeRoles } from './Middleware/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config(); // Load env variables
@@ -30,20 +29,16 @@ app.use(cookieParser())
 // Connect to Database (mongoose)
 connectDB();
 
-
 // Routes
 app.use('/api/v1/auth', AuthRoute); // Auth Route
 
 app.use('/api/v1/products', productsRouter); // Products Route
 
+app.use('/api/v1/orders', orderRouter) // Orders Route
 
-app.use('/api/v1/orders', verifyToken, authorizeRoles('client'), orderRouter) // Orders Route
-
-app.use('/api/v1/users', verifyToken, authorizeRoles('admin'), userRouter) // Users Route
+app.use('/api/v1/users', userRouter) // Users Route
 
 app.use('/api/v1/wishlist', wishlistRouter) // Wishlist Route
-
-
 
 
 // Server Static Files (Images) => Acess to uploads file for front end

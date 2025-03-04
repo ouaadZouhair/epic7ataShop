@@ -1,4 +1,3 @@
-import axios from 'axios';
 import brandLogo from '../assets/epic7ata-logo.png';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../Context/AuthContext';
@@ -27,9 +26,6 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // const response = await axios.post(`http://localhost:3000/api/v1/auth/LogIn`, { email, password }, { withCredentials: true });
-      // console.log(response.data)
-
       const success = await login(email, password);
       console.log(email, password, success)
       if (success) {

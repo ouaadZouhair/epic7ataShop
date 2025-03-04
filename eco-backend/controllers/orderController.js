@@ -4,7 +4,7 @@ import Order from "../Models/Order.js";
 // Add Order
 export const addOrder = async (req, res) => {
     try {
-        const { products, phone, address, status } = req.body;
+        const { products, phone, address, city, status } = req.body;
 
         const phoneRegex = /^(0[67]\d{8})|(\+212[67]\d{8})$/;
         if (!phone || !phoneRegex.test(phone)) {
@@ -60,6 +60,7 @@ export const addOrder = async (req, res) => {
             priceOrder,
             phone,
             address,
+            city,
             status: status || "Pending"
         });
 
@@ -68,7 +69,7 @@ export const addOrder = async (req, res) => {
         res.status(201).json({
             status: "success",
             message: "The order was saved successfully",
-            order: savedOrder
+            savedOrder
         });
 
     } catch (error) {

@@ -8,21 +8,16 @@ import { Link } from "react-router-dom";
 import { IoSearch, IoLogoTiktok } from "react-icons/io5";
 import { FaXmark } from "react-icons/fa6";
 import { FiMenu, FiInstagram } from "react-icons/fi";
-import { FaUserAlt } from "react-icons/fa";
+import { FaUserAlt, FaTrashAlt } from "react-icons/fa";
 import { PiShoppingCartSimpleFill } from "react-icons/pi";
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
-import { FaTrashAlt } from "react-icons/fa";
 import { removeItemFromWishlist, fetchWishlist, deleteWishlist } from "../../../redux/slice/WishlistSlice.js";
-
-
-
 
 
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
-  const [wishlistCounter, setWishlistCounter] = useState(0)
   const [isCardShippingVisible, setIsCardShippingVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isProfileMenuVisible, setIsProfileMenuVisible] = useState(false)
@@ -46,10 +41,6 @@ export const Navbar = () => {
 
   const handleCartCounter = (data) => {
     setCardCounter(data)
-  }
-
-  const handelWishlistCounter = (data) => {
-    setWishlistCounter(data)
   }
 
   return (
@@ -111,11 +102,8 @@ export const Navbar = () => {
             {isProfileMenuVisible && <Profiel data={user} />}
             <button className="relative group" onClick={toggleWishlistMenu}>
               <IoIosHeart className="text-3xl group-hover:text-red-600 group-hover:scale-110 duration-100 " />
-              <div className="bg-red-500 w-[18px] h-[18px] rounded-full absolute -top-3 -right-3">
-                <span className="text-sm text-white font-semibold absolute bottom-1/2 translate-y-1/2  left-1/2 -translate-x-1/2">{wishlistCounter}</span>
-              </div>
             </button>
-            {isWishlistMenuVisible && <Wishlist counterData={handelWishlistCounter} />}
+            {isWishlistMenuVisible && <Wishlist />}
           </div>
         )}
 
@@ -318,8 +306,7 @@ export const Profiel = ({ data }) => {
   )
 }
 
-
-export const Wishlist = ({ counterData }) => {
+export const Wishlist = () => {
   const dispatch = useDispatch();
   const wishlistItem = useSelector((state) => state.wishlist.wishlist);
 
@@ -330,11 +317,6 @@ export const Wishlist = ({ counterData }) => {
   useEffect(() => {
       dispatch(fetchWishlist());
   }, [dispatch]);
-
-
-  useEffect(() => {
-    counterData(wishlistItem.length);
-  }, [wishlistItem, counterData]);
 
   const removeItem = async (itemId) => {
     try {

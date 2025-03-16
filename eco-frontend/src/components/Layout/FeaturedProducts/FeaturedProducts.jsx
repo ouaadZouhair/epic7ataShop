@@ -14,7 +14,6 @@ const FeaturedProducts = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { products, loading, error } = useSelector(state => state.shop);
-    const BASE_URL = "http://localhost:3000";
 
     // Fetch products on mount
     useEffect(() => {
@@ -52,7 +51,7 @@ const FeaturedProducts = () => {
                     1280: { slidesPerView: 4 },
                     1536: { slidesPerView: 5 },
                 }}
-                className='my-14 w-full'
+                className='my-14 w-full p-5'
             >
                 {NewProducts.map(({ _id, price, title, imageUrls }, index) => (
                     <SwiperSlide key={_id || index}>

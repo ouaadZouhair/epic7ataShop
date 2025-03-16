@@ -50,15 +50,13 @@ const Checkout = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex flex-col items-center gap-3 max-h-80 overflow-y-scroll scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-transparent">
+          <div className="flex flex-col items-center gap-3 max-h-80 p-2 rounded-xl overflow-y-scroll scrollbar-thin scrollbar-thumb-white scrollbar-track-white/50">
 
-            <div className="flex items-center justify-between bg-gray-100 p-2 gap-2 w-[95%] rounded-lg">
-              <div className="bg-blue-500 w-[80px] h-[80px] rounded-lg"></div>
+            <div className="flex items-center justify-between bg-gray-100 text-black p-2 gap-2 w-full rounded-lg">
+              <div className="bg-gray-300 w-[80px] h-[80px] rounded-lg"></div>
               <p className="text-lg">Lorem ipsum dolor sit amet.</p>
 
-              <div className="w-7 h-7 bg-red-500 rounded-full">
-
-              </div>
+              <div className="w-8 h-8 rounded-full bg-red-500"></div>
 
               {/* Quantity Controller */}
               <div className="flex items-center">
@@ -71,7 +69,7 @@ const Checkout = () => {
                   id="quantity"
                   value={quantity}
                   readOnly
-                  className="w-10 h-10 text-center rounded-lg p-1 border border-gray-400"
+                  className="w-10 h-10 text-center rounded-lg p-1 border-2 bg-white border-black/50"
                 />
                 <button onClick={decreaseQuantity} className="p-2">
                   <FaMinus />
@@ -80,7 +78,7 @@ const Checkout = () => {
 
               <h1 className="text-2xl font-semibold">200 Dh</h1>
               {/* Remove Item */}
-              <button onClick={removeItem} className="text-2xl text-gray-400 hover:text-red-500 hover:scale-110 duration-100 ">
+              <button onClick={removeItem} className="text-2xl text-gray-500 hover:text-red-500 hover:scale-110 duration-100 ">
                 <FaTrashAlt />
               </button>
             </div>
@@ -88,13 +86,13 @@ const Checkout = () => {
             
 
           </div>
-          <div className="p-5 rounded-lg w-[80%] mx-auto bg-gray-100 mt-5 text-black ">
+          <div className="p-7 rounded-xl w-[80%] mx-auto bg-amber-400 mt-5 text-white ">
             <h2 className="text-2xl text-center mb-2 font-semibold">Order Summary</h2>
-            <div className="border-b-2 border-gray-300">
+            <div className="border-b-2 border-gray-100">
               <p className="text-lg"><span className="text-lg font-semibold">Delivery cost:</span> --.-- Dh</p>
               <p className="text-lg"><span className="text-lg font-semibold">Items Price:</span> --.-- Dh</p>
             </div>
-            <p className="text-2xl font-semibold text-center"><span className="text-xl">Total: </span>--.-- Dh</p>
+            <p className="text-2xl font-semibold text-center">Total: --.-- Dh</p>
           </div>
         </div>
 
@@ -103,24 +101,24 @@ const Checkout = () => {
 
           <div className="w-full flex justify-center gap-5 items-center">
             <div className="flex flex-col my-3 w-full">
-              <label htmlFor="firstname" className="text-lg text-white font-semibold">Firstname:</label>
-              <input type="text" placeholder="Enter your Firstname" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full" required />
+              <label htmlFor="firstname" className="text-lg text-white font-semibold ">Firstname:</label>
+              <input type="text" placeholder="Enter your Firstname" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full  outline-none focus:outline-4 focus:outline-amber-400" required />
             </div>
 
             <div className="flex flex-col my-3 w-full">
               <label htmlFor="lastname" className="text-lg text-white font-semibold">Lastname:</label>
-              <input type="text" placeholder="Enter your Lastname" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full" required />
+              <input type="text" placeholder="Enter your Lastname" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full outline-none focus:outline-4 focus:outline-amber-400" required />
             </div>
           </div>
 
           <div className="flex flex-col my-3">
             <label htmlFor="phone" className="text-lg text-white font-semibold">Phone number:</label>
-            <input type="tel" placeholder="Enter your Phone Number" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full" required />
+            <input type="tel" placeholder="Enter your Phone Number" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full outline-none focus:outline-4 focus:outline-amber-400" required />
           </div>
 
           <div className="flex flex-col my-3">
             <label htmlFor="address" className="text-lg text-white font-semibold">Address:</label>
-            <input type="text" placeholder="Enter your Postal Address" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full" required />
+            <input type="text" placeholder="Enter your Postal Address" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full outline-none focus:outline-4 focus:outline-amber-400" required />
           </div>
 
           <div className="flex items-center justify-center w-[90%]">
@@ -128,7 +126,7 @@ const Checkout = () => {
               <label htmlFor="city" className="text-lg text-white font-semibold">City:</label>
               <Listbox value={selectedCity} onChange={setSelectedCity}>
                 <div className="relative z-10">
-                  <Listbox.Button className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full text-left">
+                  <Listbox.Button className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-[150px] text-left">
                     {selectedCity || "Select your City"}
                   </Listbox.Button>
                   <Listbox.Options className="absolute mt-2 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-auto">
@@ -142,9 +140,9 @@ const Checkout = () => {
               </Listbox>
             </div>
 
-            <div className="flex items-center gap-2 justify-start my-3 w-[200px]">
+            <div className="flex items-center gap-1 justify-start my-3 w-[200px]">
               <label htmlFor="ZIP" className="text-lg text-white font-semibold w-full">ZIP Code:</label>
-              <input type="number" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-[90px]" required />
+              <input type="number" className="border-b-2 bg-white/40 rounded-lg text-white placeholder-white p-2 w-[90px] outline-none focus:outline-4 focus:outline-amber-400" required />
             </div>
 
           </div>
@@ -160,9 +158,9 @@ const Checkout = () => {
                 onChange={() => setSelected("online")}
                 className="hidden peer"
               />
-              <div className="flex justify-between items-center gap-5 border-2 text-white border-white rounded-lg w-44 h-20 p-5 cursor-pointer duration-150 peer-checked:bg-white peer-checked:text-blue-500 hover:bg-white group">
-                <PiCreditCardFill className="text-5xl group-hover:text-blue-500 peer-checked:text-blue-500" />
-                <h1 className="text-lg font-semibold group-hover:text-blue-500 peer-checked:text-blue-500">
+              <div className="flex justify-between items-center gap-5 border-2 text-white border-white rounded-lg w-44 h-20 p-5 cursor-pointer duration-150 peer-checked:bg-amber-400 peer-checked:border-amber-400 peer-checked:text-white hover:bg-amber-400 hover:border-amber-400 group">
+                <PiCreditCardFill className="text-5xl group-hover:text-white peer-checked:text-blue-500" />
+                <h1 className="text-lg font-semibold group-hover:text-white peer-checked:text-blue-500">
                   Payment Online
                 </h1>
               </div>
@@ -178,16 +176,16 @@ const Checkout = () => {
                 onChange={() => setSelected("cash")}
                 className="hidden peer"
               />
-              <div className="flex justify-between items-center gap-5 border-2 text-white border-white rounded-lg w-44 h-20 p-5 cursor-pointer duration-150 peer-checked:bg-white peer-checked:text-blue-500 hover:bg-white group">
-                <BsCashCoin className="text-5xl group-hover:text-blue-500 peer-checked:text-blue-500" />
-                <h1 className="text-lg font-semibold group-hover:text-blue-500 peer-checked:text-blue-500">
+              <div className="flex justify-between items-center gap-5 border-2 text-white border-white rounded-lg w-44 h-20 p-5 cursor-pointer duration-150 peer-checked:bg-amber-400 peer-checked:border-amber-400 peer-checked:text-white hover:bg-amber-400 hover:border-amber-400 group">
+                <BsCashCoin className="text-5xl group-hover:text-white peer-checked:text-blue-500" />
+                <h1 className="text-lg font-semibold group-hover:text-white peer-checked:text-blue-500">
                   Cash on Delivery
                 </h1>
               </div>
             </label>
           </div>
 
-          <button className="text-lg p-4 bg-cyan-400 text-white mx-7 font-semibold w-[90%] rounded-lg my-4 hover:bg-cyan-500 duration-100">Order Commande</button>
+          <button className="text-lg p-4 text-white bg-white/40 mx-7 font-semibold w-[90%] rounded-full my-4 hover:bg-amber-400 hover:text-white duration-100">Order Commande</button>
         </form>
 
 

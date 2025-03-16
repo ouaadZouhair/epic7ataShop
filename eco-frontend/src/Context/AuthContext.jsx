@@ -36,11 +36,11 @@ export function AuthProvider({ children }) {
     }, []);
     
 
-    const login = async (email, password) => {
+    const login = async (data) => {
         try {
             const response = await axios.post(
                 `http://localhost:3000/api/v1/auth/LogIn`,
-                { email, password },
+                data,
                 { withCredentials: true }
             );
             setUser(response.data.user);

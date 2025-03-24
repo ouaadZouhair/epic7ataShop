@@ -11,14 +11,14 @@ const ProductSchema = new mongoose.Schema({
         required: true,
     },
 
-    color: {
+    colors: {
         type: [String],
         required: true,
         enum: ["bg-black", "bg-white", "bg-red-500", "bg-blue-500", "bg-orange-500", "bg-green-700"],
         default: [],
     },
 
-    size: {
+    sizes: {
         type: [String],
         required: true,
         enum: ['S', 'M', 'L', 'XL', '2XL'],

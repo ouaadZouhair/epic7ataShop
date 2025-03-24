@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getWishlist, addProductToWishlist, removeProductFromWishlist } from "../controllers/wishListController.js";
+import { getWishlist, addToWishlist, removeFromWishlist } from "../controllers/wishListController.js";
 
 import { verifyToken, authorizeRoles } from '../Middleware/authMiddleware.js';
 
@@ -9,8 +9,8 @@ const wishlistRouter = Router();
 
 wishlistRouter.get("/", verifyToken, authorizeRoles('client'), getWishlist);
 
-wishlistRouter.post("/", verifyToken, authorizeRoles('client'), addProductToWishlist);
+wishlistRouter.post("/", verifyToken, authorizeRoles('client'), addToWishlist);
 
-wishlistRouter.delete("/:productId" , verifyToken, authorizeRoles('client'), removeProductFromWishlist);
+wishlistRouter.delete("/:productId" , verifyToken, authorizeRoles('client'), removeFromWishlist);
 
 export default wishlistRouter;

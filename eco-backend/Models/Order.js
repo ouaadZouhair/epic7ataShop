@@ -6,32 +6,23 @@ const OrderSchema = new mongoose.Schema({
     products: [
         {
             product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+            color: { type: String, required: true },
+            size: { type: String, required: true },
             quantity: { type: Number, required: true },
-            totalPrice: { type: Number, required: true }
+            fullPrice: { type: Number, required: true }
         }
     ],
 
-    priceOrder: {
-        type: Number,
-        required: true
-    },
+    totalPrice: { type: Number, required: true },
 
-    phone:{
-        type: String,
-        required: true
-    },
+    deleviryCost: { type: Number, required: true },
 
-    address:{
-        type: String,
-        required: true
-    },
+    phone:{ type: String, required: true },
 
-    city:{
-        type: String,
-        required: true
-    },
+    address:{ type: String, required: true },
+
+    city:{ type: String, required: true },
   
-
     status: {
         type: String,
         enum: ['Pending', 'Printing', 'Delivering', 'Completed', 'Canceled'],

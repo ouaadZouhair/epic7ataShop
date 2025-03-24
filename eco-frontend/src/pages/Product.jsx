@@ -19,16 +19,7 @@ const Product = () => {
   
         // Ensure images have full URLs
         const productData = res.data.product;
-        if (productData.imageUrls) {
-          productData.imageUrls.frontMockups = productData.imageUrls.frontMockups 
-            ? `${BASE_URL}${productData.imageUrls.frontMockups}`
-            : null;
-  
-          productData.imageUrls.backMockups = productData.imageUrls.backMockups 
-            ? `${BASE_URL}${productData.imageUrls.backMockups}`
-            : null;
-        }
-  
+        console.log(productData)
         setProduct(productData);
       } catch (error) {
         console.error("Error fetching product:", error);

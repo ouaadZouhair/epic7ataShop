@@ -27,7 +27,7 @@ export {default as InfoProduct} from './Product/InfoProduct/InfoProduct.jsx';
 export {default as Container} from './Container/Container.jsx';
 
 // import Cart item
-export {default as CartItem} from'./CardItem/CardItem.jsx';
+export {default as CardItem} from'./CardItem/CardItem.jsx';
 
 // import Alert
 export {default as AlertNot} from './Alert/AlertNot.jsx'

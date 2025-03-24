@@ -1,4 +1,4 @@
-import { CartItem } from "../../imports.jsx";
+import { CardItem } from "../../imports.jsx";
 import logo from '../../../assets/epic7ata-logo.png';
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
@@ -14,6 +14,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { fetchWishlist, removeFromWishlist } from "../../../redux/slice/WishlistSlice.js";
+import { fetchFromCart, removeFromCart } from "../../../redux/slice/CartShippingSlice.js";
 
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
@@ -145,23 +146,35 @@ export const TopNav = () => {
 
 export const CardShipping = ({ visibility, onClose, fnData }) => {
 
+  const dispatch = useDispatch();
   const [totalPrice, setTotalPrice] = useState(0)
   const [itemsQuantity, setItemsQuantity] = useState(0)
-  const cartItems = useSelector(state => state.cart.items)
+  // const cart = useSelector(state => state.cart.items)
+  const {cart, loading, error } = useSelector(state => state.cart)
+
+  console.log(cart)
+
+  useEffect(() =>{
+    dispatch(fetchFromCart()).unwrap().catch(()=>{
+      setlocalError('Failed to load Cart. Please try again later.')
+    })
+  }, [dispatch, cart])
+
 
 
   // Calculate the total price and items quantity
   useEffect(() => {
     let total = 0;
     let quantity = 0;
-    cartItems.forEach(item => {
-      total += item.price * item.quantity;
-      quantity += item.quantity;
+    cart.map(item => {
+      total += item.product.price * item.product.quantity;
+      quantity += item.product.quantity;
     })
     setTotalPrice(total);
     setItemsQuantity(quantity);
     fnData(quantity)
-  }, [cartItems])
+    console.log(cart)
+  }, [cart])
 
 
   return (
@@ -193,16 +206,17 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
           {/* Cart Items */}
           <div className="flex flex-col justify-start items-center h-[700px] md:h-[950px] lg:h-[700px] w-full gap-1 overflow-y-auto">
             {
-              cartItems.length === 0 ? (
+              cart.length === 0 ? (
                 <div className=' flex flex-col justify-center items-center  p-4 mt-4 h-[90%] gap-4'>
                   <MdRemoveShoppingCart className='text-black text-7xl' />
                   <p className="text-lg md:text-2xl lg:text-xl font-light text-black">They're any product in shipping card</p>
                 </div>
               ) : (
-                cartItems.map((item, i) => (
-                  <CartItem
-                    item={item}
+                cart.map((item, i) => (
+                  <CardItem
+                    item={item.product}
                     key={i}
+                    fn={ fnData }
                   />
                 ))
               )
@@ -308,7 +322,6 @@ export const Profiel = ({ data }) => {
 export const Wishlist = () => {
   const dispatch = useDispatch();
   const { wishlist, loading, error } = useSelector((state) => state.wishlist);
-  console.log(wishlist)
   const [localError, setLocalError] = useState("");
 
   useEffect(() => {
@@ -328,7 +341,7 @@ export const Wishlist = () => {
 
   // if (loading) {
   //   return <div className="text-center p-4">Loading...</div>;
-  // }
+  // } 
 
   return (
     <div className="absolute top-14 left-12 z-50 bg-white shadow-lg rounded-xl w-80 max-h-96 p-1 overflow-y-auto">

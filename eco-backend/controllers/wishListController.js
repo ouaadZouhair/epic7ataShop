@@ -16,7 +16,7 @@ export const getWishlist = async (req, res) => {
     }
 }
 
-export const addProductToWishlist = async (req, res) => {
+export const addToWishlist = async (req, res) => {
     try {
         const userId = req.user.id;
         const { productId } = req.body;
@@ -42,12 +42,12 @@ export const addProductToWishlist = async (req, res) => {
     }
 }
 
-export const removeProductFromWishlist = async (req, res) => {
+export const removeFromWishlist = async (req, res) => {
     try {
         const userId = req.user.id;
         const { productId } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(productId)) {
+        if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({ status: "Failed", msg: "Invalid product ID", productId });
         }
 

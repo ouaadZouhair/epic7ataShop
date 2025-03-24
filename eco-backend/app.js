@@ -8,6 +8,7 @@ import productsRouter from './Routes/ProductsRoute.js';
 import orderRouter from './Routes/OrderRoute.js';
 import userRouter from './Routes/UserRoute.js';
 import wishlistRouter from './Routes/WishlistRoute.js';
+import cartRouter from './Routes/CartRouter.js';
 // import Middleware
 import cookieParser from 'cookie-parser';
 
@@ -35,6 +36,8 @@ app.use('/api/v1/auth', AuthRoute); // Auth Route
 app.use('/api/v1/products', productsRouter); // Products Route
 
 app.use('/api/v1/orders', orderRouter) // Orders Route
+
+app.use('/api/v1/cart', cartRouter) // Cart Route
 
 app.use('/api/v1/users', userRouter) // Users Route
 

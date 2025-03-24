@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from "react-redux";
-import { addItem } from "../../../redux/slice/CartShippingSlice";
+import { useDispatch  } from "react-redux";
+import { addToCart } from "../../../redux/slice/CartShippingSlice";
+import { addToWishlist } from "../../../redux/slice/WishlistSlice";
 import { FaCheck } from "react-icons/fa6";
-import { IoIosColorPalette, IoMdResize } from "react-icons/io";
+import { IoIosColorPalette, IoMdResize, IoIosHeart } from "react-icons/io";
 import { AlertNot } from '../../imports.jsx';
 
 const DetailsProduct = ({ product }) => {
@@ -18,7 +19,7 @@ const DetailsProduct = ({ product }) => {
     const handleColorSelect = (color) => setSelectedColor(color);
     const handleSizeSelect = (size) => setSelectedSize(size);
 
-    const handleAddItemtoCard = async () => {
+    const handleAddItemToCard = async () => {
         if (!selectedColor || !selectedSize) {
             setError(true);
             return;
@@ -26,13 +27,12 @@ const DetailsProduct = ({ product }) => {
 
         setIsLoading(true);
         try {
-            await dispatch(addItem({
-                productId: product._id,
+            console.log(product)
+            await dispatch(addToCart({
+                productId: product._id,  // ✅ Ensure it's consistent with Redux state
+                imageUrls: { frontMockups: product.imageUrls.frontMockups, backMockups: product.imageUrls.backMockups },
                 title: product.title,
-                description: product.description,
                 price: product.price,
-                productType: product.productType,
-                frontMockups: product.imageUrls?.frontMockups || "", // ✅ Fixed image URL
                 quantity,
                 color: selectedColor,
                 size: selectedSize
@@ -45,6 +45,20 @@ const DetailsProduct = ({ product }) => {
             setIsLoading(false);
         }
     };
+
+    const handleAddItemtoWishlist = async () => {
+        try {
+            dispatch(addToWishlist({
+                productId: product._id,  // ✅ Ensure it's consistent with Redux state
+                imageUrls: { frontMockups: product.imageUrls.frontMockups, backMockups: product.imageUrls.backMockups },
+                title: product.title,
+                price: product.price
+            }));
+        } catch (error) {
+            console.log(error)
+            setError(true);
+        }
+    }
 
     useEffect(() => {
         let timer;
@@ -93,7 +107,7 @@ const DetailsProduct = ({ product }) => {
                     {product.size.map((size) => (
                         <div
                             key={size}
-                            className={`relative w-9 h-9 rounded-lg cursor-pointer border-2 
+                            className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 
                             ${selectedSize === size ? 'border-yellow-400' : 'border-gray-400'} 
                             hover:scale-110 duration-100`}
                             onClick={() => handleSizeSelect(size)}
@@ -110,7 +124,7 @@ const DetailsProduct = ({ product }) => {
 
             {/* Quantity Input */}
             <div className="flex justify-start items-center md:w-2/3 w-[400px] gap-2">
-                <label htmlFor="quantity" className="text-xl font-normal">
+                <label htmlFor="quantity" className="text-lg font-normal">
                     Quantity:
                 </label>
                 <input
@@ -125,18 +139,26 @@ const DetailsProduct = ({ product }) => {
             </div>
 
             {/* Price Display */}
-            <p className="text-2xl text-end">Price: <span className='font-semibold text-3xl'>{product.price} Dh</span></p>
+            <p className="text-xl text-start">Price: <span className='font-semibold text-2xl'>{product.price} Dh</span></p>
 
-            {/* Add to Cart Button */}
-            <button
-                className={`w-[90%] mx-auto h-14 text-xl text-white border-2 border-transparent font-semibold rounded-full 
-                ${(!selectedColor || !selectedSize) ? 'bg-red-700 text-white cursor-not-allowed' :
-                        'bg-blue-500 hover:scale-105 hover:text-white hover:shadow-lg hover:bg-blue-600 duration-150'}`}
-                onClick={handleAddItemtoCard} // ✅ Removed passing `product` since it's available in scope
-                disabled={isLoading}
-            >
-                {isLoading ? "Adding..." : "Add to cart"}
-            </button>
+            <div className='flex justify-center items-center gap-1 w-[350px]'>
+                {/* Add to Cart Button */}
+                <button
+                    className={`w-[250px] mx-auto h-14 text-xl text-white border-2 border-transparent font-semibold rounded-full 
+                ${(!selectedColor || !selectedSize) ? 'bg-blue-800 text-white cursor-not-allowed' :
+                            'bg-blue-500 hover:scale-105 hover:text-white hover:shadow-lg hover:bg-blue-600 duration-150'}`}
+                    onClick={handleAddItemToCard} // ✅ Removed passing `product` since it's available in scope
+                    disabled={isLoading}
+                >
+                    {isLoading ? "Adding..." : "Add to cart"}
+                </button>
+
+                <button className={`w-[50px] h-[50px] mx-auto font-semibold rounded-full flex justify-center items-center bg-red-500 hover:hover:scale-105 hover:shadow-lg duration-150`}
+                    onClick={handleAddItemtoWishlist}
+                >
+                    <IoIosHeart className='text-white text-3xl' />
+                </button>
+            </div>
 
             {/* Error Alert */}
             {error && (

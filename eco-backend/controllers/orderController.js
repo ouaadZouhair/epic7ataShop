@@ -20,7 +20,7 @@ export const addOrder = async (req, res) => {
             return res.status(401).json({ status: "error", message: "Unauthorized user" });
         }
 
-        let priceOrder = 0;
+        let totalPrice = 0;
         let formattedProducts = [];
 
         // Fetch product prices
@@ -43,13 +43,13 @@ export const addOrder = async (req, res) => {
                 return res.status(404).json({ status: "error", message: `Product not found: ${productId}` });
             }
 
-            const totalPrice = price * quantity;
-            priceOrder += totalPrice;
+            const fullPrice = price * quantity;
+            totalPrice += fullPrice;
 
             formattedProducts.push({
                 product: productId,
                 quantity,
-                totalPrice
+                fullPrice
             });
         }
 
@@ -57,7 +57,7 @@ export const addOrder = async (req, res) => {
         const newOrder = new Order({
             user,
             products: formattedProducts,
-            priceOrder,
+            totalPrice,
             phone,
             address,
             city,
@@ -85,7 +85,7 @@ export const getAllOrdersByUser = async (req, res) => {
         const orders = await Order.find({ user: userId })
             .populate("products.product", "title price") // Ensure Product model has `title` and `price`
             .populate("user", "fullName email") // Fetch user's full name & email
-            .select("user products priceOrder status createdAt");
+            .select("user products totalPrice status createdAt");
 
         res.status(200).json({
             status: "success",

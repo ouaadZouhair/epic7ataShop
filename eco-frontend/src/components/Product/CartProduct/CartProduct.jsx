@@ -25,8 +25,6 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
                 imageUrls: { frontMockups, backMockups },
                 title,
                 price
-
-
             }));
             setIsExist(true); // Update local state instantly
         } catch (e) {
@@ -55,7 +53,7 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
             </button>
 
             {/* Product Image */}
-            <div className="relative rounded-b-3xl overflow-hidden flex justify-center items-center w-full h-80 md:h-60 lg:h-64 group:">
+            <div className="relative overflow-hidden flex justify-center items-center w-full h-80 md:h-60 lg:h-64 group:">
                 {backMockups && (
                     <img className="absolute w-full h-full object-cover" src={`${BASE_URL}${backMockups}`} alt={title} />
                 )}
@@ -67,7 +65,7 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
             </div>
 
             {/* Product Info */}
-            <div className='p-3 bg-gray-100 group-hover:bg-red-500 duration-100 h-full'>
+            <div className='p-3 bg-gray-50 group-hover:bg-red-500 duration-100 h-full'>
                 <h1 className='text-base font-semibold text-black group-hover:text-white py-2 text-center'>{title}</h1>
                 <div className='flex flex-row justify-between items-center px-8'>
                     <div className="text-base font-normal flex gap-2 group-hover:text-white"><FaStar className="text-xl text-amber-400" /> <p>4.9</p></div>

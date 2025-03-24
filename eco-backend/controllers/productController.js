@@ -59,8 +59,8 @@ export const createProduct = async (req, res) => {
         const newProduct = new Product({
             title: req.body.title,
             description: req.body.description,
-            color: JSON.parse(req.body.color), // Parse JSON array
-            size: JSON.parse(req.body.size),
+            colors: JSON.parse(req.body.colors), // Parse JSON array
+            sizes: JSON.parse(req.body.sizes),
             price: price,
             countInStock: countInStock,
             isInStock: isInStock,

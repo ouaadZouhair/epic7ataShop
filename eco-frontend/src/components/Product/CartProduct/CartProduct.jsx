@@ -12,7 +12,9 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
     const [isExist, setIsExist] = useState(false);
 
     useEffect(() => {
-        setIsExist(wishlist.some(item => item._id === id));
+        const exists = wishlist.some(item => item._id === id);
+        console.log("isExist updated:", exists); // Debugging
+        setIsExist(exists);
     }, [wishlist, id]);
 
     const BASE_URL = "http://localhost:3000";
@@ -20,25 +22,27 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
     const handleAddtoWishlist = async (e) => {
         e.stopPropagation();
         try {
-            dispatch(addToWishlist({
+            setIsExist(true); // Update local state instantly
+            await dispatch(addToWishlist({
                 productId: id,  // ✅ Ensure it's consistent with Redux state
                 imageUrls: { frontMockups, backMockups },
                 title,
                 price
-            }));
-            setIsExist(true); // Update local state instantly
+            })).unwrap();
         } catch (e) {
             console.error("Error adding to wishlist:", e);
+            setIsExist(false); // Revert local state if there's an error
         }
     };
 
     const handleRemoveFromWishlist = async (e) => {
         e.stopPropagation();
         try {
-            dispatch(removeFromWishlist({ id }));
             setIsExist(false); // Update local state instantly
+            await dispatch(removeFromWishlist({ id })).unwrap();
         } catch (error) {
             console.error("Failed to remove item from wishlist:", error);
+            setIsExist(true); // Revert local state if there's an error
         }
     };
 

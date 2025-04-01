@@ -204,7 +204,7 @@ export const updateCart = async (req, res) => {
     try {
         const userId = req.user.id;
         const { productId } = req.params;
-        const { color, size, quantity } = req.body;
+        const { quantity } = req.body;
 
         // Validate input
         if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
@@ -215,9 +215,6 @@ export const updateCart = async (req, res) => {
             return res.status(400).send({ status: 'Failed', msg: 'Quantity must be a positive number' });
         }
 
-        if (!color || !size) {
-            return res.status(400).send({ status: 'Failed', msg: 'Color and size are required' });
-        }
 
         // Check if the product exists
         const product = await Product.findById(productId);

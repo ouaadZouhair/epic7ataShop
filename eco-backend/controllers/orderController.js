@@ -1,10 +1,53 @@
 import Product from "../Models/Product.js";
 import Order from "../Models/Order.js"; 
+import Cart from "../Models/Cart.js";
+
+async function createOrderFromCart (userId, orderInfo) {
+    try {
+        // Find the user's cart
+        const cart = await Cart.findOne({user: userId}).populate('products.product');
+        if (!cart) {
+            throw new Error('Cart not found');
+        }
+
+        if (cart.products.length === 0) {
+            throw new Error('Cart is empty');
+        }
+
+        // Create the order using cart products and additional details
+        const order = new Order({
+            user: userId,
+            products: cart.products.map(product => ({
+                product: product.product._id,
+                color: product.color,
+                size: product.size,
+                quantity: product.quantity,
+                fullPrice: product.fullPrice
+            })),
+            totalPrice: cart.totalPrice, 
+            deleviryCost: orderInfo.deleviryCost,
+            phone: orderInfo.phone,
+            address: orderInfo.address,
+            city: orderInfo.city,
+            status: 'Pending'
+        });
+
+        // Save the order
+        const savedOrder = await order.save();
+
+        return savedOrder;
+
+    } catch (error) {
+        console.error('Error creating order from cart:', error);
+        throw error;
+    }
+}
 
 // Add Order
 export const addOrder = async (req, res) => {
     try {
         const { products, phone, address, city, status } = req.body;
+        const  userId  = req.user.id
 
         const phoneRegex = /^(0[67]\d{8})|(\+212[67]\d{8})$/;
         if (!phone || !phoneRegex.test(phone)) {
@@ -15,8 +58,8 @@ export const addOrder = async (req, res) => {
             return res.status(400).json({ status: "error", message: "Products are required" });
         }
 
-        const user = req.user?.id;
-        if (!user) {
+  
+        if (!userId) {
             return res.status(401).json({ status: "error", message: "Unauthorized user" });
         }
 
@@ -134,3 +177,28 @@ export const cancelOrder = async (req, res) => {
         });
     }
 };
+
+export const removeProductFromOrder = async (req, res) => {
+    try {
+        const userID = req.user.id;
+        const orderId = req.params.id;
+
+        const order = await Order.findOneAndDelete({ _id: orderId, user: userID });
+
+        if (!order) {
+            return res.status(404).json({ status: "failed", message: "Order not found" });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            message: "Order removed successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: "failed",
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+}

@@ -14,7 +14,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { fetchWishlist, removeFromWishlist } from "../../../redux/slice/WishlistSlice.js";
-import { fetchFromCart, removeFromCart } from "../../../redux/slice/CartShippingSlice.js";
+import { fetchFromCart } from "../../../redux/slice/CartShippingSlice.js";
 
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
@@ -150,9 +150,8 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const [itemsQuantity, setItemsQuantity] = useState(0)
   // const cart = useSelector(state => state.cart.items)
-  const {cart, loading, error } = useSelector(state => state.cart)
+  const { cart, loading, error } = useSelector(state => state.cart);
 
-  console.log(cart)
 
   useEffect(() =>{
     dispatch(fetchFromCart()).unwrap().catch(()=>{
@@ -173,7 +172,6 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
     setTotalPrice(total);
     setItemsQuantity(quantity);
     fnData(quantity)
-    console.log(cart)
   }, [cart])
 
 

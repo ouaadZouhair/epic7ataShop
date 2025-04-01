@@ -6,11 +6,9 @@ const CardItem = ({item}) => {
 
     const dispatch = useDispatch();
     const BASE_URL = 'http://localhost:3000';
-    console.log(item)
-
+    
     const removeItem = async ({ id, color, size }) => {
         try {
-            console.log(id, color ,size)
             await dispatch(removeFromCart({ id, color, size })).unwrap(); // Use .unwrap() to handle the promise
             console.log("Item removed successfully");
         } catch (err) {

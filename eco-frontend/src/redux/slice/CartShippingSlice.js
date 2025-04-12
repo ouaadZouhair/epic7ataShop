@@ -22,7 +22,6 @@ export const addToCart = createAsyncThunk(
     async (item, { rejectWithValue }) => {
         try {
             const { data } = await axios.post(URL_API, item, { withCredentials: true });
-            console.log(data.cart); // Debugging: Log the API response
             return data.cart.products; // Return the updated cart products
         } catch (error) {
             return rejectWithValue(error.response?.data || "Failed to add item");
@@ -33,25 +32,23 @@ export const addToCart = createAsyncThunk(
 // Async thunk to remove an item from the cart
 export const removeFromCart = createAsyncThunk(
     'cart/removeFromCart',
-    async (item, { rejectWithValue }) => {
-        const { id, color, size } = item;
-        console.log(item)
+    async ({ id, color, size }, { rejectWithValue }) => {
         try {
-            // Send DELETE request with id in URL and color/size in the request body
             await axios.delete(`${URL_API}/product/${id}`, {
-                params : { color, size }, // Send data in the request body
+                params: { color, size },
                 withCredentials: true,
             });
-            return { id, color, size }; // Return the removed item's details to update the state
+            // Return the identifier to remove from local state
+            return { id, color, size };
         } catch (error) {
             return rejectWithValue(error.response?.data || "Failed to remove item");
         }
     }
 );
 
-export const updateCartQuantity = createAsyncThunk('Cart/updateCartQuantity', async ({productId, quantity}, { rejectWithValue }) => {
+export const updateCartQuantity = createAsyncThunk('Cart/updateCartQuantity', async ({ productId, quantity }, { rejectWithValue }) => {
     try {
-        const response = await axios.patch(`${URL_API}/product/${productId}`, {quantity}, { withCredentials: true });
+        const response = await axios.patch(`${URL_API}/product/${productId}`, { quantity }, { withCredentials: true });
         console.log(response.data.cart.products);
         return response.data.cart.products;
     } catch (error) {
@@ -59,7 +56,7 @@ export const updateCartQuantity = createAsyncThunk('Cart/updateCartQuantity', as
     }
 });
 
-export const resetCart = createAsyncThunk('Cart/rest', async (_, { rejectWithValue}) =>{
+export const resetCart = createAsyncThunk('Cart/rest', async (_, { rejectWithValue }) => {
     try {
         const response = await axios.delete(`${URL_API}/reset`, { withCredentials: true });
         return response.data.cart.products;
@@ -95,18 +92,13 @@ const CartShippingSlice = createSlice({
             }
         },
 
-        // Remove an item from the cart (local state)
-        removeItem: (state, action) => {
-            const { id, color, size } = action.payload;
-            state.cart = state.cart.filter(
-                item => !(item.product._id === id && item.color === color && item.size === size)
-            );
-        },
-
-        // Clear the cart (local state)
+        // Clear Shipping cart
         clearCart: (state) => {
+            console.log("Clearing cart - current state:", state.cart); // Debug log
             state.cart = [];
-        },
+            console.log("Cart cleared - new state:", state.cart); // Debug log
+        }
+
     },
 
     // Handle async thunk actions
@@ -148,14 +140,12 @@ const CartShippingSlice = createSlice({
             .addCase(removeFromCart.fulfilled, (state, action) => {
                 state.loading = false;
                 const { id, color, size } = action.payload;
+
                 // Filter out the removed item from the cart
-                state.cart = state.cart.filter(
-                    (item) =>
-                        !(
-                            item.product._id === id &&
-                            item.color === color &&
-                            item.size === size
-                        )
+                state.cart = state.cart.filter(item =>
+                    !(item.product._id === id &&
+                        item.product.color === color &&
+                        item.product.size === size)
                 );
             })
 
@@ -169,7 +159,7 @@ const CartShippingSlice = createSlice({
                 state.loading = true;
             })
 
-            .addCase(updateCartQuantity.fulfilled, (state, action) =>{
+            .addCase(updateCartQuantity.fulfilled, (state, action) => {
                 state.loading = false;
                 state.cart = action.payload;
             })
@@ -180,19 +170,19 @@ const CartShippingSlice = createSlice({
             })
 
             // rest cart
-           .addCase(resetCart.pending, (state) => {
+            .addCase(resetCart.pending, (state) => {
                 state.loading = true;
-           }) 
+            })
 
-           .addCase(resetCart.fulfilled, (state,action) => {
-                state.loading = flase;
+            .addCase(resetCart.fulfilled, (state, action) => {
+                state.loading = false;
                 state.cart = action.payload;
-           })
+            })
 
-           .addCase(resetCart.rejected, (state, action) => {
+            .addCase(resetCart.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-           })
+            })
     },
 });
 

@@ -7,7 +7,6 @@ const URL_API = 'http://localhost:3000/api/v1/wishlist';
 export const fetchWishlist = createAsyncThunk("wishlist/fetchWishlist", async (_, { rejectWithValue }) => {
     try {
         const { data } = await axios.get(URL_API, { withCredentials: true });
-        console.log(data.wishlist.products)
         return data.wishlist.products;
     } catch (error) {
         return rejectWithValue(error.response?.data || "Failed to fetch wishlist");
@@ -45,6 +44,10 @@ const WishlistSlice = createSlice({
         setWishlist: (state, action) => {
             state.wishlist = action.payload;
         },
+
+        resetWishlist: (state) => {
+            state.wishlist = []
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -71,5 +74,5 @@ const WishlistSlice = createSlice({
     }
 });
 
-export const { setWishlist } = WishlistSlice.actions;
+export const { setWishlist, resetWishlist } = WishlistSlice.actions;
 export default WishlistSlice.reducer;

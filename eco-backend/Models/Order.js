@@ -13,9 +13,17 @@ const OrderSchema = new mongoose.Schema({
         }
     ],
 
+
+
     totalPrice: { type: Number, required: true },
 
     deleviryCost: { type: Number, required: true },
+
+    firstName: { type: String, required: true },
+
+    lastName: { type: String, required: true },
+
+    paymentMethod: { type: String, required: true },
 
     phone:{ type: String, required: true },
 

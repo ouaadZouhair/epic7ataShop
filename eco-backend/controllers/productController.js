@@ -32,7 +32,7 @@ export const getProductById = async (req, res) => {
             return res.status(404).send({ status: 'error', msg: "Product not found" });
         }
 
-        res.status(201).send({ status: 'success', msg: "Get Product successfully", product });
+        res.status(200).send({ status: 'success', msg: "Get Product successfully", product });
     } catch (error) {
         res.status(500).send({ msg: 'Server Error', error: error.message });
     }

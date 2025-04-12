@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch  } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/slice/CartShippingSlice";
 import { addToWishlist } from "../../../redux/slice/WishlistSlice";
 import { FaCheck } from "react-icons/fa6";
@@ -16,6 +16,7 @@ const DetailsProduct = ({ product }) => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
 
+
     const handleColorSelect = (color) => setSelectedColor(color);
     const handleSizeSelect = (size) => setSelectedSize(size);
 
@@ -27,7 +28,6 @@ const DetailsProduct = ({ product }) => {
 
         setIsLoading(true);
         try {
-            console.log(product)
             await dispatch(addToCart({
                 productId: product._id,  // ✅ Ensure it's consistent with Redux state
                 imageUrls: { frontMockups: product.imageUrls.frontMockups, backMockups: product.imageUrls.backMockups },
@@ -76,20 +76,21 @@ const DetailsProduct = ({ product }) => {
     }, []);
 
     return (
-        <div className="w-[95%] lg:w-2/4 my-20 flex flex-col mx-auto gap-3">
-            <h1 className="text-2xl md:text-4xl lg:text-4xl font-semibold">{product.title}</h1>
-            <p className="text-lg md:text-lg text-gray-500 text-justify">{product.description}</p>
+        <div className="w-[95%] md:w-[85%] lg:w-2/4 my-20 flex flex-col mx-auto gap-3">
+            <h1 className="text-3xl text-center md:text-start md:text-5xl lg:text-4xl font-semibold">{product.title}</h1>
+            <p className="text-lg md:text-2xl lg:text-lg text-gray-500 text-justify">{product.description}</p>
 
             {/* Color Options */}
-            {product.color?.length > 0 && ( // ✅ Avoid crashes if colors are undefined
+            {product.color?.length > 0 && (
                 <div className="flex justify-start items-center w-[400px] md:w-1/3 lg:w-[600px] gap-3">
-                    <IoIosColorPalette className='text-4xl text-blue-600' />
-                    {product.color.map((color) => (
+                    <IoIosColorPalette className='text-4xl text-black' />
+
+                    {product.color.map((color, i) => (
                         <div
-                            key={color}
+                            key={i}
                             className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 p-1 
-                            ${selectedColor === color ? 'border-yellow-400' : 'border-gray-400'} 
-                            hover:scale-110 duration-100 ${color}`}
+                            ${selectedColor === color ? 'border-yellow-400' : 'border-gray-600'} 
+                            hover:scale-110 duration-100 ${color === 'white' && 'bg-gray-50'} ${color === 'black' && 'bg-black'} ${color === 'blue' && 'bg-blue-900'} ${color === 'red' && 'bg-red-500'} ${color === 'orange' && 'bg-orange-500'} ${color === 'green' && 'bg-green-600'} ${color === 'purple' && 'bg-purple-500'} ${color === 'gray' && 'bg-gray-300'}`}
                             onClick={() => handleColorSelect(color)}
                         >
                             {selectedColor === color && (
@@ -103,7 +104,7 @@ const DetailsProduct = ({ product }) => {
             {/* Size Options */}
             {product.size?.length > 0 && ( // ✅ Avoid crashes if sizes are undefined
                 <div className="flex justify-start items-center md:w-2/3 w-[400px] gap-3">
-                    <IoMdResize className='text-4xl text-blue-600' />
+                    <IoMdResize className='text-4xl text-black' />
                     {product.size.map((size) => (
                         <div
                             key={size}
@@ -112,8 +113,7 @@ const DetailsProduct = ({ product }) => {
                             hover:scale-110 duration-100`}
                             onClick={() => handleSizeSelect(size)}
                         >
-                            <h1 className={`flex justify-center items-center p-1 font-semibold text-lg 
-                            ${selectedSize === size ? 'text-yellow-400' : 'text-gray-500'}`}>{size}</h1>
+                            <h1 className={`flex justify-center items-center p-1 font-semibold text-lg text-gray-500`}>{size}</h1>
                             {selectedSize === size && (
                                 <FaCheck className="absolute w-8 h-8 text-yellow-400 text-sm top-1 right-1" />
                             )}
@@ -141,7 +141,7 @@ const DetailsProduct = ({ product }) => {
             {/* Price Display */}
             <p className="text-xl text-start">Price: <span className='font-semibold text-2xl'>{product.price} Dh</span></p>
 
-            <div className='flex justify-center items-center gap-1 w-[350px]'>
+            <div className='flex justify-center items-center gap-1 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[350px]'>
                 {/* Add to Cart Button */}
                 <button
                     className={`w-[250px] mx-auto h-14 text-xl text-white border-2 border-transparent font-semibold rounded-full 

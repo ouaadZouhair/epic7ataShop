@@ -13,7 +13,6 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
 
     useEffect(() => {
         const exists = wishlist.some(item => item._id === id);
-        console.log("isExist updated:", exists); // Debugging
         setIsExist(exists);
     }, [wishlist, id]);
 
@@ -47,7 +46,7 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
     };
 
     return (
-        <div className='relative group w-96 md:w-60 lg:w-64 h-auto overflow-hidden border-2 border-transparent cursor-pointer' onClick={() => viewProduct(id)}>
+        <div className='relative group w-[90%] md:w-60 lg:w-64 h-auto overflow-hidden border-2 border-transparent cursor-pointer' onClick={() => viewProduct(id)}>
             <button onClick={isExist ? handleRemoveFromWishlist : handleAddtoWishlist}
                 className="absolute top-2 -right-12 z-10 group-hover:right-2 duration-150 h-10 w-10 p-2 rounded-full">
                 {isExist ?
@@ -70,10 +69,13 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
 
             {/* Product Info */}
             <div className='p-3 bg-gray-50 group-hover:bg-red-500 duration-100 h-full'>
-                <h1 className='text-base font-semibold text-black group-hover:text-white py-2 text-center'>{title}</h1>
-                <div className='flex flex-row justify-between items-center px-8'>
-                    <div className="text-base font-normal flex gap-2 group-hover:text-white"><FaStar className="text-xl text-amber-400" /> <p>4.9</p></div>
-                    <h1 className='text-xl font-bold text-black group-hover:text-white'>{price} Dh</h1>
+                <h1 className='text-xl md:text-lg lg:text-base font-semibold text-black group-hover:text-white py-2 text-center'>{title}</h1>
+                <div className='flex flex-row justify-between items-center px-14 md:px-8'>
+                    <div className="text-xl font-medium md:text-base flex justify-center items-center gap-2 group-hover:text-white">
+                        <FaStar className="text-2xl md:text-xl text-amber-400" />
+                        <p>4.9</p>
+                    </div>
+                    <h1 className='text-2xl md:text-xl font-bold text-black group-hover:text-white'>{price} Dh</h1>
                 </div>
             </div>
         </div>

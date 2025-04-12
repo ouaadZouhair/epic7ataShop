@@ -58,14 +58,14 @@ const InfoProduct = ({ product }) => {
 
 
     return (
-        <section className='w-[80%] mx-auto my-10'>
+        <section className='w-[95%] lg:w-[80%] mx-auto my-10'>
             <div className='flex gap-1 items-center '>
                 <BsInfoCircleFill className="text-3xl text-blue-600" />
                 <h1 className="relative text-3xl font-semibold border-b-4 border-gray-200 p-1 w-full after:content-[''] after:absolute after:h-[3px] after:rounded-full after:-bottom-1 after:left-0 after:w-1/6 after:bg-blue-600">Product Info</h1>
             </div>
 
-            <div className="w-[90%] mx-auto flex justify-between items-start my-8">
-                <div className="w-1/3">
+            <div className="w-[90%] mx-auto flex flex-wrap md:flex-nowrap justify-center md:justify-between items-start my-8 ">
+                <div className="w-2/4 md:w-1/3 mb-2" >
                     <span className="flex items-center gap-3">
                         <BsStack className="text-4xl text-amber-400" />
                         <h1 className="text-2xl font-semibold">Features</h1>
@@ -79,7 +79,7 @@ const InfoProduct = ({ product }) => {
                     </ul>
                 </div>
 
-                <div className="w-1/3">
+                <div className="w-2/4 md:w-1/3">
                     <span className="flex items-center gap-3">
                         <GiCottonFlower className="text-4xl text-blue-500" />
                         <h1 className="text-2xl font-semibold">Fabric</h1>
@@ -87,12 +87,12 @@ const InfoProduct = ({ product }) => {
                     <ul className="w-full text-lg font-normal ml-5 text-gray-700">
                         <li>100% cotton</li>
                         <li>Fleece lining</li>
-                        <li>High-temperature steam pre-shrunk</li>
-                        <li>220g/m²</li>
+                        <li>High-temperature</li>
+                        
                     </ul>
                 </div>
 
-                <div className="w-1/3">
+                <div className="w-2/4 md:w-1/3">
                     <span className="flex items-center gap-3">
                         <GiSewingString className="text-4xl text-red-500" />
                         <h1 className="text-2xl font-semibold">Process</h1>
@@ -100,7 +100,6 @@ const InfoProduct = ({ product }) => {
                     <ul className="w-full text-lg font-normal ml-5 text-gray-700">
                         <li>Side-seamed construction</li>
                         <li>Taped neck</li>
-                        <li>Double-stitched ribbed collar, cuffs, and hem</li>
                         <li>Front kangaroo pocket</li>
                     </ul>
                 </div>
@@ -113,9 +112,9 @@ const InfoProduct = ({ product }) => {
                 </h2>
             </div>
 
-            <div className="w-full flex justify-evenly items-center">
-                {(product.productType === 'ClaHoodies' || product.productType === 'OvHoodies') && <img src={hoodieImg} alt="hoodie size" className="w-1/3" />}
-                {(product.productType === 'ClaTshirts' || product.productType === 'OvTshirts') && <img src={tshirtImg} alt="thirt size" className="w-1/3" />}
+            <div className="w-full flex flex-col md:flex-row justify-evenly items-center">
+                {(product.productType === 'ClaHoodies' || product.productType === 'OvHoodies') && <img src={hoodieImg} alt="hoodie size" className="w-[300px] md:w-1/3" />}
+                {(product.productType === 'ClaTshirts' || product.productType === 'OvTshirts') && <img src={tshirtImg} alt="thirt size" className="w-[300px] md:w-1/3" />}
                 <div className="flex justify-center mt-10">
                     <div className=" rounded-lg p-6 w-96">
                         <table className="w-full border-collapse border border-gray-300 rounded-lg">

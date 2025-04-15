@@ -9,7 +9,7 @@ export const fetchFromCart = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const { data } = await axios.get(URL_API, { withCredentials: true });
-            return data.cart.products; // Ensure this matches your API response structure
+            return data.cart?.products;
         } catch (error) {
             return rejectWithValue(error.response?.data || "Failed to fetch cart");
         }
@@ -94,9 +94,7 @@ const CartShippingSlice = createSlice({
 
         // Clear Shipping cart
         clearCart: (state) => {
-            console.log("Clearing cart - current state:", state.cart); // Debug log
             state.cart = [];
-            console.log("Cart cleared - new state:", state.cart); // Debug log
         }
 
     },

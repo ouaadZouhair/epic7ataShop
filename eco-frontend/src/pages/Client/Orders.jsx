@@ -2,7 +2,7 @@ import { GoShopNav, Footer, Loading } from "../../components/imports";
 import { useNavigate } from "react-router-dom";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { LuChevronsRight } from "react-icons/lu";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchOrder } from "../../redux/slice/CheckoutSlice";
 
@@ -14,13 +14,13 @@ const Orders = () => {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const BASE_URL = 'http://localhost:3000';
 
-  const handleGoToShopping = () => {
+  const handleGoToShopping = useCallback(() => {
     navigate("/shop");
-  };
+  }, []) 
 
-  const handleProductClick = (id) => {
+  const handleProductClick = useCallback((id) => {
     navigate(`/product/${id}`);
-  };
+  }, [])
 
   const toggleOrderDetails = (orderId) => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
@@ -39,7 +39,6 @@ const Orders = () => {
       return total + (item.product.price * item.product.quantity);
     }, 0);
   };
-
 
   return (
     <div className="bg-gray-50">

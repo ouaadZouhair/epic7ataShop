@@ -248,27 +248,27 @@ export const cancelOrder = async (req, res) => {
     }
 };
 
-export const removeProductFromOrder = async (req, res) => {
-    try {
-        const userID = req.user.id;
-        const orderId = req.params.id;
+// export const removeProductFromOrder = async (req, res) => {
+//     try {
+//         const userID = req.user.id;
+//         const orderId = req.params.id;
 
-        const order = await Order.findOneAndDelete({ _id: orderId, user: userID });
+//         const order = await Order.findOneAndDelete({ _id: orderId, user: userID });
 
-        if (!order) {
-            return res.status(404).json({ status: "failed", message: "Order not found" });
-        }
+//         if (!order) {
+//             return res.status(404).json({ status: "failed", message: "Order not found" });
+//         }
 
-        return res.status(200).json({
-            status: "success",
-            message: "Order removed successfully"
-        });
+//         return res.status(200).json({
+//             status: "success",
+//             message: "Order removed successfully"
+//         });
 
-    } catch (error) {
-        return res.status(500).json({
-            status: "failed",
-            message: "Something went wrong",
-            error: error.message
-        });
-    }
-}
+//     } catch (error) {
+//         return res.status(500).json({
+//             status: "failed",
+//             message: "Something went wrong",
+//             error: error.message
+//         });
+//     }
+// }

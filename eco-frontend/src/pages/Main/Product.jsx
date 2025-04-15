@@ -67,7 +67,7 @@ const Product = () => {
         <DetailsProduct product={product} />
       </main>
       <InfoProduct product={product} />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

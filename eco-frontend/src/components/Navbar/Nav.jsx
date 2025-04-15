@@ -1,8 +1,8 @@
-import { CardItem, Loading } from "../../imports.jsx";
-import logo from '../../../assets/epic7ata-logo.png';
-import { useState, useEffect } from "react";
+import { CardItem, Loading } from "../imports.jsx";
+import logo from '../../assets/epic7ata-logo.png';
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from "../../../Context/AuthContext.jsx";
+import { useAuth } from "../../Context/AuthContext.jsx";
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
 import { IoSearch, IoLogoTiktok } from "react-icons/io5";
@@ -13,8 +13,8 @@ import { PiShoppingCartSimpleFill } from "react-icons/pi";
 import { TbTruckDelivery } from "react-icons/tb";
 import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
-import { fetchWishlist, removeFromWishlist } from "../../../redux/slice/WishlistSlice.js";
-import { fetchFromCart } from "../../../redux/slice/CartShippingSlice.js";
+import { fetchWishlist, removeFromWishlist } from "../../redux/slice/WishlistSlice.js";
+import { fetchFromCart } from "../../redux/slice/CartShippingSlice.js";
 
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
@@ -153,15 +153,13 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
 
   const navigate = useNavigate();
 
-  const handleProductClick = (id) => {
+  const handleProductClick = useCallback((id)=>{
     navigate(`/product/${id}`);
     onClose(); // Close the cart when navigating to a product page
-  };
+  }, [])
 
   useEffect(() => {
-    dispatch(fetchFromCart()).unwrap().catch(() => {
-      setlocalError('Failed to load Cart. Please try again later.')
-    })
+    dispatch(fetchFromCart()).unwrap()
   }, [dispatch])
 
 
@@ -344,11 +342,12 @@ export const Wishlist = ({troggleClick}) => {
     }
   };
 
-  const handleProductClick = (id) => {
+  const handleProductClick = useCallback((id) => {
     navigate(`/product/${id}`);
     console.log(id)
     troggleClick(); // Close the wishlist when navigating to a product page
-  };
+  }, [])
+
 
   return (
     <div className="absolute top-14 -left-1/2 md:left-10 z-50 bg-white shadow-lg rounded-xl w-72 max-h-96 p-1 overflow-y-auto">

@@ -18,7 +18,7 @@ const Home = () => {
                 <FeaturedProducts/>
                 <TopSellsSlider/>
             </Container>
-            <Footer/>
+            {/* <Footer/> */}
 
         </>
     );

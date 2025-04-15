@@ -1,5 +1,6 @@
 // export Nav components
-export { TopNav, Navbar, BurgerMenu, CardShipping, Profiel, Wishlist } from './Layout/Navbar/Nav.jsx';
+export { TopNav, Navbar, BurgerMenu, CardShipping, Profiel, Wishlist } from './Navbar/Nav.jsx';
+export { default as NavDashboard } from './Navbar/NavDashboard.jsx';
 
 // import Hero components
 export { default as HeroContainer} from './Hero/HeroContainer.jsx';
@@ -8,7 +9,8 @@ export { default as SecondaryHero} from './Hero/SecondaryHero.jsx';
 export { default as CatHero} from './Hero/CatHero.jsx';
 
 // import Footer components
-export {default as Footer} from './Layout/footer/Footer.jsx';
+
+export { default as Footer } from './Footer/Footer.jsx'
 
 // import Printing Section components
 export {default as PrintingS} from './PrintingSection/PrintingS.jsx';
@@ -37,4 +39,7 @@ export {default as Loading} from './UI/Loading.jsx';
 export {default as GoShopNav} from './UI/GoShopNav.jsx';
 
 export {default as PaymentPopup} from './PaymentPop/PaymentPop.jsx';
+
+export {default as Main} from './Layout/Main.jsx';
+export { default as Dashboard } from './Layout/Dashboard.jsx'
 

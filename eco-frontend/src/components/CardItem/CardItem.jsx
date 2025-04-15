@@ -1,15 +1,15 @@
+import React from 'react';
 import { FaTrashAlt } from "react-icons/fa";
 import { removeFromCart } from '../../redux/slice/CartShippingSlice';
 import { useDispatch } from 'react-redux';
 
-const CardItem = ({item, viewProduct}) => {
+const CardItem = React.memo(({item, viewProduct}) => {
 
     const dispatch = useDispatch();
     const BASE_URL = 'http://localhost:3000';
     
     const removeItem = async (e, { id, color, size }) => {
         try {
-
             e.stopPropagation(); // Prevent the click event from bubbling up to the parent div
             await dispatch(removeFromCart({ id, color, size })).unwrap(); // Use .unwrap() to handle the promise
             console.log("Item removed successfully");
@@ -37,6 +37,6 @@ const CardItem = ({item, viewProduct}) => {
             </button>
         </div>
     )
-}
+})
 
 export default CardItem

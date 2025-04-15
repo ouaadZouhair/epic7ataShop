@@ -28,9 +28,10 @@ const Checkout = () => {
 
   const BASE_URL = 'http://localhost:3000';
 
-  const updateQuantity = async (productId, newQuantity) => {
+  const updateQuantity = async (e, productId, newQuantity) => {
     // Update the quantity in the cart
     try {
+      e.stopPropagation()
       await dispatch(updateCartQuantity({ productId, quantity: newQuantity })).unwrap();
     } catch (err) {
       console.error("Failed to update quantity:", err);
@@ -158,7 +159,7 @@ const Checkout = () => {
 
                   {/* Quantity Controller */}
                   <div className="flex flex-col md:flex-row items-center">
-                    <button onClick={() => { updateQuantity(product._id, product.quantity + 1) }} className="text-sm md:text-xl p-2 hover:text-blue-500 hover:scale-110 duration-100 ">
+                    <button onClick={(e) => { updateQuantity(e, product._id, product.quantity + 1) }} className="text-sm md:text-xl p-2 hover:text-blue-500 hover:scale-110 duration-100 ">
                       <FaPlus />
                     </button>
                     <input
@@ -169,7 +170,7 @@ const Checkout = () => {
                       readOnly
                       className="w-8 h-8 md:w-10 md:h-10 text-center rounded-lg p-1 border-2 bg-white border-black/50"
                     />
-                    <button onClick={() => { updateQuantity(product._id, Math.max(1, product.quantity - 1)) }} className="text-sm md:text-xl p-2 hover:text-blue-500 hover:scale-110 duration-100 ">
+                    <button onClick={(e) => { updateQuantity(e, product._id, Math.max(1, product.quantity - 1)) }} className="text-sm md:text-xl p-2 hover:text-blue-500 hover:scale-110 duration-100 ">
                       <FaMinus />
                     </button>
                   </div>
@@ -196,7 +197,7 @@ const Checkout = () => {
             )}
           </div>
 
-          <div className="p-7 rounded-xl w-full mx-auto bg-amber-400 mt-5 text-white ">
+          <div className="p-7 rounded-xl w-full mx-auto bg-red-500 mt-5 text-white ">
             <h2 className="text-3xl text-center mb-2 font-semibold">Order Summary</h2>
             <div className="border-b-2 pb-2 border-gray-100">
               <p className="text-lg md:text-xl lg:text-lg"><span className="font-semibold">Delivery cost:</span> {deliveryCost.toFixed(2)} Dh</p>

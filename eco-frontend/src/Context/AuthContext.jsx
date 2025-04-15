@@ -25,24 +25,34 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         const checkAuthStatus = async () => {
+            setLoading(true); // Set loading to true at the start
             try {
                 const response = await axios.get(
                     "http://localhost:3000/api/v1/auth/me",
                     { withCredentials: true }
                 );
-                
-                setUser(response.data.user); // Ensure the correct data is set
+
+                // Make sure the response contains the expected user data
+                if (response.data?.user) {
+                    setUser(response.data.user);
+                } else {
+                    console.warn("Unexpected response format:", response.data);
+                    setUser(null);
+                }
             } catch (err) {
                 console.error("Error fetching user:", err);
                 setUser(null);
+
+                // Optional: Clear any invalid cookies/tokens
+                // await axios.post("/api/v1/auth/logout", {}, { withCredentials: true });
             } finally {
                 setLoading(false);
             }
         };
 
         checkAuthStatus();
-    }, []);
-    
+    }, []); 
+
 
     const login = async (data) => {
         try {
@@ -63,7 +73,7 @@ export function AuthProvider({ children }) {
         try {
             // Clear Cart when logout
             dispatch(clearCart())
-            
+
             // Clear Wishlist when logout
             dispatch(resetWishlist)
             await axios.get(`http://localhost:3000/api/v1/auth/LogOut`, { withCredentials: true });

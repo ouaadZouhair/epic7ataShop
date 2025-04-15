@@ -1,68 +1,64 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Navbar, TopNav } from './components/imports.jsx';
-import { AuthProvider } from './Context/AuthContext.jsx';
-import { Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout, Dashboard, Orders, NotAllowed } from "./pages/imports.jsx"
-import { useAuth } from './Context/AuthContext.jsx';
+import { BrowserRouter as Router, Routes, Route, useLocation, Outlet, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './Context/AuthContext.jsx';
+import { Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout, Orders, NotAllowed } from "./pages/imports.jsx"
+import { DashHome, DashProducts, DashOrders, DashClients, DashAnalytics } from './pages/Admin/imports.jsx';
+import { Main, Dashboard } from './components/imports.jsx';
 
 function ProtectedRoute({ children, allowedRole }) {
   const { user } = useAuth();
-
-  // Check if the user is authenticated and has the required role
-  !user && <Login />;
-
-  if (user && allowedRole) {
-    if (user.role !== allowedRole) {
-      // Redirect to login if the user does not have the required role
-      return <NotAllowed />;
-    }
-  }
-
-  return children;
-}
-
-function MainLayout() {
-
-  const { user } = useAuth();
-
   const location = useLocation();
 
-  // Define paths where the navbar should be hidden
-  const hideNavbarRoutes = ['/signup', '/login', '/dashboard', '/orders', '/checkout', '/print'];
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-  return (
-    <>
-      {!hideNavbarRoutes.includes(location.pathname) && <TopNav />}
+  if (allowedRole && user.role !== allowedRole) {
+    return <Navigate to="/not-allowed" replace />;
+  }
 
-      {/* Conditionally render Navbar */}
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
-
-      <Routes>
-        // Public Routes
-        <Route path="/" element={<Home />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/product/:id" element={<Product />} />
-
-        //Auth Routes
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-
-        // Protected Routes
-        <Route path="/print" element={!user ? <Login /> : <Print />}/>
-        <Route path="/checkout" element={!user ? <Login /> : <Checkout />} />
-        <Route path="/dashboard" element={ <ProtectedRoute allowedRole="admin"> <Dashboard /> </ProtectedRoute> }/>
-        <Route path="/orders" element={ <ProtectedRoute allowedRole="client"> <Orders /> </ProtectedRoute> }/>
-      </Routes>
-    </>
-  );
-} 
+  return children ? children : <Outlet />;
+}
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <MainLayout />
+        <Routes>
+        // Public Routes
+          <Route element={<Main />}> {/*MainLyout */}
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/product/:id" element={<Product />} />
+          </Route>
+
+
+        // Client Protected Routes
+          <Route element={<ProtectedRoute allowedRole='client' />}>
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/print" element={<Print />} />
+            <Route path="/orders" element={<Orders />} />
+          </Route>
+
+        // Admin Protected Routes
+          <Route element={<ProtectedRoute allowedRole="admin" />}>
+            <Route path="/dashboard" element={<Dashboard />}> {/*Dashboard Lyout */}
+              <Route index element={<DashHome />} />
+              <Route path="products" element={<DashProducts />} />
+              <Route path="orders" element={<DashOrders />} />
+              <Route path="analytics" element={<DashAnalytics />} />
+              <Route path="clients" element={<DashClients />} />
+            </Route>
+          </Route>
+
+        //Auth Routes
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+
+        // Error Routes
+          <Route path="/not-allowed" element={<NotAllowed />} />
+        </Routes>
       </Router>
     </AuthProvider>
   );

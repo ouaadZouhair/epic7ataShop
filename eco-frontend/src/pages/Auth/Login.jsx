@@ -16,32 +16,60 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      navigate('/'); // Redirect if already logged in
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   console.log(user)
+  //   if (user && user.role === 'admin') {
+  //     navigate('/dashboard');
+  //   }else {
+  //     navigate('/')
+  //   }
+  // }, [user]);
+
+  // const onSubmit = async (data) => {
+  //   setMessage(null);
+  //   setLoading(true);
+
+  //   try {
+  //     const success = await login(data);
+  //     if (success) {
+  //       setMessage({ type: "success", text: "Logged in successfully!" });
+  //       setTimeout(() => {
+  //         console.log(user)
+  //         navigate("/dashboard")
+  //       }, 1000);
+  //     } else {
+  //       setMessage({ type: "error", text: "Invalid email or password!" });
+  //     }
+  //   } catch (err) {
+  //     setMessage({ type: "error", text: err.message || "Login failed!" });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const onSubmit = async (data) => {
     setMessage(null);
     setLoading(true);
 
     try {
-      const success = await login(data);
-      if (success) {
-        setMessage({ type: "success", text: "Logged in successfully!" });
-        setTimeout(() => {
-          navigate("/")
-        }, 1000);
-      } else {
-        setMessage({ type: "error", text: "Invalid email or password!" });
-      }
+      await login(data); 
+      setMessage({ type: "success", text: "Logged in successfully!" });
     } catch (err) {
       setMessage({ type: "error", text: err.message || "Login failed!" });
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
+    }
+  }, [user, navigate]);
 
   return (
     <div className="bg-gray-50 h-screen w-full flex items-center justify-center">

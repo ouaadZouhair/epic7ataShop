@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { addToWishlist, removeFromWishlist } from "../../../redux/slice/WishlistSlice";
 import { FaHeart, FaStar } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
+import  React  from "react";
 
-const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct }) => {
+const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, viewProduct }) => {
     const dispatch = useDispatch();
     const wishlist = useSelector(state => state.wishlist.wishlist);
 
@@ -80,6 +81,6 @@ const CartProduct = ({ id, frontMockups, backMockups, title, price, viewProduct 
             </div>
         </div>
     );
-};
+})
 
 export default CartProduct;

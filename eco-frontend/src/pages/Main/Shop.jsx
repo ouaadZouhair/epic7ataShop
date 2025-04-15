@@ -1,6 +1,6 @@
 import { Footer, CartProduct, Loading } from '../../components/imports.jsx';
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/slice/ProductsShopSlice.js';
@@ -20,22 +20,23 @@ function Shop() {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-
-
   const navigate = useNavigate();
 
   // Navigate to product details
-  const handleProductClick = (id) => {
+  const handleProductClick = useCallback((id) => {
     navigate(`/product/${id}`);
-  };
+  }, [navigate]);
 
   // Filter products based on selected type and category
-  const filteredProducts = products?.data ? products.data.filter((product) =>
-    (!selectedProductType || product.productType === selectedProductType) &&
-    (!selectedCategory || product.category === selectedCategory)
-  )
-    : [];
+  const filteredProducts = useMemo(() => {
+    return products?.data?.filter(product => {
+      const matchesType = selectedProductType ? product.productType === selectedProductType : true;
+      const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+      return matchesType && matchesCategory;
+    }) || [];
+  }, [products, selectedProductType, selectedCategory]);
 
+ 
   // Pagination logic
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -152,7 +153,7 @@ function Shop() {
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

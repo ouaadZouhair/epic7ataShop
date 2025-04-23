@@ -85,39 +85,80 @@ export const createProduct = async (req, res) => {
     }
 };
 
-
 // Edite products by ID
 export const editeProduct = async (req, res) => {
-    const session = await mongoose.startSession()
-    session.startTransaction()
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
     try {
         const { id } = req.params;
-        const updatedData = req.body
+        
+        // 1. Prepare base update data from text fields
+        const updateData = {
+            title: req.body.title,
+            description: req.body.description,
+            price: parseFloat(req.body.price),
+            countInStock: parseInt(req.body.countInStock),
+            productType: req.body.productType,
+            category: req.body.category,
+        };
 
-        // Find product by ID and update it with new data
+        // 2. Handle array fields (colors and sizes)
+        if (req.body.colors) {
+            updateData.colors = Array.isArray(req.body.colors) 
+                ? req.body.colors 
+                : [req.body.colors];
+        }
+
+        if (req.body.sizes) {
+            updateData.sizes = Array.isArray(req.body.sizes)
+                ? req.body.sizes
+                : [req.body.sizes];
+        }
+
+        // 3. Handle file uploads if they exist
+        if (req.files) {
+            if (req.files['frontMockups']) {
+                const frontFile = req.files['frontMockups'][0];
+                updateData['imageUrls.frontMockups'] = `/uploads/${frontFile.filename}`;
+            }
+            if (req.files['backMockups']) {
+                const backFile = req.files['backMockups'][0];
+                updateData['imageUrls.backMockups'] = `/uploads/${backFile.filename}`;
+            }
+        }
+
+        // 4. Update the product
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
-            { $set: updatedData },
-            { new: true }
+            { $set: updateData },
+            { new: true, session }
         );
 
         if (!updatedProduct) {
-            await session.abortTransaction()
-            session.endSession()
+            await session.abortTransaction();
+            session.endSession();
             return res.status(404).send({ msg: "Product not found" });
         }
-        await session.commitTransaction()
-        session.endSession()
-        res.status(200).json({ msg: "Product updated successfully", product: updatedProduct });
+
+        await session.commitTransaction();
+        session.endSession();
+        
+        res.status(200).json({ 
+            msg: "Product updated successfully", 
+            product: updatedProduct 
+        });
 
     } catch (error) {
-        session.abortTransaction()
-        session.endSession()
-        res.status(500).send({ msg: error.message })
+        await session.abortTransaction();
+        session.endSession();
+        console.error("Error updating product:", error);
+        res.status(500).send({ 
+            msg: "Failed to update product",
+            error: error.message 
+        });
     }
-
-}
+};
 
 // Delete products by ID
 export const deleteProduct = async (req, res) => {

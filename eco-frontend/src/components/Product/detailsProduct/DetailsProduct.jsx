@@ -81,11 +81,11 @@ const DetailsProduct = ({ product }) => {
             <p className="text-lg md:text-2xl lg:text-lg text-gray-500 text-justify">{product.description}</p>
 
             {/* Color Options */}
-            {product.color?.length > 0 && (
+            {product.colors?.length > 0 && (
                 <div className="flex justify-start items-center w-[400px] md:w-1/3 lg:w-[600px] gap-3">
                     <IoIosColorPalette className='text-4xl text-black' />
 
-                    {product.color.map((color, i) => (
+                    {product.colors.map((color, i) => (
                         <div
                             key={i}
                             className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 p-1 
@@ -102,10 +102,10 @@ const DetailsProduct = ({ product }) => {
             )}
 
             {/* Size Options */}
-            {product.size?.length > 0 && ( // ✅ Avoid crashes if sizes are undefined
+            {product.sizes?.length > 0 && ( 
                 <div className="flex justify-start items-center md:w-2/3 w-[400px] gap-3">
                     <IoMdResize className='text-4xl text-black' />
-                    {product.size.map((size) => (
+                    {product.sizes.map((size) => (
                         <div
                             key={size}
                             className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 

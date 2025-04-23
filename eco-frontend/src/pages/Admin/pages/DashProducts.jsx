@@ -10,6 +10,7 @@ const DashProducts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [resetFormKey, setResetFormKey] = useState(0); // Add this line
   
 
   useEffect(() => {
@@ -22,6 +23,15 @@ const DashProducts = () => {
     };
     loadProducts();
   }, [dispatch]);
+
+  const troggleForm = () =>{
+    setIsPopupOpen(!isPopupOpen)
+  }
+
+  const handleProductsChange = () => {
+    troggleForm(); // This will close the form and increment the reset key
+    dispatch(fetchProducts()); // Refresh the product list
+  };
 
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
@@ -36,7 +46,9 @@ const DashProducts = () => {
       {/* Add Product Popup */}
       {isPopupOpen && (
         <AddProductsForm
-        troggleForm = {() => setIsPopupOpen(false)}
+        key={resetFormKey}
+        troggleForm = {troggleForm}
+        onSuccess={handleProductsChange}
         />
       )}
 
@@ -45,12 +57,12 @@ const DashProducts = () => {
         <div className="flex justify-between items-center gap-2">
           <h1 className="text-lg font-semibold text-gray-900">Total Products</h1>
           <p className="text-xl font-semibold text-gray-500">
-            {products?.data?.length || 0}
+            {products?.length || 0}
           </p>
         </div>
 
         <button
-          onClick={() => setIsPopupOpen(true)}
+          onClick={troggleForm}
           className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg px-4 py-2 font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg"
         >
           <IoMdAddCircle className="text-xl" />
@@ -59,9 +71,9 @@ const DashProducts = () => {
       </div>
 
       <div className="flex flex-col justify-between items-center w-full h-auto">
-        {products?.data?.length > 0 ? (
+        {products?.length > 0 ? (
           <div className="grid w-full grid-cols-1 md:grid-cols-3 lg:grid-cols-4 justify-center gap-4 justify-items-center">
-            {products.data.map(({ _id, imageUrls, title, price }) => (
+            {products?.map(({ _id, imageUrls, title, price }) => (
               <CartProduct
                 key={_id}
                 id={_id}
@@ -74,6 +86,7 @@ const DashProducts = () => {
                 }
                 price={price}
                 viewProduct={() => handleProductClick(_id)}
+                
               />
             ))}
           </div>

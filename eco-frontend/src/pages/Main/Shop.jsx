@@ -29,7 +29,7 @@ function Shop() {
 
   // Filter products based on selected type and category
   const filteredProducts = useMemo(() => {
-    return products?.data?.filter(product => {
+    return products?.filter(product => {
       const matchesType = selectedProductType ? product.productType === selectedProductType : true;
       const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
       return matchesType && matchesCategory;
@@ -70,10 +70,10 @@ function Shop() {
               onChange={handleFilterChange(setSelectedProductType)}
             >
               <option value="">All</option>
-              <option value="ClaTshirts">Classic Tshirts</option>
-              <option value="OvTshirts">Oversize Tshirts</option>
-              <option value="ClaHoodies">Classic Hoodies</option>
-              <option value="OvHoodies">Oversize Hoodies</option>
+              <option value="Classic-tshirt">Classic Tshirts</option>
+              <option value="Oversize-tshirt">Oversize Tshirts</option>
+              <option value="Classic-hoodie">Classic Hoodies</option>
+              <option value="Oversize-hoodie">Oversize Hoodies</option>
               <option value="Caps">Caps</option>
               <option value="Mugs">Mugs</option>
             </select>
@@ -90,8 +90,8 @@ function Shop() {
               <option value="Anime">Anime</option>
               <option value="Sport">Sport</option>
               <option value="Music">Music</option>
-              <option value="superCars">Super Cars</option>
-              <option value="MoviesAndSeries">Movies & Series</option>
+              <option value="SuperCars">Super Cars</option>
+              <option value="Movies&Series">Movies & Series</option>
             </select>
           </div>
         </div>

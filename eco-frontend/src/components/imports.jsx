@@ -49,3 +49,5 @@ export {default as RevenueChart} from './Chart/RevenueChart.jsx';
 export { default as OrderStatusChart} from "./Chart/OrderStatusChart.jsx"
 
 export { default as AddProductsForm } from './Forms/AddProductsForm.jsx'
+
+export { default as EditProductForm } from './Forms/EditProductForm.jsx'

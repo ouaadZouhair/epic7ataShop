@@ -13,10 +13,10 @@ productsRouter.get('/', getAllProducts)
 productsRouter.get('/:id', getProductById)
 
 // Create a new product / route -> /api/v1/products/
-productsRouter.post('/',verifyToken, authorizeRoles('admin'),uploadMiddleware, createProduct);
+productsRouter.post('/',verifyToken, authorizeRoles('admin'), uploadMiddleware, createProduct);
 
 // Edite a product / route -> /api/v1/products/id
-productsRouter.patch('/:id',verifyToken, authorizeRoles('admin'), editeProduct);
+productsRouter.patch('/:id', verifyToken, authorizeRoles('admin'), uploadMiddleware, editeProduct);
 
 // Delete a product / route -> /api/v1/products/id
 productsRouter.delete('/:id',verifyToken, authorizeRoles('admin'), deleteProduct);

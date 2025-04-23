@@ -3,7 +3,7 @@ import pic from "../../assets/pic1.jpg"
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../Context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, replace, useLocation, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa6";
 import { FaGoogle, FaApple } from "react-icons/fa";
 
@@ -15,37 +15,7 @@ const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   console.log(user)
-  //   if (user && user.role === 'admin') {
-  //     navigate('/dashboard');
-  //   }else {
-  //     navigate('/')
-  //   }
-  // }, [user]);
-
-  // const onSubmit = async (data) => {
-  //   setMessage(null);
-  //   setLoading(true);
-
-  //   try {
-  //     const success = await login(data);
-  //     if (success) {
-  //       setMessage({ type: "success", text: "Logged in successfully!" });
-  //       setTimeout(() => {
-  //         console.log(user)
-  //         navigate("/dashboard")
-  //       }, 1000);
-  //     } else {
-  //       setMessage({ type: "error", text: "Invalid email or password!" });
-  //     }
-  //   } catch (err) {
-  //     setMessage({ type: "error", text: err.message || "Login failed!" });
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const location = useLocation()
 
   const onSubmit = async (data) => {
     setMessage(null);
@@ -62,11 +32,12 @@ const Login = () => {
   };
 
   useEffect(() => {
+
     if (user) {
       if (user.role === 'admin') {
         navigate('/dashboard');
       } else {
-        navigate('/');
+        navigate("/");
       }
     }
   }, [user, navigate]);

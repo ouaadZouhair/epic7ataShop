@@ -15,10 +15,10 @@ productsRouter.get('/:id', getProductById)
 // Create a new product / route -> /api/v1/products/
 productsRouter.post('/',verifyToken, authorizeRoles('admin'),uploadMiddleware, createProduct);
 
-// Create a new product / route -> /api/v1/products/id
+// Edite a product / route -> /api/v1/products/id
 productsRouter.patch('/:id',verifyToken, authorizeRoles('admin'), editeProduct);
 
-// Create a new product / route -> /api/v1/products/id
+// Delete a product / route -> /api/v1/products/id
 productsRouter.delete('/:id',verifyToken, authorizeRoles('admin'), deleteProduct);
 
 

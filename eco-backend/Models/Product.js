@@ -14,7 +14,7 @@ const ProductSchema = new mongoose.Schema({
     colors: {
         type: [String],
         required: true,
-        enum: ["bg-black", "bg-white", "bg-red-500", "bg-blue-500", "bg-orange-500", "bg-green-700"],
+        enum: ["black", "white", "red", "blue", "orange", "green", 'purple', 'pink'],
         default: [],
     },
 
@@ -38,7 +38,7 @@ const ProductSchema = new mongoose.Schema({
         },
         backMockups: {
             type: String,
-            required: true
+            
         }
     },
 
@@ -52,10 +52,6 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
 
-    isFavPr: {
-        type: Boolean,
-        required: true,
-    },
 
     isNewPr:{
         type: Boolean,

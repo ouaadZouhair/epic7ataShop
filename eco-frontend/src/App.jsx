@@ -6,17 +6,21 @@ import { Main, Dashboard } from './components/imports.jsx';
 
 function ProtectedRoute({ children, allowedRole }) {
   const { user } = useAuth();
-  const location = useLocation();
 
+  // Check if the user is authenticated and has the required role
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    // Redirect to login if the user is not authenticated
+    return <Login />;
   }
 
-  if (allowedRole && user.role !== allowedRole) {
-    return <Navigate to="/not-allowed" replace />;
+  if (user && allowedRole) {
+    if (user.role !== allowedRole) {
+      // Redirect to login if the user does not have the required role
+      return <NotAllowed />;
+    }
   }
+  return children ? children : <Outlet/>;
 
-  return children ? children : <Outlet />;
 }
 
 function App() {

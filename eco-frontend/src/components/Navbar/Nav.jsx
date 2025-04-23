@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from "../../Context/AuthContext.jsx";
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { IoSearch, IoLogoTiktok } from "react-icons/io5";
 import { FaXmark } from "react-icons/fa6";
 import { FiMenu, FiInstagram } from "react-icons/fi";
@@ -15,6 +15,13 @@ import { IoLogoWhatsapp, IoMdMail, IoIosHeart } from "react-icons/io";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { fetchWishlist, removeFromWishlist } from "../../redux/slice/WishlistSlice.js";
 import { fetchFromCart } from "../../redux/slice/CartShippingSlice.js";
+
+const navLinks = [
+  { path: '/', text: 'Home' },
+  { path: '/shop', text: 'Shop' },
+  { path: '/about', text: 'About' },
+  { path: '/contact', text: 'Contact' }
+];
 
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
@@ -54,23 +61,26 @@ export const Navbar = () => {
         <img src={logo} className="h-full w-full" />
       </div>
 
-      <ul className=" w-[350px] justify-around items-center font-semibold text-lg hidden lg:flex">
-        <li className="relative hover:text-blue-500 duration-200 after:content-[''] after:h-1 after:w-0 after:bg-blue-500 after:absolute after:-bottom-2 after:left-0 after:rounded-full after:hover:w-full after:duration-200">
-          <Link to='/'>Home</Link>
-        </li>
-        <li className="relative hover:text-blue-500 duration-200 after:content-[''] after:h-1 after:w-0 after:bg-blue-500 after:absolute after:-bottom-2 after:left-0 after:rounded-full after:hover:w-full after:duration-200">
-          <Link to="/shop">Shop</Link>
-        </li>
-        {/* <li className="relative hover:text-blue-500 duration-200 after:content-[''] after:h-1 after:w-0 after:bg-blue-500 after:absolute after:-bottom-2 after:left-0 after:rounded-full after:hover:w-full after:duration-200">
-          <Link to='/print'>Print</Link>
-        </li> */}
-        <li className="relative hover:text-blue-500 duration-200 after:content-[''] after:h-1 after:w-0 after:bg-blue-500 after:absolute after:-bottom-2 after:left-0 after:rounded-full after:hover:w-full after:duration-200">
-          <Link to="/about">About</Link>
-        </li>
-        <li className="relative hover:text-blue-500 duration-200 after:content-[''] after:h-1 after:w-0 after:bg-blue-500 after:absolute after:-bottom-2 after:left-0 after:rounded-full after:hover:w-full after:duration-200">
-          <Link to="/contact">Contact</Link>
-        </li>
-      </ul>
+      
+
+      <ul className="w-[350px] justify-around items-center hidden lg:flex">
+          {navLinks.map((link) => (
+            <li key={link.path} className="relative hover:text-blue-500 text-lg duration-200 ">
+              <NavLink
+                to={link.path}
+                className={({ isActive }) => 
+                  `px-3 py-2 transition-colors  ${
+                    isActive 
+                      ? 'text-blue-600 font-semibold' 
+                      : 'text-gray-800 hover:text-blue-500 font-medium'
+                  }`
+                }
+              >
+                {link.text}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
 
       <div className="flex  justify-around gap-3 w-[500px]">
         <form className="form relative hidden lg:block">
@@ -153,7 +163,7 @@ export const CardShipping = ({ visibility, onClose, fnData }) => {
 
   const navigate = useNavigate();
 
-  const handleProductClick = useCallback((id)=>{
+  const handleProductClick = useCallback((id) => {
     navigate(`/product/${id}`);
     onClose(); // Close the cart when navigating to a product page
   }, [])
@@ -319,7 +329,7 @@ export const Profiel = ({ data }) => {
   )
 }
 
-export const Wishlist = ({troggleClick}) => {
+export const Wishlist = ({ troggleClick }) => {
   const dispatch = useDispatch();
   const { wishlist, loading, error } = useSelector((state) => state.wishlist);
   const [localError, setLocalError] = useState("");
@@ -353,11 +363,11 @@ export const Wishlist = ({troggleClick}) => {
     <div className="absolute top-14 -left-1/2 md:left-10 z-50 bg-white shadow-lg rounded-xl w-72 max-h-96 p-1 overflow-y-auto">
       {loading ? (
         <div className="flex justify-center items-center">
-          <Loading/>
+          <Loading />
         </div>
       ) : (error || localError || wishlist.length === 0) ? (
         <p className="text-center text-gray-500 p-2">Your wishlist is empty</p>
-      ) :(
+      ) : (
         wishlist.map((item, i) => (
           <div
             key={item._id || i}
@@ -370,8 +380,8 @@ export const Wishlist = ({troggleClick}) => {
               alt={item.title}
             />
             <p className="text-gray-200 md:text-lg lg:text-base font-semibold w-1/2 ">{item.title}</p>
-            <button 
-              onClick={(e) => removeItem(item._id, e)} 
+            <button
+              onClick={(e) => removeItem(item._id, e)}
               aria-label="Remove from wishlist"
             >
               <FaTrashAlt className="text-gray-200 text-3xl lg:text-2xl hover:text-red-600 hover:scale-110 duration-150" />

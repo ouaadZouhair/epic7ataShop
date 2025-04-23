@@ -153,7 +153,6 @@ function Shop() {
         </div>
       </div>
 
-      {/* <Footer /> */}
     </>
   );
 }

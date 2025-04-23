@@ -43,9 +43,14 @@ export const createProduct = async (req, res) => {
         // Convert text-based numbers and booleans
         const price = Number(req.body.price);
         const countInStock = Number(req.body.countInStock);
-        const isInStock = req.body.isInStock === "true";  // Convert string to boolean
-        const isFavPr = req.body.isFavPr === "true";
-        const isNewPr = req.body.isNewPr === "true";
+
+        const colors = JSON.parse(req.body.colors);
+        const validColors = ["black", "white", "red", "blue", "orange", "green", 'purple', 'pink'];
+        const invalidColors = colors.filter(c => !validColors.includes(c));
+        
+        if (invalidColors.length) {
+            return res.status(400).json({ msg: `Invalid colors: ${invalidColors.join(', ')}` });
+        }
 
         // Handle uploaded files
         const frontMockupFile = req.files?.frontMockups ? req.files.frontMockups[0].filename : null;
@@ -59,13 +64,12 @@ export const createProduct = async (req, res) => {
         const newProduct = new Product({
             title: req.body.title,
             description: req.body.description,
-            colors: JSON.parse(req.body.colors), // Parse JSON array
+            colors: colors, // Parse JSON array
             sizes: JSON.parse(req.body.sizes),
             price: price,
             countInStock: countInStock,
-            isInStock: isInStock,
-            isFavPr: isFavPr,
-            isNewPr: isNewPr,
+            isInStock: countInStock > 0 ? true : false,
+            isNewPr: true,
             category: req.body.category,
             productType: req.body.productType,
             imageUrls: {

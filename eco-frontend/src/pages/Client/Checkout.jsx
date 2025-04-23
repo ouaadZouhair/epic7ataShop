@@ -146,7 +146,7 @@ const Checkout = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex flex-col justify-center items-center gap-3 w-full p-0 md:p-2 rounded-xl overflow-y-scroll scrollbar-thin scrollbar-thumb-white scrollbar-track-white/50">
+          <div className="flex flex-col justify-start items-center gap-3 w-full p-0 md:p-2 rounded-xl overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-white/50 h-[400px]">
             {loading ? (
               <Loading />
             ) : cart.length > 0 ? (

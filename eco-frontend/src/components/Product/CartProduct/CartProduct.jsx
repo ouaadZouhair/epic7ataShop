@@ -1,13 +1,15 @@
+import React from 'react'
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { addToWishlist, removeFromWishlist } from "../../../redux/slice/WishlistSlice";
 import { FaHeart, FaStar } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
-import  React  from "react";
+import { useAuth } from "../../../Context/AuthContext";
 
 const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, viewProduct }) => {
     const dispatch = useDispatch();
     const wishlist = useSelector(state => state.wishlist.wishlist);
+    const { user } = useAuth()
 
     // Local state for instant UI update
     const [isExist, setIsExist] = useState(false);
@@ -47,13 +49,20 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
     };
 
     return (
-        <div className='relative group w-[90%] md:w-60 lg:w-64 h-auto overflow-hidden border-2 border-transparent cursor-pointer' onClick={() => viewProduct(id)}>
-            <button onClick={isExist ? handleRemoveFromWishlist : handleAddtoWishlist}
-                className="absolute top-2 -right-12 z-10 group-hover:right-2 duration-150 h-10 w-10 p-2 rounded-full">
-                {isExist ?
-                    (<FaCheckCircle className="text-3xl text-green-500 cursor-pointer hover:scale-110 duration-100" />)
-                    :
-                    (<FaHeart className="text-3xl text-gray-300 cursor-pointer hover:text-red-600 duration-100" />)}
+        <div className='relative group w-[90%] md:w-60 lg:w-64 h-auto overflow-hidden border-2 border-transparent cursor-pointer rounded-lg' onClick={() => viewProduct(id)}>
+            {/* Wishlist Button */}
+
+            <button
+                onClick={isExist ? handleRemoveFromWishlist : handleAddtoWishlist}
+                className={` absolute ${user.role === 'admin' ? 'hidden' : 'block'} top-2 ${isExist ? 'right-2' : '-right-12'} z-10  group-hover:right-2 transition-all duration-150 h-10 w-10 p-2 rounded-full bg-white/80 hover:bg-white shadow-sm
+  `}
+                aria-label={isExist ? "Remove from wishlist" : "Add to wishlist"}
+            >
+                {isExist ? (
+                    <FaCheckCircle className="text-3xl text-green-500 hover:scale-110 transition-transform duration-100" />
+                ) : (
+                    <FaHeart className="text-3xl text-gray-300 hover:text-red-600 transition-colors duration-100" />
+                )}
             </button>
 
             {/* Product Image */}

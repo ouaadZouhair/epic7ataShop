@@ -43,3 +43,9 @@ export {default as PaymentPopup} from './PaymentPop/PaymentPop.jsx';
 export {default as Main} from './Layout/Main.jsx';
 export { default as Dashboard } from './Layout/Dashboard.jsx'
 
+
+export {default as RevenueChart} from './Chart/RevenueChart.jsx';
+
+export { default as OrderStatusChart} from "./Chart/OrderStatusChart.jsx"
+
+export { default as AddProductsForm } from './Forms/AddProductsForm.jsx'

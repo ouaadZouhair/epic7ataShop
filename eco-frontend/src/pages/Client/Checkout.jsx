@@ -155,7 +155,7 @@ const Checkout = () => {
                   <img src={`${BASE_URL}${product.imageUrls.frontMockups}`} className="w-[70px] h-[70px] md:w-[80px] md:h-[80px] rounded-lg" />
                   <p className="text-sm md:text-lg font-semibold w-24 md:w-40 lg:w-48">{product.title}</p>
 
-                  <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-gray-500 ${product.color} ${ product.color === 'white' && 'bg-gray-50'} ${ product.color === 'black' && 'bg-black'} ${ product.color === 'blue' && 'bg-blue-900'} ${ product.color === 'red' && 'bg-red-500'} ${ product.color === 'orange' && 'bg-orange-500'} ${ product.color === 'green' && 'bg-green-600'} ${ product.color === 'purple' && 'bg-purple-500'} ${ product.color === 'gray' && 'bg-gray-300'}`}></div>
+                  <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-gray-500 ${product.color} ${ product.color === 'white' && 'bg-gray-50'} ${ product.color === 'black' && 'bg-black'} ${ product.color === 'blue' && 'bg-blue-900'} ${ product.color === 'red' && 'bg-red-500'} ${ product.color === 'orange' && 'bg-orange-500'} ${product.color === 'yellow' && 'bg-yellow-400'} ${ product.color === 'green' && 'bg-green-600'} ${ product.color === 'purple' && 'bg-purple-500'} ${ product.color === 'gray' && 'bg-gray-300'}`}></div>
 
                   {/* Quantity Controller */}
                   <div className="flex flex-col md:flex-row items-center">

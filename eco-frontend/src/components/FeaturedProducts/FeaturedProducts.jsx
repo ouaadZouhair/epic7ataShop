@@ -19,8 +19,17 @@ const FeaturedProducts = () => {
         dispatch(fetchProducts());
     }, [dispatch]);
 
+    
     // Memoized list of new products
-    const NewProducts = useMemo(() => products?.data?.filter(product => product.isNewPr) || [], [products]);
+    const NewProducts = useMemo(() => {
+        // First check if products exists and is an array
+        if (!Array.isArray(products)) return [];
+        
+        // Then filter for new products
+        return products.filter(product => product?.isNewPr );
+      }, [products]);
+    
+    console.log(NewProducts)
 
     // Memoized navigation function
     const handleProductClick = useCallback((id) => {

@@ -15,7 +15,7 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
 
     // Local state for instant UI update
     const [isExist, setIsExist] = useState(false);
-    const [showEditForm, setShowEditForm] = useState(false); // State for form visibility
+    const [showEditForm, setShowEditForm] = useState(false);
 
     useEffect(() => {
         const exists = wishlist.some(item => item._id === id);

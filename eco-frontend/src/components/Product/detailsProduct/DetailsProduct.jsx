@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from "react-redux";
+import { useAuth } from '../../../Context/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 import { addToCart } from "../../../redux/slice/CartShippingSlice";
+import { removeProduct } from '../../../redux/slice/ProductsShopSlice';
 import { addToWishlist } from "../../../redux/slice/WishlistSlice";
+import { EditProductForm } from "../../imports.jsx"
 import { FaCheck } from "react-icons/fa6";
+import { FaTrashAlt, FaPen } from "react-icons/fa";
 import { IoIosColorPalette, IoMdResize, IoIosHeart } from "react-icons/io";
 import { AlertNot } from '../../imports.jsx';
 
-const DetailsProduct = ({ product }) => {
+const DetailsProduct = ({ product, onProductUpdated }) => {
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -14,7 +19,11 @@ const DetailsProduct = ({ product }) => {
     const [error, setError] = useState(false);
     const [validated, setValidated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
+    const { user } = useAuth();
     const dispatch = useDispatch();
+
+    const navigate = useNavigate()
 
 
     const handleColorSelect = (color) => setSelectedColor(color);
@@ -60,6 +69,31 @@ const DetailsProduct = ({ product }) => {
         }
     }
 
+    const handleRemoveProduct = async (e) => {
+        e.stopPropagation();
+        try {
+            // setIsExist(false);
+            const removeItem = await dispatch(removeProduct(product._id)).unwrap();
+            if (removeItem) {
+                navigate('/shop')
+            }
+        } catch (err) {
+            console.error("Failed to remove product", err)
+        }
+    }
+
+    const handleEditProduct = (e) => {
+        e.stopPropagation();
+        setShowEditForm(true);
+    }
+
+    const handleCloseEditForm = () => {
+        setShowEditForm(false);
+        if (onProductUpdated) {
+            onProductUpdated(); // This will trigger a refetch of the product data
+        }
+    }
+
     useEffect(() => {
         let timer;
         if (error || validated) {
@@ -88,34 +122,33 @@ const DetailsProduct = ({ product }) => {
                     {product.colors.map((color, i) => (
                         <div
                             key={i}
-                            className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 p-1 
-                            ${selectedColor === color ? 'border-yellow-400' : 'border-gray-600'} 
-                            hover:scale-110 duration-100 ${color === 'white' && 'bg-gray-50'} ${color === 'black' && 'bg-black'} ${color === 'blue' && 'bg-blue-900'} ${color === 'red' && 'bg-red-500'} ${color === 'orange' && 'bg-orange-500'} ${color === 'green' && 'bg-green-600'} ${color === 'purple' && 'bg-purple-500'} ${color === 'gray' && 'bg-gray-300'}`}
+                            className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 p-1 border-gray-300
+                            hover:scale-110 duration-100 ${color === 'white' && 'bg-gray-50'} ${color === 'black' && 'bg-black'} ${color === 'blue' && 'bg-blue-800'} ${color === 'red' && 'bg-red-600'} ${color === 'orange' && 'bg-orange-500'} ${color === 'yellow' && 'bg-yellow-400'} ${color === 'green' && 'bg-green-600'} ${color === 'purple' && 'bg-purple-500'} ${color === 'gray' && 'bg-gray-400'}`}
                             onClick={() => handleColorSelect(color)}
                         >
-                            {selectedColor === color && (
-                                <FaCheck className="absolute w-8 h-8 text-yellow-400 text-sm top-1 right-1" />
-                            )}
+                            {(selectedColor === color) ? (color !== 'red') ? (
+                                <FaCheck className="absolute w-8 h-8 text-red-600 text-sm top-1 right-1" />
+                            ) : (<FaCheck className="absolute w-8 h-8 text-red-100 text-sm top-1 right-1" />)
+                                : ''}
                         </div>
                     ))}
                 </div>
             )}
 
             {/* Size Options */}
-            {product.sizes?.length > 0 && ( 
+            {product.sizes?.length > 0 && (
                 <div className="flex justify-start items-center md:w-2/3 w-[400px] gap-3">
                     <IoMdResize className='text-4xl text-black' />
                     {product.sizes.map((size) => (
                         <div
                             key={size}
-                            className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 
-                            ${selectedSize === size ? 'border-yellow-400' : 'border-gray-400'} 
+                            className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 border-gray-400
                             hover:scale-110 duration-100`}
                             onClick={() => handleSizeSelect(size)}
                         >
                             <h1 className={`flex justify-center items-center p-1 font-semibold text-lg text-gray-500`}>{size}</h1>
                             {selectedSize === size && (
-                                <FaCheck className="absolute w-8 h-8 text-yellow-400 text-sm top-1 right-1" />
+                                <FaCheck className="absolute w-8 h-8 text-red-600 text-sm top-1 right-1" />
                             )}
                         </div>
                     ))}
@@ -141,45 +174,75 @@ const DetailsProduct = ({ product }) => {
             {/* Price Display */}
             <p className="text-xl text-start">Price: <span className='font-semibold text-2xl'>{product.price} Dh</span></p>
 
-            <div className='flex justify-center items-center gap-1 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[350px]'>
-                {/* Add to Cart Button */}
-                <button
-                    className={`w-[250px] mx-auto h-14 text-xl text-white border-2 border-transparent font-semibold rounded-full 
-                ${(!selectedColor || !selectedSize) ? 'bg-blue-800 text-white cursor-not-allowed' :
-                            'bg-blue-500 hover:scale-105 hover:text-white hover:shadow-lg hover:bg-blue-600 duration-150'}`}
-                    onClick={handleAddItemToCard} // ✅ Removed passing `product` since it's available in scope
-                    disabled={isLoading}
-                >
-                    {isLoading ? "Adding..." : "Add to cart"}
-                </button>
+            {user.role === 'admin' ? (
+                <div className='flex justify-start items-center gap-3 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[350px]'>
+                    <button className='flex justify-center items-center gap-2 text-lg text-white bg-green-500 p-3 rounded-lg hover:scale-105 hover:shadow-md hover:bg-green-600 duration-150' 
+                    onClick={handleEditProduct}>
+                        <FaPen className="text-2xl" />
+                        <span>Edit Product</span>
+                    </button>
+                    <button className='flex justify-center items-center gap-2 text-lg text-white bg-red-500 p-3 rounded-lg hover:scale-105 hover:shadow-md hover:bg-red-600 duration-150 '
+                        onClick={handleRemoveProduct}>
+                        <FaTrashAlt className="text-2xl" />
+                        <span>Delete Product</span>
+                    </button>
+                </div>
+            ) :
+                (
+                    <div className='flex justify-center items-center gap-1 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[350px]'>
+                        {/* Add to Cart Button */}
+                        <button
+                            className={`w-[250px] mx-auto h-14 text-xl text-white border-2 border-transparent font-semibold rounded-full 
+                            ${(!selectedColor || !selectedSize) ? 'bg-blue-800 text-white cursor-not-allowed' : 'bg-blue-500 hover:scale-105 hover:text-white hover:shadow-lg hover:bg-blue-600 duration-150'}`}
+                            onClick={handleAddItemToCard} // ✅ Removed passing `product` since it's available in scope
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Adding..." : "Add to cart"}
+                        </button>
 
-                <button className={`w-[50px] h-[50px] mx-auto font-semibold rounded-full flex justify-center items-center bg-red-500 hover:hover:scale-105 hover:shadow-lg duration-150`}
-                    onClick={handleAddItemtoWishlist}
-                >
-                    <IoIosHeart className='text-white text-3xl' />
-                </button>
-            </div>
+                        <button className={`w-[50px] h-[50px] mx-auto font-semibold rounded-full flex justify-center items-center bg-red-500 hover:hover:scale-105 hover:shadow-lg duration-150`}
+                            onClick={handleAddItemtoWishlist}
+                        >
+                            <IoIosHeart className='text-white text-3xl' />
+                        </button>
+                    </div>
+
+                )
+            }
+
 
             {/* Error Alert */}
-            {error && (
-                <AlertNot
-                    alert="error"
-                    message="Failed to add item to cart. Please select Color and Size."
-                    onClick={() => setError(false)}
-                    show={true}
-                />
-            )}
+            {
+                error && (
+                    <AlertNot
+                        alert="error"
+                        message="Failed to add item to cart. Please select Color and Size."
+                        onClick={() => setError(false)}
+                        show={true}
+                    />
+                )
+            }
 
             {/* Success Alert */}
-            {validated && (
-                <AlertNot
-                    alert="validate"
-                    message="The product was added to cart successfully."
-                    onClick={() => setValidated(false)}
-                    show={true}
+            {
+                validated && (
+                    <AlertNot
+                        alert="validate"
+                        message="The product was added to cart successfully."
+                        onClick={() => setValidated(false)}
+                        show={true}
+                    />
+                )
+            }
+
+            {showEditForm && (
+                <EditProductForm
+                    productId={product._id}
+                    onClose={handleCloseEditForm}
+                    onSuccess={onProductUpdated} // Call this after successful edit
                 />
             )}
-        </div>
+        </div >
     );
 };
 

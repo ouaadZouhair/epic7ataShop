@@ -4,9 +4,16 @@ import { HiMiniHome, HiShoppingCart } from "react-icons/hi2";
 import { FaFileAlt, FaUser } from "react-icons/fa";
 import { FaChartSimple } from "react-icons/fa6";
 import { TbLogout } from "react-icons/tb";
+import { useNavigate } from 'react-router-dom';
 
 
 const NavDashboard = () => {
+
+    const navigate = useNavigate();
+
+    const handleNavigation = () => {
+        navigate('/shop')
+    }
 
     const navLinks = [
         { path: '', text: 'Dashboard', icon: <HiMiniHome className="text-2xl" /> },
@@ -31,9 +38,8 @@ const NavDashboard = () => {
                         key={link.path}
                         to={link.path}
                         end
-                        className={({ isActive }) => 
-                            `flex flex-row items-center justify-start gap-3 px-4 py-3 w-full hover:bg-white hover:text-blue-500 hover:scale-105 duration-150 rounded-lg transition ${
-                              isActive ? 'bg-white text-blue-500' : 'text-white'
+                        className={({ isActive }) =>
+                            `flex flex-row items-center justify-start gap-3 px-4 py-3 w-full hover:bg-white hover:text-blue-500 hover:scale-105 duration-150 rounded-lg transition ${isActive ? 'bg-white text-blue-500' : 'text-white'
                             }`
                         }
                     >
@@ -45,7 +51,11 @@ const NavDashboard = () => {
 
             </div>
 
-            <button onClick={logout} aria-label="Logout" className="flex justify-center items-center text-lg font-semibold px-4 py-3 rounded-lg w-full  hover:scale-105 hover:bg-red-500 duration-150"> <TbLogout className='text-2xl' /> <span>Logout</span></button>
+            <div className='flex flex-col justify-between items-center gap-2 px-4 w-full'>
+                <button onClick={handleNavigation} aria-label="shop" className="flex justify-start items-center text-lg font-semibold p-2 rounded-lg w-full gap-2  hover:scale-105 hover:bg-green-500 duration-150"> <HiShoppingCart className='text-2xl' /> <span>Shop</span></button>
+                <button onClick={logout} aria-label="Logout" className="flex justify-start items-center text-lg font-semibold p-2 rounded-lg w-full  hover:scale-105 gap-2 hover:bg-red-500 duration-150"> <TbLogout className='text-2xl' /> <span>Logout</span></button>
+            </div>
+
 
         </nav>
     )

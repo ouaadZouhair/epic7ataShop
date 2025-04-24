@@ -29,7 +29,7 @@ const CardItem = React.memo(({item, viewProduct}) => {
                 </div>
             </div>
             <div className='flex flex-col justify-between items-center gap-2'>
-                <span className={`w-7 h-7 ${ item.color === 'white' && 'bg-gray-50'} ${ item.color === 'black' && 'bg-black'} ${ item.color === 'blue' && 'bg-blue-900'} ${ item.color === 'red' && 'bg-red-500'} ${ item.color === 'orange' && 'bg-orange-500'} ${ item.color === 'green' && 'bg-green-600'} ${ item.color === 'purple' && 'bg-purple-500'} ${ item.color === 'gray' && 'bg-gray-300'} rounded-lg border border-white`}></span>
+                <span className={`w-7 h-7 ${ item.color === 'white' && 'bg-gray-50'} ${ item.color === 'black' && 'bg-black'} ${ item.color === 'blue' && 'bg-blue-900'} ${ item.color === 'red' && 'bg-red-500'} ${ item.color === 'orange' && 'bg-orange-500'} ${item.color === 'yellow' && 'bg-yellow-400'} ${ item.color === 'green' && 'bg-green-600'} ${ item.color === 'purple' && 'bg-purple-500'} ${ item.color === 'gray' && 'bg-gray-300'} rounded-lg border border-white`}></span>
                 <span className='w-7 h-7 rounded-log border rounded-lg text-center border-white text-white'>{item.size}</span>
             </div>
             <button onClick={(e) => removeItem(e, {id:item._id, color:item.color, size: item.size})}>

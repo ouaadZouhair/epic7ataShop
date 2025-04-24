@@ -8,29 +8,30 @@ const Product = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
   const BASE_URL = "http://localhost:3000";
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const res = await axios.get(`${BASE_URL}/api/v1/products/${id}`);
-        
-        if (res.status !== 200) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        setProduct(res.data.product);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-        setError(error.message || "Failed to fetch product");
-      } finally {
-        setLoading(false);
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const res = await axios.get(`${BASE_URL}/api/v1/products/${id}`);
+      
+      if (res.status !== 200) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    };
 
+      setProduct(res.data.product);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setError(error.message || "Failed to fetch product");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProduct();
   }, [id]);
 
@@ -62,11 +63,11 @@ const Product = () => {
 
   return (
     <>
-      <main className="relative flex flex-col lg:flex-row justify-center items-center w-[85%] h-auto mx-auto my-2 gap-1 lg:gap-3">
+      <main className="relative flex flex-col lg:flex-row justify-center md:items-center lg:items-start w-[85%] h-auto mx-auto my-2 gap-1 lg:gap-3">
         <ImgsProduct product={product} />
         <DetailsProduct product={product} />
       </main>
-      <InfoProduct product={product} />
+      <InfoProduct product={product} onProductUpdated={fetchProduct} />
       {/* <Footer /> */}
     </>
   );

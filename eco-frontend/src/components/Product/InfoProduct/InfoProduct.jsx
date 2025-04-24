@@ -42,13 +42,13 @@ const InfoProduct = ({ product }) => {
     const [currentArray, setCurrentArray] = useState([])
 
     useEffect(() => {
-        if (product.productType === "ClaHoodies") {
+        if (product.productType === "Classic-hoodie") {
             setCurrentArray(claHoodieSizes);
-        } else if (product.productType === "ClaTshirts") {
+        } else if (product.productType === "Classic-tshirt") {
             setCurrentArray(claTshirtSizes);
-        } else if (product.productType === "OvHoodies") {
+        } else if (product.productType === "Oversize-hoodie") {
             setCurrentArray(OVHoodieSizes);
-        } else if (product.productType === "OvTshirts") {
+        } else if (product.productType === "Oversize-tshirt") {
             setCurrentArray(OvTshirtSizes);
         } else {
             setCurrentArray([]);
@@ -113,8 +113,8 @@ const InfoProduct = ({ product }) => {
             </div>
 
             <div className="w-full flex flex-col md:flex-row justify-evenly items-center">
-                {(product.productType === 'ClaHoodies' || product.productType === 'OvHoodies') && <img src={hoodieImg} alt="hoodie size" className="w-[300px] md:w-1/3" />}
-                {(product.productType === 'ClaTshirts' || product.productType === 'OvTshirts') && <img src={tshirtImg} alt="thirt size" className="w-[300px] md:w-1/3" />}
+                {(product.productType === 'Classic-hoodie' || product.productType === 'Oversize-hoodie') && <img src={hoodieImg} alt="hoodie size" className="w-[300px] md:w-1/3" />}
+                {(product.productType === 'Classic-tshirt' || product.productType === 'Oversize-tshirt') && <img src={tshirtImg} alt="thirt size" className="w-[300px] md:w-1/3" />}
                 <div className="flex justify-center mt-10">
                     <div className=" rounded-lg p-6 w-96">
                         <table className="w-full border-collapse border border-gray-300 rounded-lg">

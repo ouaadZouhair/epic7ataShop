@@ -5,7 +5,7 @@ import { editeProduct } from '../../redux/slice/ProductsShopSlice';
 import { IoMdAddCircle, IoMdClose } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";
 
-const EditProductForm = ({ productId, onClose }) => {
+const EditProductForm = ({ productId, onClose, onSuccess }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [formErrors, setFormErrors] = useState({});
@@ -276,7 +276,7 @@ const EditProductForm = ({ productId, onClose }) => {
                 id: productId,
                 updatedData: formDataToSend
             })).unwrap();
-    
+            if (onSuccess) onSuccess(); // Trigger parent to refetch data
             onClose();
         } catch (err) {
             console.error("Failed to edit product", err);

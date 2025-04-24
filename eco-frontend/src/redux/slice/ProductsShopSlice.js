@@ -6,6 +6,7 @@ const URL_API = 'http://localhost:3000/api/v1/products';
 // Fetch Products
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const res = await axios.get(`${URL_API}`);
+  console.log(res.data.data)
   return res.data.data;
 });
 
@@ -14,6 +15,7 @@ export const addProduct = createAsyncThunk(
   'products/addProduct',
   async (productData, { rejectWithValue }) => {
     try {
+      console.log(productData)
       const res = await axios.post(`${URL_API}`, productData, {
         withCredentials: true,
         headers: {
@@ -47,16 +49,7 @@ export const editeProduct = createAsyncThunk(
   'products/editeProduct',
   async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-      console.log('Data received in thunk:', updatedData);
       
-      // If updatedData is FormData, log its contents
-      if (updatedData instanceof FormData) {
-        console.log('FormData contents:');
-        for (let [key, value] of updatedData.entries()) {
-          console.log(key, value);
-        }
-      }
-
       const res = await axios.patch(`${URL_API}/${id}`, updatedData, {
         withCredentials: true,
         headers: {
@@ -99,7 +92,7 @@ const ProductShopSlice = createSlice({
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.loading = false;
-        state.products.push(action.payload);
+        // state.products.push(action.payload);
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
@@ -126,7 +119,7 @@ const ProductShopSlice = createSlice({
       
       .addCase(editeProduct.fulfilled, (state, action) => {
         state.loading = false;
-        console.log('Updating product in store:', action.payload); // Debug log
+        // console.log('Updating product in store:', action.payload); // Debug log
         state.products = state.products.map(product => 
             product._id === action.payload.product._id ? action.payload.product : product
         );

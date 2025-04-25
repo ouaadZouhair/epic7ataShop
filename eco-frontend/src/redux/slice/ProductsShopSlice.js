@@ -6,7 +6,6 @@ const URL_API = 'http://localhost:3000/api/v1/products';
 // Fetch Products
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const res = await axios.get(`${URL_API}`);
-  console.log(res.data.data)
   return res.data.data;
 });
 
@@ -15,7 +14,6 @@ export const addProduct = createAsyncThunk(
   'products/addProduct',
   async (productData, { rejectWithValue }) => {
     try {
-      console.log(productData)
       const res = await axios.post(`${URL_API}`, productData, {
         withCredentials: true,
         headers: {

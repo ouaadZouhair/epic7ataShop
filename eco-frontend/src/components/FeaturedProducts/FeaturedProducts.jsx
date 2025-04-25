@@ -61,7 +61,7 @@ const FeaturedProducts = () => {
                 }}
                 className='my-14 w-full p-5'
             >
-                {NewProducts.map(({ _id, price, title, imageUrls }, index) => (
+                {NewProducts.map(({ _id, price, title, imageUrls, ratingAvg }, index) => (
                     <SwiperSlide key={_id || index}>
                         <CartProduct
                             id={_id}
@@ -69,6 +69,7 @@ const FeaturedProducts = () => {
                             backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
                             frontMockups={imageUrls.frontMockups ? `${imageUrls.frontMockups}` : null}
                             price={price}
+                            ratingAvg={ratingAvg}
                             viewProduct={() => handleProductClick(_id)}
                         />
                     </SwiperSlide>

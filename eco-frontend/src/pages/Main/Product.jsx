@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [ ratingPreview, setRatingPreview ] = useState(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -22,7 +23,10 @@ const Product = () => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      setProduct(res.data.product);
+      console.log(res.data.data)
+
+      setProduct(res.data.data.product);
+      setRatingPreview(res.data.data.ratingPreview)
     } catch (error) {
       console.error("Error fetching product:", error);
       setError(error.message || "Failed to fetch product");

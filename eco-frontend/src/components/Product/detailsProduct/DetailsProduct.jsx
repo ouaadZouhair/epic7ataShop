@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { addToCart } from "../../../redux/slice/CartShippingSlice";
 import { removeProduct } from '../../../redux/slice/ProductsShopSlice';
 import { addToWishlist } from "../../../redux/slice/WishlistSlice";
-import { EditProductForm } from "../../imports.jsx"
-import { FaCheck } from "react-icons/fa6";
-import { FaTrashAlt, FaPen } from "react-icons/fa";
+import { DeleteConfi, EditProductForm } from "../../imports.jsx"
+import { FaCheck, FaStar } from "react-icons/fa6";
+import { FaTrashAlt, FaPen, FaCartPlus } from "react-icons/fa";
 import { IoIosColorPalette, IoMdResize, IoIosHeart } from "react-icons/io";
 import { AlertNot } from '../../imports.jsx';
 
@@ -20,6 +20,7 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
     const [validated, setValidated] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const { user } = useAuth();
     const dispatch = useDispatch();
 
@@ -69,23 +70,34 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
         }
     }
 
-    const handleRemoveProduct = async (e) => {
-        e.stopPropagation();
-        try {
-            // setIsExist(false);
-            const removeItem = await dispatch(removeProduct(product._id)).unwrap();
-            if (removeItem) {
-                navigate('/shop')
-            }
-        } catch (err) {
-            console.error("Failed to remove product", err)
-        }
-    }
+ 
 
     const handleEditProduct = (e) => {
         e.stopPropagation();
         setShowEditForm(true);
     }
+
+    const handleRemoveClick = (e) => {
+        e.stopPropagation();
+        setShowDeleteConfirm(true); // Show confirmation dialog
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            const removeItem = await dispatch(removeProduct(product._id)).unwrap();
+            if (removeItem) {
+                navigate('/shop');
+            }
+        } catch (err) {
+            console.error("Failed to remove product", err);
+        } finally {
+            setShowDeleteConfirm(false); // Always hide dialog after
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirm(false); // Just hide the dialog
+    };
 
     const handleCloseEditForm = () => {
         setShowEditForm(false);
@@ -113,6 +125,13 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
         <div className="w-[95%] md:w-[85%] lg:w-2/4 my-20 flex flex-col mx-auto gap-3">
             <h1 className="text-3xl text-center md:text-start md:text-5xl lg:text-4xl font-semibold">{product.title}</h1>
             <p className="text-lg md:text-2xl lg:text-lg text-gray-500 text-justify">{product.description}</p>
+            <div className='flex flex-row-reverse justify-start items-center gap-2 w-[70px]'>
+                <p className=' text-gray-400'>({product.ratingCount})</p>
+                <div className='text-lg flex justify-between items-center gap-1'>
+                    <FaStar className='text-2xl text-amber-400'/>
+                    <p className='text-lg text-gray-900 font-medium'>{parseFloat(product.ratingAvg.toFixed(1))}</p>
+                </div>
+            </div>
 
             {/* Color Options */}
             {product.colors?.length > 0 && (
@@ -174,41 +193,45 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
             {/* Price Display */}
             <p className="text-xl text-start">Price: <span className='font-semibold text-2xl'>{product.price} Dh</span></p>
 
-            {user.role === 'admin' ? (
-                <div className='flex justify-start items-center gap-3 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[350px]'>
-                    <button className='flex justify-center items-center gap-2 text-lg text-white bg-green-500 p-3 rounded-lg hover:scale-105 hover:shadow-md hover:bg-green-600 duration-150' 
-                    onClick={handleEditProduct}>
+            {(user && user?.role === 'admin') ? (
+                <div className='flex justify-start items-center gap-3 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[430px]'>
+                    <button className='w-[200px] h-14 flex justify-center items-center gap-2 text-lg font-semibold text-white bg-green-500 p-3 rounded-lg hover:scale-105 hover:shadow-md hover:bg-green-600 duration-150'
+                        onClick={handleEditProduct}>
                         <FaPen className="text-2xl" />
                         <span>Edit Product</span>
                     </button>
-                    <button className='flex justify-center items-center gap-2 text-lg text-white bg-red-500 p-3 rounded-lg hover:scale-105 hover:shadow-md hover:bg-red-600 duration-150 '
-                        onClick={handleRemoveProduct}>
+                    <button className='w-[200px] h-14 flex justify-center items-center gap-2 text-lg font-semibold text-white bg-red-500 p-3 rounded-lg hover:scale-105 hover:shadow-md hover:bg-red-600 duration-150 '
+                        onClick={handleRemoveClick}>
                         <FaTrashAlt className="text-2xl" />
                         <span>Delete Product</span>
                     </button>
                 </div>
             ) :
                 (
-                    <div className='flex justify-center items-center gap-1 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[350px]'>
+                    <div className='flex justify-start items-center gap-1 mx-auto md:mx-0 w-full md:w-1/2 lg:w-[430px]'>
                         {/* Add to Cart Button */}
                         <button
-                            className={`w-[250px] mx-auto h-14 text-xl text-white border-2 border-transparent font-semibold rounded-full 
-                            ${(!selectedColor || !selectedSize) ? 'bg-blue-800 text-white cursor-not-allowed' : 'bg-blue-500 hover:scale-105 hover:text-white hover:shadow-lg hover:bg-blue-600 duration-150'}`}
+                            className={`w-[200px] mx-auto h-14 text-lg text-white border-2 border-transparent font-semibold rounded-lg flex justify-center items-center gap-2 
+                            ${(!selectedColor || !selectedSize) ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-blue-500 hover:scale-105 hover:text-white hover:shadow-lg hover:bg-blue-600 duration-150'}`}
                             onClick={handleAddItemToCard} // ✅ Removed passing `product` since it's available in scope
                             disabled={isLoading}
                         >
-                            {isLoading ? "Adding..." : "Add to cart"}
+                            <FaCartPlus className='text-white text-3xl' />
+                            <span>{isLoading ? "Adding..." : "Add to Cart"}</span>
                         </button>
 
-                        <button className={`w-[50px] h-[50px] mx-auto font-semibold rounded-full flex justify-center items-center bg-red-500 hover:hover:scale-105 hover:shadow-lg duration-150`}
+                        <button className={` w-[200px] h-14 text-lg mx-auto font-semibold rounded-lg flex justify-center items-center gap-2 text-white bg-red-500 hover:bg-red-600 hover:scale-105 hover:shadow-lg duration-150`}
                             onClick={handleAddItemtoWishlist}
                         >
                             <IoIosHeart className='text-white text-3xl' />
+                            <span>Add to Wishlist</span>
                         </button>
                     </div>
 
                 )
             }
+
+            {showDeleteConfirm && <DeleteConfi onCancel={handleCancelDelete} onDelete={handleConfirmDelete} title={product.title} />}
 
 
             {/* Error Alert */}
@@ -235,6 +258,7 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
                 )
             }
 
+{console.log(product._id)}
             {showEditForm && (
                 <EditProductForm
                     productId={product._id}

@@ -100,7 +100,7 @@ function Shop() {
         <div className="flex flex-col justify-between items-center w-full h-auto">
           {loading ? <Loading /> :
             <div className="grid w-full md:w-[95%] lg:w-[85%] grid-cols-1 md:grid-cols-3 lg:grid-cols-4 justify-center gap-4 justify-items-center">
-              {currentProducts.map(({ _id, imageUrls, title, price }) => (
+              {currentProducts.map(({ _id, imageUrls, title, price, ratingAvg }) => (
                 <CartProduct
                   key={_id}
                   id={_id}
@@ -109,6 +109,7 @@ function Shop() {
                   backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
                   price={price}
                   viewProduct={() => handleProductClick(_id)}
+                  ratingAvg={ratingAvg}
                 />
               ))}
             </div>}

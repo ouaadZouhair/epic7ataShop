@@ -112,85 +112,87 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         try {
-          e.preventDefault();
-          setIsSubmitting(true);
-          
-          // Validate all fields
-          const errors = {};
-          if (!newProduct.title.trim()) errors.title = "Title is required";
-          if (!newProduct.description.trim()) errors.description = "Description is required";
-          if (newProduct.colors.some(color => !color.trim())) errors.colors = "All colors must be specified";
-          if (newProduct.sizes.some(size => !size.trim())) errors.sizes = "All sizes must be specified";
-          if (newProduct.price <= 0) errors.price = "Price must be greater than 0";
-          if (newProduct.countInStock < 0) errors.countInStock = "Inventory count cannot be negative";
-          if (!newProduct.productType) errors.productType = "Product type is required";
-          if (!newProduct.category) errors.category = "Category is required";
-          if (!newProduct.imageUrls.frontMockups) errors.frontMockups = "Front mockup is required";
-      
-          if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            setIsSubmitting(false);
-            return;
-          }
-      
-          // Prepare FormData according to backend expectations
-          const formData = new FormData();
-          formData.append('title', newProduct.title);
-          formData.append('description', newProduct.description);
-          
-          // Append colors and sizes as JSON strings (matches your backend parsing)
-          formData.append('colors', JSON.stringify(newProduct.colors));
-          formData.append('sizes', JSON.stringify(newProduct.sizes));
-          
-          formData.append('price', newProduct.price);
-          formData.append('countInStock', newProduct.countInStock);
-          formData.append('productType', newProduct.productType);
-          formData.append('category', newProduct.category);
-          
-          // Append images
-          formData.append('frontMockups', newProduct.imageUrls.frontMockups);
-          if (newProduct.imageUrls.backMockups) {
-            formData.append('backMockups', newProduct.imageUrls.backMockups);
-          }
-      
-          // Dispatch the action
-          const resultAction = await dispatch(addProduct(formData));
-      
-          if (addProduct.fulfilled.match(resultAction)) {
-            // Reset form on success
-            setNewProduct({
-              title: '',
-              description: '',
-              colors: [''],
-              sizes: [''],
-              price: 0,
-              countInStock: 0,
-              productType: '',
-              category: '',
-              imageUrls: {
-                frontMockups: null,
-                backMockups: null
-              }
-            });
-      
-            if (onSuccess) {
-              onSuccess();
+            e.preventDefault();
+            setIsSubmitting(true);
+            
+            // Validate all fields (excluding backMockups)
+            const errors = {};
+            if (!newProduct.title.trim()) errors.title = "Title is required";
+            if (!newProduct.description.trim()) errors.description = "Description is required";
+            if (newProduct.colors.some(color => !color.trim())) errors.colors = "All colors must be specified";
+            if (newProduct.sizes.some(size => !size.trim())) errors.sizes = "All sizes must be specified";
+            if (newProduct.price <= 0) errors.price = "Price must be greater than 0";
+            if (newProduct.countInStock < 0) errors.countInStock = "Inventory count cannot be negative";
+            if (!newProduct.productType) errors.productType = "Product type is required";
+            if (!newProduct.category) errors.category = "Category is required";
+            if (!newProduct.imageUrls.frontMockups) errors.frontMockups = "Front mockup is required";
+        
+            if (Object.keys(errors).length > 0) {
+                setFormErrors(errors);
+                setIsSubmitting(false);
+                return;
             }
-          } else {
-            // Handle error
-            if (resultAction.payload) {
-              setFormErrors({ submit: resultAction.payload.message || "Failed to create product" });
+        
+            // Prepare FormData according to backend expectations
+            const formData = new FormData();
+            formData.append('title', newProduct.title);
+            formData.append('description', newProduct.description);
+            
+            // Append colors and sizes as JSON strings (matches your backend parsing)
+            formData.append('colors', JSON.stringify(newProduct.colors));
+            formData.append('sizes', JSON.stringify(newProduct.sizes));
+            
+            formData.append('price', newProduct.price);
+            formData.append('countInStock', newProduct.countInStock);
+            formData.append('productType', newProduct.productType);
+            formData.append('category', newProduct.category);
+            
+            // Append front image (required)
+            formData.append('frontMockups', newProduct.imageUrls.frontMockups);
+            
+            // Append back image only if it exists (optional)
+            if (newProduct.imageUrls.backMockups) {
+                formData.append('backMockups', newProduct.imageUrls.backMockups);
+            }
+        
+            // Dispatch the action
+            const resultAction = await dispatch(addProduct(formData));
+        
+            if (addProduct.fulfilled.match(resultAction)) {
+                // Reset form on success
+                setNewProduct({
+                    title: '',
+                    description: '',
+                    colors: [''],
+                    sizes: [''],
+                    price: 0,
+                    countInStock: 0,
+                    productType: '',
+                    category: '',
+                    imageUrls: {
+                        frontMockups: null,
+                        backMockups: null
+                    }
+                });
+        
+                if (onSuccess) {
+                    onSuccess();
+                }
             } else {
-              setFormErrors({ submit: resultAction.error.message || "Failed to create product" });
+                // Handle error
+                if (resultAction.payload) {
+                    setFormErrors({ submit: resultAction.payload.message || "Failed to create product" });
+                } else {
+                    setFormErrors({ submit: resultAction.error.message || "Failed to create product" });
+                }
             }
-          }
         } catch (err) {
-          console.error('Failed to add product', err);
-          setFormErrors({ submit: err.message });
+            console.error('Failed to add product', err);
+            setFormErrors({ submit: err.message });
         } finally {
-          setIsSubmitting(false);
+            setIsSubmitting(false);
         }
-      };
+    };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">

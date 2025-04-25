@@ -66,6 +66,21 @@ const ProductSchema = new mongoose.Schema({
     productType:{
         type: String,
         required: true,
+        
+    },
+
+    ratingAvg:{
+        type:Number,
+        required: true,
+        default: 0,
+        min: 0,
+        max: 5
+    },
+
+    ratingCount:{
+        type: Number,
+        required: true,
+        default: 0,
     }
 
 

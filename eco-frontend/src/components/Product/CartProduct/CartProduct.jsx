@@ -7,15 +7,24 @@ import { FaHeart, FaStar } from "react-icons/fa6";
 import { FaCheckCircle, FaTrashAlt, FaPen } from "react-icons/fa";
 import { useAuth } from "../../../Context/AuthContext";
 import { EditProductForm } from '../../imports';
+import { useNavigate } from 'react-router-dom';
+import { DeleteConfi } from '../../imports.jsx'
 
-const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, viewProduct }) => {
+const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, viewProduct, ratingAvg }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate()
     const wishlist = useSelector(state => state.wishlist.wishlist);
     const { user } = useAuth()
 
     // Local state for instant UI update
     const [isExist, setIsExist] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    const handleRemoveClick = (e) => {
+        e.stopPropagation();
+        setShowDeleteConfirm(true); // Show confirmation dialog
+    };
 
     useEffect(() => {
         const exists = wishlist.some(item => item._id === id);
@@ -51,16 +60,30 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
         }
     };
 
-    const handleRemoveProduct = async (e) => {
-        e.stopPropagation();
+    const handleConfirmDelete = async () => {
         try {
-            setIsExist(false);
-            console.log(id)
-            await dispatch(removeProduct(id)).unwrap();
+            const removeItem = await dispatch(removeProduct(id)).unwrap();
         } catch (err) {
-            console.error("Failed to remove product", err)
+            console.error("Failed to remove product", err);
+        } finally {
+            setShowDeleteConfirm(false); // Always hide dialog after
         }
-    }
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteConfirm(false); // Just hide the dialog
+    };
+
+    // const handleRemoveProduct = async (e) => {
+    //     e.stopPropagation();
+    //     try {
+    //         setIsExist(false);
+    //         console.log(id)
+    //         await dispatch(removeProduct(id)).unwrap();
+    //     } catch (err) {
+    //         console.error("Failed to remove product", err)
+    //     }
+    // }
 
     const handleEditProduct = (e) => {
         e.stopPropagation();
@@ -89,7 +112,7 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
                 </button>
 
                 <div className={`absolute ${(user && user?.role === 'admin') ? 'block' : 'hidden'} flex flex-col justify-center items-center gap-3 top-5 ${isExist ? 'right-2' : '-right-10'} z-10 group-hover:right-2 transition-all duration-150 `}>
-                    <button className='text-2xl text-gray-500 hover:text-red-500 hover:scale-110 transition-transform duration-100' onClick={handleRemoveProduct}>
+                    <button className='text-2xl text-gray-500 hover:text-red-500 hover:scale-110 transition-transform duration-100' onClick={handleRemoveClick}>
                         <FaTrashAlt />
                     </button>
                     <button className='text-2xl text-gray-500 hover:text-green-500 hover:scale-110 transition-transform duration-100' onClick={handleEditProduct}>
@@ -113,14 +136,18 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
                 <div className='p-3 bg-gray-50 group-hover:bg-red-500 duration-100 h-full'>
                     <h1 className='text-xl md:text-lg lg:text-base font-semibold text-black group-hover:text-white py-2 text-center'>{title}</h1>
                     <div className='flex flex-row justify-between items-center px-14 md:px-8'>
-                        <div className="text-xl font-medium md:text-base flex justify-center items-center gap-2 group-hover:text-white">
+                        <div className="text-xl font-medium md:text-base flex justify-center items-center gap-1 group-hover:text-white">
                             <FaStar className="text-2xl md:text-xl text-amber-400" />
-                            <p>4.9</p>
+                            <p>{ratingAvg}</p>
                         </div>
                         <h1 className='text-2xl md:text-xl font-bold text-black group-hover:text-white'>{price} Dh</h1>
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            {showDeleteConfirm && <DeleteConfi onCancel={handleCancelDelete} onDelete={handleConfirmDelete} title={title}/>}
+
             {showEditForm && (
                 <EditProductForm
                     productId={id}
@@ -131,4 +158,4 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
     );
 })
 
-export default CartProduct;
+export default CartProduct; 

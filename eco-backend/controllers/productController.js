@@ -1,4 +1,5 @@
 import Product from '../Models/Product.js';
+import Rating from '../Models/Rating.js'
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -28,11 +29,18 @@ export const getProductById = async (req, res) => {
 
         const product = await Product.findById(id)
 
+        
         if (!product) {
             return res.status(404).send({ status: 'error', msg: "Product not found" });
         }
 
-        res.status(200).send({ status: 'success', msg: "Get Product successfully", product });
+        const ratingsPreview = await Rating.find({ product: id })
+                                       .populate('user', 'fullName')
+                                       .sort({ createdAt: -1 })
+                                       .limit(5);
+
+
+        res.status(200).send({ status: 'success', msg: "Get Product successfully", data: {product, ratingsPreview} });
     } catch (error) {
         res.status(500).send({ msg: 'Server Error', error: error.message });
     }

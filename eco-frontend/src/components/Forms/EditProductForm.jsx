@@ -4,6 +4,7 @@ import axios from 'axios';
 import { editeProduct } from '../../redux/slice/ProductsShopSlice';
 import { IoMdAddCircle, IoMdClose } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";
+import EditConfi from '../UI/EditConfi';
 
 const EditProductForm = ({ productId, onClose, onSuccess }) => {
     const [loading, setLoading] = useState(true);
@@ -11,6 +12,9 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
     const [formErrors, setFormErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploading, setUploading] = useState(false);
+
+    const [showEditConfirm, setShowEditConfirm] = useState(false);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     const frontFileInputRef = useRef(null);
     const backFileInputRef = useRef(null);
@@ -62,14 +66,15 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
                 setError(null);
 
                 const response = await axios.get(`${BASE_URL}/api/v1/products/${productId}`);
-                console.log('API Response:', response.data); // Add this line
+
+                console.log(response)
+
 
                 if (response.status !== 200) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const product = response.data.product;
-                console.log('Product Data:', product); // Add this line
+                const product = response.data.data.product;
                 setFormData({
                     title: product.title || '',
                     description: product.description || '',
@@ -105,6 +110,7 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
             fetchProduct();
         }
     }, [productId]);
+
 
     const handleAddColor = () => {
         setFormData(prev => ({
@@ -216,8 +222,51 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
         }));
     };
 
+    useEffect(() => {
+        // Compare current form data with initial data to detect changes
+        const initialData = {
+            title: '',
+            description: '',
+            colors: [''],
+            sizes: [''],
+            price: 0,
+            countInStock: 0,
+            productType: '',
+            category: '',
+            imageUrls: {
+                frontMockups: null,
+                backMockups: null
+            }
+        };
+    
+        const checkForChanges = () => {
+            // Simple comparison - you might want a more thorough one
+            return JSON.stringify(formData) !== JSON.stringify(initialData);
+        };
+    
+        setHasUnsavedChanges(checkForChanges());
+    }, [formData]);
+    
+    // Then modify your close button to warn about unsaved changes
+    const handleClose = () => {
+        if (hasUnsavedChanges) {
+            if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
+                onClose();
+            }
+        } else {
+            onClose();
+        }
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // First show the confirmation dialog
+        setShowEditConfirm(true);
+    };
+
+    const handleConfirmEdit = async () => {
         try {
             setIsSubmitting(true);
 
@@ -240,7 +289,7 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
 
             // Prepare FormData for update
             const formDataToSend = new FormData();
-        
+
             // Append simple fields
             formDataToSend.append('title', formData.title);
             formDataToSend.append('description', formData.description);
@@ -248,34 +297,29 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
             formDataToSend.append('countInStock', formData.countInStock);
             formDataToSend.append('productType', formData.productType);
             formDataToSend.append('category', formData.category);
-    
+
             // Append arrays properly
             formData.colors.forEach(color => {
                 formDataToSend.append('colors', color);
             });
-            
+
             formData.sizes.forEach(size => {
                 formDataToSend.append('sizes', size);
             });
-    
-            // Handle images
+
+            // Handle images - use distinct field names
             if (formData.imageUrls.frontMockups instanceof File) {
-                formDataToSend.append('images', formData.imageUrls.frontMockups);
+                formDataToSend.append('frontMockups', formData.imageUrls.frontMockups);
             }
             if (formData.imageUrls.backMockups instanceof File) {
-                formDataToSend.append('images', formData.imageUrls.backMockups);
+                formDataToSend.append('backMockups', formData.imageUrls.backMockups);
             }
-    
-            // Debug before sending
-            console.log('FormData to send:');
-            for (let [key, value] of formDataToSend.entries()) {
-                console.log(key, value);
-            }
-    
+
             const response = await dispatch(editeProduct({
                 id: productId,
                 updatedData: formDataToSend
             })).unwrap();
+
             if (onSuccess) onSuccess(); // Trigger parent to refetch data
             onClose();
         } catch (err) {
@@ -284,6 +328,10 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleCancelEdit = () => {
+        setShowEditConfirm(false); // Just close the dialog
     };
 
     return (
@@ -604,6 +652,7 @@ const EditProductForm = ({ productId, onClose, onSuccess }) => {
                     </div>
                 </form>
             </div>
+            {showEditConfirm && <EditConfi onCancel={handleCancelEdit} onEdit={handleConfirmEdit} title={productId}/>}
         </div>
     );
 };

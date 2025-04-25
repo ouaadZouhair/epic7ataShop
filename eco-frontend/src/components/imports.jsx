@@ -51,3 +51,5 @@ export { default as OrderStatusChart} from "./Chart/OrderStatusChart.jsx"
 export { default as AddProductsForm } from './Forms/AddProductsForm.jsx'
 
 export { default as EditProductForm } from './Forms/EditProductForm.jsx'
+
+export {default as DeleteConfi } from './UI/DeleteConfi.jsx'

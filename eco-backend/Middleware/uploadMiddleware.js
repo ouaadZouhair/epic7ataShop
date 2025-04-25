@@ -11,11 +11,9 @@ if (!fs.existsSync(uploadDir)) {
 // Configure Multer Storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("Saving to:", uploadDir); // Debugging
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => { 
-        console.log("Uploading:", file.originalname); // Debugging
         cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
@@ -30,7 +28,6 @@ export const uploadMiddleware = (req, res, next) => {
         if (err) {
             return res.status(400).json({ msg: "Image upload failed", error: err.message });
         }
-        console.log("Files uploaded:", req.files); // Debugging
         next();
     });
 };

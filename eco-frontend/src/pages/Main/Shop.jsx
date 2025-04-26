@@ -1,4 +1,4 @@
-import { Footer, CartProduct, Loading } from '../../components/imports.jsx';
+import { CartProduct, Loading } from '../../components/imports.jsx';
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
@@ -10,7 +10,9 @@ function Shop() {
   const [selectedProductType, setSelectedProductType] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
+  const [filter, setFilter] = useState("newest");
+  const [searchQuery, setSearchQuery] = useState("");
+  const productsPerPage = 16;
 
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector(state => state.shop);
@@ -27,21 +29,70 @@ function Shop() {
     navigate(`/product/${id}`);
   }, [navigate]);
 
+  const getFilteredProducts = () => {
+    let filtered = [...(products || [])];
+  
+    // Apply type filter
+    if (selectedProductType) {
+      filtered = filtered.filter(product => product.productType === selectedProductType);
+    }
+  
+    // Apply category filter
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+  
+    // Apply search query
+    if (searchQuery) {
+      filtered = filtered.filter(product => {
+        const matchesTitle = product.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesTags = product.tags?.some(tag => 
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        return matchesTitle || matchesTags;
+      });
+    }
+
+    // Apply sorting
+    switch (filter) {
+      case "newest":
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      case "oldest":
+        filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case "highest-rated":
+        filtered.sort((a, b) => (b.ratingAvg || 0) - (a.ratingAvg || 0));
+        break;
+      case "lowest-price":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "highest-price":
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+  
+    return filtered;
+  };
+
   // Filter products based on selected type and category
-  const filteredProducts = useMemo(() => {
-    return products?.filter(product => {
-      const matchesType = selectedProductType ? product.productType === selectedProductType : true;
-      const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
-      return matchesType && matchesCategory;
-    }) || [];
-  }, [products, selectedProductType, selectedCategory]);
+  // const filteredProducts = useMemo(() => {
+  //   return products?.filter(product => {
+  //     const matchesType = selectedProductType ? product.productType === selectedProductType : true;
+  //     const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+  //     return matchesType && matchesCategory;
+  //   }) || [];
+  // }, [products, selectedProductType, selectedCategory]);
 
  
   // Pagination logic
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const filteredProducts = getFilteredProducts();
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   // Scroll to top when page changes
   useEffect(() => {
@@ -94,6 +145,24 @@ function Shop() {
               <option value="Movies&Series">Movies & Series</option>
             </select>
           </div>
+
+          <div className="flex items-center gap-2">
+              <label className="text-lg font-semibold">Sort by:</label>
+              <select
+                className="bg-white rounded-full w-40 h-9 text-black px-3"
+                value={filter}
+                onChange={(e) => {
+                  setFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="highest-rated">Highest Rated</option>
+                <option value="lowest-price">Lowest Price</option>
+                <option value="highest-price">Highest Price</option>
+              </select>
+            </div>
         </div>
 
         {/* Product Grid */}

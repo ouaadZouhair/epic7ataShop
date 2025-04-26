@@ -2,18 +2,22 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addProduct } from '../../redux/slice/ProductsShopSlice';
 import { IoMdAddCircle, IoMdClose } from "react-icons/io";
-import { FaTrash } from "react-icons/fa";
 
 const AddProductsForm = ({ troggleForm, onSuccess }) => {
     const dispatch = useDispatch();
     const [formErrors, setFormErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [colorInput, setColorInput] = useState(''); // Add this state at the top
+    const [tagInput, setTagInput] = useState('');
+
+    const availableSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', 'STD'];
 
     const [newProduct, setNewProduct] = useState({
         title: '',
         description: '',
-        colors: [''],
-        sizes: [''],
+        colors: [],
+        sizes: {},
+        tags: [],
         price: 0,
         countInStock: 0,
         productType: '',
@@ -41,51 +45,72 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
         { value: 'Movies&series', label: 'Movies & Series' }
     ];
 
-    const handleAddColor = () => {
-        setNewProduct(prev => ({
-            ...prev,
-            colors: [...prev.colors, '']
-        }));
-    };
+    const handleAddTag = (e) => {
+        e.preventDefault();
+        const tagValue = tagInput.trim();
 
-    const handleRemoveColor = (index) => {
-        setNewProduct(prev => ({
-            ...prev,
-            colors: prev.colors.filter((_, i) => i !== index)
-        }));
-    };
-
-    const handleColorChange = (index, value) => {
-        setNewProduct(prev => {
-            const newColors = [...prev.colors];
-            newColors[index] = value;
-            return { ...prev, colors: newColors };
-        });
-    };
-
-    const handleAddSize = () => {
-        setNewProduct(prev => ({
-            ...prev,
-            sizes: [...prev.sizes, '']
-        }));
-    };
-
-    const handleRemoveSize = (index) => {
-        if (newProduct.sizes.length > 1) {
+        if (tagValue && !newProduct.tags?.includes(tagValue)) {
             setNewProduct(prev => ({
                 ...prev,
-                sizes: prev.sizes.filter((_, i) => i !== index)
+                tags: [...(prev.tags || []), tagValue]
             }));
+            setTagInput('');
         }
     };
 
-    const handleSizeChange = (index, value) => {
-        setNewProduct(prev => {
-            const newSizes = [...prev.sizes];
-            newSizes[index] = value;
-            return { ...prev, sizes: newSizes };
-        });
+
+    const handleRemoveTag = (tagToRemove) => {
+        setNewProduct(prev => ({
+            ...prev,
+            tags: prev.tags?.filter(tag => tag !== tagToRemove)
+        }));
     };
+
+    const handleTagKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddTag(e);
+        }
+    };
+
+    const handleAddColor = (e) => {
+        e.preventDefault();
+        const colorValue = colorInput.trim();
+
+        if (colorValue && !newProduct.colors.includes(colorValue)) {
+            setNewProduct(prev => ({
+                ...prev,
+                colors: [...prev.colors, colorValue]
+            }));
+            setColorInput(''); // Clear the input
+        }
+    };
+
+    const handleRemoveColor = (colorToRemove) => {
+        setNewProduct(prev => ({
+            ...prev,
+            colors: prev.colors.filter(color => color !== colorToRemove)
+        }));
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddColor(e);
+        }
+    };
+
+    const handleSizeChange = (size) => {
+        setNewProduct(prev => ({
+            ...prev,
+            sizes: {
+                ...prev.sizes,
+                [size]: !prev.sizes[size] // Toggle the size
+            }
+        }));
+    };
+
+
 
     const handleImageChange = (type, e) => {
         const file = e.target.files[0];
@@ -114,57 +139,64 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
         try {
             e.preventDefault();
             setIsSubmitting(true);
-            
+
             // Validate all fields (excluding backMockups)
             const errors = {};
             if (!newProduct.title.trim()) errors.title = "Title is required";
             if (!newProduct.description.trim()) errors.description = "Description is required";
             if (newProduct.colors.some(color => !color.trim())) errors.colors = "All colors must be specified";
-            if (newProduct.sizes.some(size => !size.trim())) errors.sizes = "All sizes must be specified";
+            if (Object.keys(newProduct.sizes).filter(size => newProduct.sizes[size]).length === 0) {
+                errors.sizes = "At least one size must be selected";
+            }
             if (newProduct.price <= 0) errors.price = "Price must be greater than 0";
             if (newProduct.countInStock < 0) errors.countInStock = "Inventory count cannot be negative";
             if (!newProduct.productType) errors.productType = "Product type is required";
             if (!newProduct.category) errors.category = "Category is required";
             if (!newProduct.imageUrls.frontMockups) errors.frontMockups = "Front mockup is required";
-        
+
             if (Object.keys(errors).length > 0) {
                 setFormErrors(errors);
                 setIsSubmitting(false);
                 return;
             }
-        
+
             // Prepare FormData according to backend expectations
             const formData = new FormData();
             formData.append('title', newProduct.title);
             formData.append('description', newProduct.description);
-            
+
             // Append colors and sizes as JSON strings (matches your backend parsing)
             formData.append('colors', JSON.stringify(newProduct.colors));
-            formData.append('sizes', JSON.stringify(newProduct.sizes));
-            
+            // Convert sizes object to array of selected sizes
+            const selectedSizes = Object.keys(newProduct.sizes)
+                .filter(size => newProduct.sizes[size]);
+            formData.append('sizes', JSON.stringify(selectedSizes));
+            if (newProduct.tags?.length > 0) {
+                formData.append('tags', JSON.stringify(newProduct.tags));
+            }
             formData.append('price', newProduct.price);
             formData.append('countInStock', newProduct.countInStock);
             formData.append('productType', newProduct.productType);
             formData.append('category', newProduct.category);
-            
+
             // Append front image (required)
             formData.append('frontMockups', newProduct.imageUrls.frontMockups);
-            
+
             // Append back image only if it exists (optional)
             if (newProduct.imageUrls.backMockups) {
                 formData.append('backMockups', newProduct.imageUrls.backMockups);
             }
-        
+
             // Dispatch the action
             const resultAction = await dispatch(addProduct(formData));
-        
+
             if (addProduct.fulfilled.match(resultAction)) {
                 // Reset form on success
                 setNewProduct({
                     title: '',
                     description: '',
                     colors: [''],
-                    sizes: [''],
+                    sizes: {},
                     price: 0,
                     countInStock: 0,
                     productType: '',
@@ -174,7 +206,7 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
                         backMockups: null
                     }
                 });
-        
+
                 if (onSuccess) {
                     onSuccess();
                 }
@@ -200,9 +232,9 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
                 <div className="sticky top-0 bg-white z-10 flex justify-between items-center border-b p-6">
                     <h2 className="text-2xl font-bold text-gray-800">Add New Product</h2>
                     <button
-                        onClick={troggleForm}
+                        onClick={troggleForm} // Make sure this matches the prop name
                         className="text-gray-500 hover:text-gray-700 transition-colors"
-                        disabled={isSubmitting}
+                    // Removed disabled={isSubmitting} to allow closing during submission
                     >
                         <IoMdClose size={24} />
                     </button>
@@ -246,38 +278,83 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
                                 Available Colors <span className="text-red-500">*</span>
                             </label>
                             <div className="space-y-3">
-                                {newProduct.colors.map((color, index) => (
-                                    <div key={index} className="flex items-center gap-3">
-                                        <input
-                                            type="text"
-                                            value={color}
-                                            onChange={(e) => handleColorChange(index, e.target.value)}
-                                            placeholder="Color value (e.g., black, red, blue)"
-                                            className={`flex-1 px-4 py-2 border ${formErrors[`color-${index}`] ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                                            required
-                                        />
-                                        {newProduct.colors.length > 1 && (
+
+
+                                {/* Color input and add button */}
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Add color (e.g., black, white)"
+                                        value={colorInput}
+                                        onChange={(e) => setColorInput(e.target.value)}
+                                        onKeyDown={handleKeyDown}
+                                        className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddColor}
+                                        className="p-2 text-blue-600 rounded-lg hover:text-blue-700 hover:scale-105 duration-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                        disabled={isSubmitting}
+                                    >
+                                        <IoMdAddCircle className="text-2xl" />
+                                    </button>
+                                </div>
+                                {formErrors.colors && <p className="text-red-500 text-sm mt-1">{formErrors.colors}</p>}
+                                {/* Color tags display */}
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    {newProduct.colors.map((color, index) => (
+                                        <div key={index} className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-base font-medium group hover:text-red-700 hover:bg-red-100 hover:scale-105 duration-150">
+                                            {color}
                                             <button
                                                 type="button"
-                                                onClick={() => handleRemoveColor(index)}
-                                                className="text-red-500 hover:text-red-700 transition-colors p-1"
-                                                disabled={isSubmitting}
+                                                onClick={() => handleRemoveColor(color)}
+                                                className="ml-2 text-blue-500 group-hover:text-red-700"
                                             >
-                                                <FaTrash size={16} />
+                                                &times;
                                             </button>
-                                        )}
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={handleAddColor}
-                                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
-                                    disabled={isSubmitting}
-                                >
-                                    <IoMdAddCircle size={18} />
-                                    Add Color
-                                </button>
-                                {formErrors.colors && <p className="text-red-500 text-sm mt-1">{formErrors.colors}</p>}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Product Tags
+                            </label>
+                            <div className="space-y-3">
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Add tag (e.g., summer, limited-edition)"
+                                        value={tagInput}
+                                        onChange={(e) => setTagInput(e.target.value)}
+                                        onKeyDown={handleTagKeyDown}
+                                        className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddTag}
+                                        className="p-2 text-purple-600 rounded-lg hover:text-purple-700 hover:scale-105 duration-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                        disabled={isSubmitting}
+                                    >
+                                        <IoMdAddCircle className="text-2xl" />
+                                    </button>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    {newProduct.tags?.map((tag, index) => (
+                                        <div key={index} className="flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-base font-medium group hover:text-red-700 hover:bg-red-100 hover:scale-105 duration-150">
+                                            {tag}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveTag(tag)}
+                                                className="ml-2 text-purple-500 group-hover:text-red-700"
+                                            >
+                                                &times;
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
@@ -286,40 +363,26 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
                             <label className="block text-sm font-medium text-gray-700">
                                 Available Sizes <span className="text-red-500">*</span>
                             </label>
-                            <div className="space-y-3">
-                                {newProduct.sizes.map((size, index) => (
-                                    <div key={index} className="flex items-center gap-3">
+                            <div className="flex flex-wrap gap-3">
+                                {availableSizes.map((size) => (
+                                    <label
+                                        key={size}
+                                        className={`flex items-center justify-center w-12 h-12 rounded-lg border-2 cursor-pointer transition-all 
+                    ${newProduct.sizes[size] ?
+                                                'bg-blue-600 border-blue-600 text-white' :
+                                                'bg-white border-gray-200 hover:border-blue-400 text-gray-700'}`}
+                                    >
                                         <input
-                                            type="text"
-                                            value={size}
-                                            onChange={(e) => handleSizeChange(index, e.target.value)}
-                                            placeholder="Size (e.g., S, M, L)"
-                                            className={`flex-1 px-4 py-2 border ${formErrors[`size-${index}`] ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                                            required
+                                            type="checkbox"
+                                            checked={!!newProduct.sizes[size]}
+                                            onChange={() => handleSizeChange(size)}
+                                            className="hidden"
                                         />
-                                        {newProduct.sizes.length > 1 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveSize(index)}
-                                                className="text-red-500 hover:text-red-700 transition-colors p-1"
-                                                disabled={isSubmitting}
-                                            >
-                                                <FaTrash size={16} />
-                                            </button>
-                                        )}
-                                    </div>
+                                        <span className="font-medium">{size}</span>
+                                    </label>
                                 ))}
-                                <button
-                                    type="button"
-                                    onClick={handleAddSize}
-                                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors"
-                                    disabled={isSubmitting}
-                                >
-                                    <IoMdAddCircle size={18} />
-                                    Add Size
-                                </button>
-                                {formErrors.sizes && <p className="text-red-500 text-sm mt-1">{formErrors.sizes}</p>}
                             </div>
+                            {formErrors.sizes && <p className="text-red-500 text-sm mt-1">{formErrors.sizes}</p>}
                         </div>
                     </div>
 
@@ -373,6 +436,7 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
                             </select>
                             {formErrors.productType && <p className="text-red-500 text-sm mt-1">{formErrors.productType}</p>}
                         </div>
+
 
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">
@@ -489,7 +553,6 @@ const AddProductsForm = ({ troggleForm, onSuccess }) => {
                     )}
                     <div className="pt-4">
                         <button
-                            // onClick={troggleForm}
                             type="submit"
                             className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                             disabled={isSubmitting}

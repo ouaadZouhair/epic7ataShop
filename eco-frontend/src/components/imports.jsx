@@ -53,3 +53,5 @@ export { default as AddProductsForm } from './Forms/AddProductsForm.jsx'
 export { default as EditProductForm } from './Forms/EditProductForm.jsx'
 
 export {default as DeleteConfi } from './UI/DeleteConfi.jsx'
+
+export {default as Skeleton} from './UI/Skeleton.jsx'

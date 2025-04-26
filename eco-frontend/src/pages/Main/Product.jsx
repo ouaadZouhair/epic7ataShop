@@ -23,8 +23,6 @@ const Product = () => {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      console.log(res.data.data)
-
       setProduct(res.data.data.product);
       setRatingPreview(res.data.data.ratingPreview)
     } catch (error) {

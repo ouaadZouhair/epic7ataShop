@@ -10,6 +10,7 @@ import userRouter from './Routes/UserRoute.js';
 import wishlistRouter from './Routes/WishlistRoute.js';
 import cartRouter from './Routes/CartRouter.js';
 import ratingRoute from './Routes/RatingRoute.js';
+import analyticsRouter from './Routes/AnalyticsRouter.js';
 // import Middleware
 import cookieParser from 'cookie-parser';
 
@@ -44,7 +45,9 @@ app.use('/api/v1/users', userRouter) // Users Route
 
 app.use('/api/v1/wishlist', wishlistRouter) // Wishlist Route
 
-app.use('/api/v1/rating', ratingRoute)
+app.use('/api/v1/rating', ratingRoute) // Rating Route
+
+app.use('/api/v1/analytics', analyticsRouter) // Analytics Route
 
 
 // Server Static Files (Images) => Acess to uploads file for front end

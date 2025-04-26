@@ -45,13 +45,35 @@ export const getProductById = async (req, res) => {
         res.status(500).send({ msg: 'Server Error', error: error.message });
     }
 }
+
+// Get products by tags
+export const getProductsByTag = async (req, res) => {
+    try {
+        const { tag } = req.params;
+        
+        if (!tag) {
+            return res.status(400).send({ status: 'error', msg: "Tag is required" });
+        }
+
+        const products = await Product.find({ tags: tag });
+        
+        res.status(200).send({ 
+            status: 'success', 
+            msg: "Products retrieved successfully", 
+            data: products 
+        });
+    } catch (error) {
+        res.status(500).send({ msg: 'Server Error', error: error.message });
+    }
+}
+
 // Create products
 export const createProduct = async (req, res) => {
     try {
         // Convert text-based numbers and booleans
         const price = Number(req.body.price);
         const countInStock = Number(req.body.countInStock);
-
+        const tags = req.body.tags ? JSON.parse(req.body.tags) : [];
         const colors = JSON.parse(req.body.colors);
         const validColors = ["black", "white", "red", "blue", "orange", "green", 'purple', 'pink'];
         const invalidColors = colors.filter(c => !validColors.includes(c));
@@ -75,6 +97,7 @@ export const createProduct = async (req, res) => {
             colors: colors, // Parse JSON array
             sizes: JSON.parse(req.body.sizes),
             price: price,
+            tags: tags, // Parse JSON array
             countInStock: countInStock,
             isInStock: countInStock > 0 ? true : false,
             isNewPr: true,
@@ -122,6 +145,12 @@ export const editeProduct = async (req, res) => {
             updateData.sizes = Array.isArray(req.body.sizes)
                 ? req.body.sizes
                 : [req.body.sizes];
+        }
+
+        if (req.body.tags) {
+            updateData.tags = Array.isArray(req.body.tags)
+                ? req.body.tags
+                : [req.body.tags];
         }
 
         // 3. Handle file uploads if they exist

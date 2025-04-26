@@ -1,6 +1,6 @@
 import { CardItem, Loading } from "../imports.jsx";
 import logo from '../../assets/epic7ata-logo.png';
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from "../../Context/AuthContext.jsx";
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,6 +16,7 @@ import { MdRemoveShoppingCart } from "react-icons/md";
 import { fetchWishlist, removeFromWishlist } from "../../redux/slice/WishlistSlice.js";
 import { fetchFromCart } from "../../redux/slice/CartShippingSlice.js";
 
+
 const navLinks = [
   { path: '/', text: 'Home' },
   { path: '/shop', text: 'Shop' },
@@ -23,18 +24,83 @@ const navLinks = [
   { path: '/contact', text: 'Contact' }
 ];
 
+const SearchResultsDropdown = ({ results, onItemClick, visible }) => {
+
+  if (!visible || !results.length) return null;
+
+  return (
+    <div className="absolute top-full left-0 w-[300px] mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+      {results.map((product) => (
+        <Link
+          key={product._id}
+          to={`/product/${product._id}`}
+          className="flex items-center w-full p-3 text-gray-800 hover:bg-blue-500 hover:text-white transition-colors duration-200"
+          onClick={() => onItemClick(product._id)}
+        >
+          <img
+            src={`http://localhost:3000${product.imageUrls.frontMockups}`}
+            alt={product.title}
+            className="w-20 h-20 object-cover rounded mr-3"
+          />
+          <span className="font-medium">{product.title}</span>
+        </Link>
+      ))}
+    </div>
+  );
+};
+
 export const Navbar = () => {
   const [cardCounter, setCardCounter] = useState(0)
   const [isCardShippingVisible, setIsCardShippingVisible] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isProfileMenuVisible, setIsProfileMenuVisible] = useState(false)
   const [isWishlistMenuVisible, setIsWishlistMenuVisible] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef(null);
+  const { products } = useSelector(state => state.shop);
   const { user } = useAuth()
-
-  // const wishlist = useSelector(state => state.wishlist.wishlist)
 
   const toggleShippingCard = () => setIsCardShippingVisible(!isCardShippingVisible)
   const toggleMenu = () => setIsMenuVisible(!isMenuVisible)
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    if (term.length > 2) {
+      const filtered = products.filter(product =>
+        product.title.toLowerCase().includes(term.toLowerCase()) ||
+        (product.tags && product.tags.some(tag =>
+          tag.toLowerCase().includes(term.toLowerCase())
+        ))
+      );
+      setSearchResults(filtered.slice(0, 5)); // Show top 5 results
+      setShowResults(true);
+    } else {
+      setSearchResults([]);
+      setShowResults(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleResultClick = (id) => {
+    setSearchTerm('');
+    setSearchResults([]);
+    setShowResults(false);
+  };
 
   const toggleProfileMenu = () => {
     setIsProfileMenuVisible(!isProfileMenuVisible)
@@ -61,38 +127,60 @@ export const Navbar = () => {
         <img src={logo} className="h-full w-full" />
       </div>
 
-      
-
       <ul className="w-[350px] justify-around items-center hidden lg:flex">
-          {navLinks.map((link) => (
-            <li key={link.path} className="relative hover:text-blue-500 text-lg duration-200 ">
-              <NavLink
-                to={link.path}
-                className={({ isActive }) => 
-                  `px-3 py-2 transition-colors  ${
-                    isActive 
-                      ? 'text-blue-600 font-semibold' 
-                      : 'text-gray-800 hover:text-blue-500 font-medium'
-                  }`
-                }
-              >
-                {link.text}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        {navLinks.map((link) => (
+          <li key={link.path} className="relative hover:text-blue-500 text-lg duration-200 ">
+            <NavLink
+              to={link.path}
+              className={({ isActive }) =>
+                `px-3 py-2 transition-colors  ${isActive
+                  ? 'text-blue-600 font-semibold'
+                  : 'text-gray-800 hover:text-blue-500 font-medium'
+                }`
+              }
+            >
+              {link.text}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
 
       <div className="flex  justify-around gap-3 w-[500px]">
-        <form className="form relative hidden lg:block">
-          <button className="absolute left-2 -translate-y-1/2 top-1/2 p-1">
-
+        <form className="form relative hidden lg:block" ref={searchRef}>
+          <button
+            type="submit"
+            className="absolute left-2 -translate-y-1/2 top-1/2 p-1"
+            onClick={(e) => e.preventDefault()}
+          >
             <IoSearch className="w-5 h-5 text-gray-700" />
           </button>
-          <input className="input rounded-full px-8 py-3 border-2 border-transparent focus:outline-none focus:border-blue-500 placeholder-gray-400 transition-all duration-300 shadow-md" placeholder="Search..." required type="text" />
-          <button type="reset" className="absolute right-3 -translate-y-1/2 top-1/2 p-1">
-            <FaXmark className="w-6 h-6 text-gray-700 hover:text-red-500 duration-100" />
-
-          </button>
+          <input
+            className="input rounded-full px-8 py-3 border-2 border-transparent focus:outline-none focus:border-blue-500 placeholder-gray-400 transition-all duration-300 shadow-md"
+            placeholder="Search..."
+            required
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={() => searchTerm.length > 2 && setShowResults(true)}
+          />
+          {searchTerm && (
+            <button
+              type="reset"
+              className="absolute right-3 -translate-y-1/2 top-1/2 p-1"
+              onClick={() => {
+                setSearchTerm('');
+                setSearchResults([]);
+                setShowResults(false);
+              }}
+            >
+              <FaXmark className="w-6 h-6 text-gray-700 hover:text-red-500 duration-100" />
+            </button>
+          )}
+          <SearchResultsDropdown
+            results={searchResults}
+            onItemClick={handleResultClick}
+            visible={showResults}
+          />
         </form>
 
 

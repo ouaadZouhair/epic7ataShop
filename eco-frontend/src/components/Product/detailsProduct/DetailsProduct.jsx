@@ -26,6 +26,8 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
 
     const navigate = useNavigate()
 
+    const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL', 'One Size'];
+
 
     const handleColorSelect = (color) => setSelectedColor(color);
     const handleSizeSelect = (size) => setSelectedSize(size);
@@ -70,7 +72,11 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
         }
     }
 
- 
+    const sortSizes = (sizes) => {
+        return [...sizes].sort((a, b) => {
+          return SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b);
+        });
+      };
 
     const handleEditProduct = (e) => {
         e.stopPropagation();
@@ -128,7 +134,7 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
             <div className='flex flex-row-reverse justify-start items-center gap-2 w-[70px]'>
                 <p className=' text-gray-400'>({product.ratingCount})</p>
                 <div className='text-lg flex justify-between items-center gap-1'>
-                    <FaStar className='text-2xl text-amber-400'/>
+                    <FaStar className='text-2xl text-amber-400' />
                     <p className='text-lg text-gray-900 font-medium'>{parseFloat(product.ratingAvg.toFixed(1))}</p>
                 </div>
             </div>
@@ -142,12 +148,12 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
                         <div
                             key={i}
                             className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 p-1 border-gray-300
-                            hover:scale-110 duration-100 ${color === 'white' && 'bg-gray-50'} ${color === 'black' && 'bg-black'} ${color === 'blue' && 'bg-blue-800'} ${color === 'red' && 'bg-red-600'} ${color === 'orange' && 'bg-orange-500'} ${color === 'yellow' && 'bg-yellow-400'} ${color === 'green' && 'bg-green-600'} ${color === 'purple' && 'bg-purple-500'} ${color === 'gray' && 'bg-gray-400'}`}
+                            hover:scale-110 hover:shadow-md duration-100 ${color === 'white' && 'bg-gray-50'} ${color === 'black' && 'bg-black'} ${color === 'blue' && 'bg-blue-800'} ${color === 'red' && 'bg-red-600'} ${color === 'orange' && 'bg-orange-500'} ${color === 'yellow' && 'bg-yellow-400'} ${color === 'green' && 'bg-green-600'} ${color === 'purple' && 'bg-purple-500'} ${color === 'gray' && 'bg-gray-400'}`}
                             onClick={() => handleColorSelect(color)}
                         >
-                            {(selectedColor === color) ? (color !== 'red') ? (
-                                <FaCheck className="absolute w-8 h-8 text-red-600 text-sm top-1 right-1" />
-                            ) : (<FaCheck className="absolute w-8 h-8 text-red-100 text-sm top-1 right-1" />)
+                            {(selectedColor === color) ? (color !== 'blue' && color !== 'purple') ? (
+                                <FaCheck className="absolute w-8 h-8 text-blue-600 text-sm top-1 right-1" />
+                            ) : (<FaCheck className="absolute w-8 h-8 text-blue-100 text-sm top-1 right-1" />)
                                 : ''}
                         </div>
                     ))}
@@ -158,16 +164,19 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
             {product.sizes?.length > 0 && (
                 <div className="flex justify-start items-center md:w-2/3 w-[400px] gap-3">
                     <IoMdResize className='text-4xl text-black' />
-                    {product.sizes.map((size) => (
+                    {sortSizes(product.sizes).map((size) => (  // <-- Apply sorting here
                         <div
                             key={size}
                             className={`relative w-10 h-10 rounded-lg cursor-pointer border-2 border-gray-400
-                            hover:scale-110 duration-100`}
+        hover:scale-110 hover:shadow-md duration-100 ${selectedSize === size ? 'border-blue-500 bg-blue-50' : ''}`}
                             onClick={() => handleSizeSelect(size)}
                         >
-                            <h1 className={`flex justify-center items-center p-1 font-semibold text-lg text-gray-500`}>{size}</h1>
+                            <h1 className={`flex justify-center items-center p-1 font-semibold text-lg 
+          ${selectedSize === size ? 'text-blue-600' : 'text-gray-500'}`}>
+                                {size}
+                            </h1>
                             {selectedSize === size && (
-                                <FaCheck className="absolute w-8 h-8 text-red-600 text-sm top-1 right-1" />
+                                <FaCheck className="absolute w-8 h-8 text-blue-600 text-sm top-1 right-1" />
                             )}
                         </div>
                     ))}
@@ -258,7 +267,6 @@ const DetailsProduct = ({ product, onProductUpdated }) => {
                 )
             }
 
-{console.log(product._id)}
             {showEditForm && (
                 <EditProductForm
                     productId={product._id}

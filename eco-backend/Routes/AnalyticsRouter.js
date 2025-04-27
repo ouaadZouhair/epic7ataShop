@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { authorizeRoles, verifyToken } from '../Middleware/authMiddleware.js';
-import { calTotalRev, countOrders, countProducts, countUersClient } from '../controllers/analyticsController.js';
+import { calTotalRev, countOrders, countProducts, countUersClient, getMonthlyRevenue, getDailyRevenue } from '../controllers/analyticsController.js';
 
 const analyticsRouter = Router();
 
@@ -11,6 +11,10 @@ analyticsRouter.get('/products/count', verifyToken, authorizeRoles('admin'), cou
 analyticsRouter.get('/client/count', verifyToken, authorizeRoles('admin'), countUersClient);
 
 analyticsRouter.get('/revenue', verifyToken, authorizeRoles('admin'), calTotalRev);
+
+analyticsRouter.get('/revenue/monthly', verifyToken, authorizeRoles('admin'), getMonthlyRevenue);
+
+analyticsRouter.get('/revenue/daily', verifyToken, authorizeRoles('admin'), getDailyRevenue);
 
 export default analyticsRouter;
 

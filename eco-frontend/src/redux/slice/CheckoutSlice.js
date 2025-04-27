@@ -3,13 +3,15 @@ import axios from 'axios';
 
 export const fetchOrder = createAsyncThunk('checkout/fetchOrder', async () => {
     const response = await axios.get('http://localhost:3000/api/v1/orders', { withCredentials: true });
-    return response.data.orders;
+    return response.data.data;
 });
 
 export const createOrder = createAsyncThunk('checkout/createOrder', async (order) => {
     const response = await axios.post('http://localhost:3000/api/v1/orders', order, { withCredentials: true });
     return response.data;
 });
+
+
 
 const initialState = {
     order: [],

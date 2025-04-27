@@ -14,9 +14,10 @@ const Orders = () => {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const BASE_URL = 'http://localhost:3000';
 
+
   const handleGoToShopping = useCallback(() => {
     navigate("/shop");
-  }, []) 
+  }, [])
 
   const handleProductClick = useCallback((id) => {
     navigate(`/product/${id}`);
@@ -36,9 +37,9 @@ const Orders = () => {
 
   const calculateSubtotal = (products) => {
     return products.reduce((total, item) => {
-      return total + (item.product.price * item.product.quantity);
+        return total + (item.product?.price || 0) * item.quantity;
     }, 0);
-  };
+};
 
   return (
     <div className="bg-gray-50">
@@ -85,11 +86,23 @@ const Orders = () => {
                 <div className="flex flex-col  md:flex-row md:justify-start md:items-center md:flex-wrap gap-2 md:gap-5 mb-4">
                   {orderItem.products.map((item, i) => (
                     <div key={i} className="flex items-center gap-4">
-                      <img src={`${BASE_URL}${item.product.imageUrls.frontMockups}`} alt={item.product.title} className="w-36 md:w-40 h-auto cursor-pointer rounded hover:scale-105 duration-150" onClick={() => handleProductClick(item.product._id)} />
+                      <img
+                        src={`${BASE_URL}${item.product?.imageUrls?.frontMockups || ''}`}
+                        alt={item.product?.title || 'Product image'}
+                        className="w-36 md:w-40 h-auto cursor-pointer rounded hover:scale-105 duration-150"
+                        onClick={() => handleProductClick(item.product?._id)}
+                      />
                       <div className="flex flex-col">
-                        <h4 className="font-semibold text-lg md:text-xl cursor-pointer hover:scale-105 hover:underline duration-150" onClick= {() => handleProductClick(item.product._id)}>{item.product.title}</h4>
-                        <p className="text-sm md:text-base font-normal text-gray-500">{item.product.price} Dhs x {item.product.quantity} Qty</p>
-                        <p className="text-sm md:text-base font-normal text-gray-500">Size: {item.product.size} | Color: <span className="capitalize">{item.product.color}</span></p>
+                        <h4 className="font-semibold text-lg md:text-xl cursor-pointer hover:scale-105 hover:underline duration-150"
+                          onClick={() => handleProductClick(item.product?._id)}>
+                          {item.product?.title || 'Deleted Product'}
+                        </h4>
+                        <p className="text-sm md:text-base font-normal text-gray-500">
+                          {item.product?.price || 0} Dhs x {item.quantity} Qty
+                        </p>
+                        <p className="text-sm md:text-base font-normal text-gray-500">
+                          Size: {item.size} | Color: <span className="capitalize">{item.color}</span>
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -117,6 +130,7 @@ const Orders = () => {
                         <h4 className="font-semibold text-xl underline text-center mt-4 mb-2">Shipping Information</h4>
                         <p className="text-lg text-gray-700"> <span className="font-semibold">Send to:</span>  {orderItem.firstName} {orderItem.lastName}</p>
                         <p className="text-lg text-gray-700"> <span className="font-semibold">Address:</span> {orderItem.address} {orderItem.city}</p>
+                        <p className="text-lg text-gray-700"> <span className="font-semibold">Payment method:</span> {orderItem.paymentMethod === 'creditCard' && 'Credit Cart' } {orderItem.paymentMethod === 'cashOnDelivery' && 'Cash On Delivery' }</p>
                         <p className="text-lg text-gray-700"><span className="font-semibold">Phone:</span> {orderItem.phone}</p>
                       </div>
                     </div>

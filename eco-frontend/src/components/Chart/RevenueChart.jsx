@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import axios from 'axios'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(
@@ -13,39 +14,47 @@ ChartJS.register(
 
 const RevenueChart = () => {
   const [timeRange, setTimeRange] = useState('monthly');
+  const [chartData, setChartData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample data
-  const monthlyData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [{
-      label: 'Revenue (Dhs)',
-      data: [12000, 19000, 15000, 18000, 21000, 23000, 25000, 22000, 24000, 26000, 28000, 20000],
-      backgroundColor: (context) => {
-        return context.dataset.data[context.dataIndex] > 20000 
-          ? 'rgba(59, 130, 246, 1)' 
-          : 'rgba(156, 163, 175, 1)';
-      },
-      hoverBackgroundColor: 'rgba(59, 130, 246, 0.9)',
-      borderRadius: 6,
-      borderSkipped: false,
-    }]
-  };
+  useEffect(() => {
+    const fetchRevenueData = async () => {
+      try {
+        setLoading(true);
+        const endpoint = timeRange === 'monthly' 
+          ? 'http://localhost:3000/api/v1/analytics/revenue/monthly' 
+          : 'http://localhost:3000/api/v1/analytics/revenue/daily';
+        
+        const response = await axios.get(endpoint, { withCredentials: true });
+        
+        setChartData({
+          labels: response.data.data.labels,
+          datasets: [{
+            label: 'Revenue (Dhs)',
+            data: response.data.data.revenue,
+            backgroundColor: (context) => {
+              return context.dataset.data[context.dataIndex] > (timeRange === 'monthly' ? 20000 : 4000)
+                ? 'rgba(59, 130, 246, 1)' 
+                : 'rgba(156, 163, 175, 1)';
+            },
+            hoverBackgroundColor: 'rgba(59, 130, 246, 0.9)',
+            borderRadius: 6,
+            borderSkipped: false,
+          }]
+        });
+        
+        setError(null);
+      } catch (err) {
+        setError('Failed to load revenue data');
+        console.error('Error fetching revenue data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const dailyData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    datasets: [{
-      label: 'Revenue (Dhs)',
-      data: [3500, 4200, 3800, 5100, 4900, 6200, 5800],
-      backgroundColor: (context) => {
-        return context.dataset.data[context.dataIndex] > 4000 
-          ? 'rgba(59, 130, 246, 1)' 
-          : 'rgba(156, 163, 175, 1)';
-      },
-      hoverBackgroundColor: 'rgba(59, 130, 246, 0.8)',
-      borderRadius: 6,
-      borderSkipped: false,
-    }]
-  };
+    fetchRevenueData();
+  }, [timeRange]);
 
   const options = {
     responsive: true,
@@ -131,14 +140,24 @@ const RevenueChart = () => {
       </div>
       
       <div className="px-6 pb-6 h-80">
-        <Bar 
-          data={timeRange === 'monthly' ? monthlyData : dailyData} 
-          options={options} 
-        />
+        {loading ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : error ? (
+          <div className="h-full flex items-center justify-center text-red-500">
+            {error}
+          </div>
+        ) : (
+          <Bar 
+            data={chartData} 
+            options={options} 
+          />
+        )}
       </div>
       
       <div className="px-6 py-3 border-t border-gray-100 bg-gray-50 text-xs text-gray-500">
-        {timeRange === 'monthly' ? 'Showing last 12 months' : 'Showing last 7 days'}
+        {timeRange === 'monthly' ? 'Showing current year' : 'Showing current week'}
       </div>
     </div>
   );

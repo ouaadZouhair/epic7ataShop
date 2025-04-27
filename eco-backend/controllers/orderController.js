@@ -1,6 +1,7 @@
 import Product from "../Models/Product.js";
-import Order from "../Models/Order.js"; 
+import Order from "../Models/Order.js";
 import Cart from "../Models/Cart.js";
+import mongoose from "mongoose";
 
 
 // Add Order
@@ -18,7 +19,7 @@ import Cart from "../Models/Cart.js";
 //             return res.status(400).json({ status: "error", message: "Products are required" });
 //         }
 
-  
+
 //         if (!userId) {
 //             return res.status(401).json({ status: "error", message: "Unauthorized user" });
 //         }
@@ -86,31 +87,31 @@ export const addOrder = async (req, res) => {
     try {
         const userId = req.user.id;
         const { firstName, lastName, phone, address, city, paymentMethod, deleviryCost } = req.body;
-        
+
         // Validate required fields
         if (!phone || !address || !city || !paymentMethod || !deleviryCost) {
-            return res.status(400).json({ 
-                status: "error", 
-                message: "Phone, address, city, payment and deleviry cost method are required" 
+            return res.status(400).json({
+                status: "error",
+                message: "Phone, address, city, payment and deleviry cost method are required"
             });
         }
 
         // Validate phone format
         const phoneRegex = /^(0[67]\d{8})|(\+212[67]\d{8})$/;
         if (!phoneRegex.test(phone)) {
-            return res.status(400).json({ 
-                status: "error", 
-                message: "Invalid phone number format" 
+            return res.status(400).json({
+                status: "error",
+                message: "Invalid phone number format"
             });
         }
 
         // Get user's cart
         const cart = await Cart.findOne({ user: userId }).populate('products.product');
-        
+
         if (!cart || cart.products.length === 0) {
-            return res.status(400).json({ 
-                status: "error", 
-                message: "Cart is empty" 
+            return res.status(400).json({
+                status: "error",
+                message: "Cart is empty"
             });
         }
 
@@ -143,7 +144,7 @@ export const addOrder = async (req, res) => {
 
         // Save the order
         const savedOrder = await newOrder.save();
-        
+
         // Clear the cart after successful order creation
         await Cart.findOneAndUpdate(
             { user: userId },
@@ -159,57 +160,86 @@ export const addOrder = async (req, res) => {
 
     } catch (error) {
         console.error("Error creating order from cart:", error);
-        return res.status(500).json({ 
-            status: "error", 
+        return res.status(500).json({
+            status: "error",
             message: "Internal Server Error",
-            error: error.message 
+            error: error.message
         });
     }
 };
 
 // Get All Orders by User
+// Get All Orders by User - Fixed Version
 export const getAllOrdersByUser = async (req, res) => {
     try {
         const userId = req.user.id;
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                status: "error",
+                message: "Invalid user ID format"
+            });
+        }
+
         const orders = await Order.find({ user: userId })
-            .populate("products.product", "title price imageUrls") // Added images to product data
-            .populate("user", "fullName email")
-            .select("user products firstName lastName totalPrice deleviryCost paymentMethod phone address city status createdAt")
-            .sort({ createdAt: -1 }); // Sort by newest first
+            .populate({
+                path: "products.product",
+                select: "title price imageUrls",
+                options: { retainNullValues: true }
+            })
+            .populate({
+                path: "user",
+                select: "fullName email"
+            })
+            .sort({ createdAt: -1 })
+            .lean();
 
-        // Transform each order in the array
-        const transformedOrders = orders.map(order => ({
-            ...order.toObject(),
-
-            user: {
+        const transformedOrders = orders.map(order => {
+            // Safely handle user data
+            const user = order.user ? {
                 fullName: order.user.fullName,
                 email: order.user.email
-            },
-            products: order.products.map(item => ({
-                product: {
-                    ...item.product.toObject(),
+            } : null;
+
+            // Safely transform products
+            const products = order.products.map(item => {
+                const product = item.product ? {
+                    _id: item.product._id,
+                    title: item.product.title,
+                    price: item.product.price,
+                    imageUrls: item.product.imageUrls || { frontMockups: '', backMockups: '' }
+                } : null;
+            
+                return {
+                    ...item,
+                    product: product,
                     color: item.color,
                     size: item.size,
                     quantity: item.quantity,
-                    fullPrice: item.fullPrice,
-                    price: item.product.price,
-                }
-            })),
+                    fullPrice: item.fullPrice
+                };
+            });
 
-        }));
+            // Return the transformed order object
+            return {
+                ...order,
+                user: user,
+                products: products
+            };
+        });
 
         res.status(200).json({
             status: "success",
-            message: "Your orders retrieved successfully",
-            results: transformedOrders.length,
-            orders: transformedOrders
+            message: "Orders retrieved successfully",
+            count: transformedOrders.length,
+            data: transformedOrders
         });
 
     } catch (error) {
         console.error("Error fetching user orders:", error);
-        return res.status(500).json({
-            status: "error", // Changed from "failed" to be consistent with other endpoints
-            message: "Internal server error",
+        res.status(500).json({
+            status: "error",
+            message: "Failed to retrieve orders",
             error: error.message
         });
     }
@@ -228,7 +258,7 @@ export const cancelOrder = async (req, res) => {
         }
 
         if (order.status !== "Pending") { // Ensure case matches schema definition
-            return res.status(400).json({ status: "failed", message: "Order cannot be canceled" });
+            return res.status(400).json({ status: "failed", message: "Order cannot be canceled  because " });
         }
 
         order.status = "Canceled"; // Ensure consistency with schema enum values

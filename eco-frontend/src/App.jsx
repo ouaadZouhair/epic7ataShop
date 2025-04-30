@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth } from './Context/AuthContext.jsx';
 import { Home, Print, Shop, About, Contact, Product, Signup, Login, Checkout, Orders, NotAllowed } from "./pages/imports.jsx"
-import { DashHome, DashProducts, DashOrders, DashClients, DashAnalytics } from './pages/Admin/imports.jsx';
+import { DashHome, DashProducts, DashOrders, DashClients, DashAnalytics, OrderDetails } from './pages/Admin/imports.jsx';
 import { Main, Dashboard } from './components/imports.jsx';
 
 function ProtectedRoute({ children, allowedRole }) {
@@ -19,7 +19,7 @@ function ProtectedRoute({ children, allowedRole }) {
       return <NotAllowed />;
     }
   }
-  return children ? children : <Outlet/>;
+  return children ? children : <Outlet />;
 
 }
 
@@ -53,6 +53,8 @@ function App() {
               <Route path="orders" element={<DashOrders />} />
               <Route path="analytics" element={<DashAnalytics />} />
               <Route path="clients" element={<DashClients />} />
+              // In App.jsx, add this route inside the admin protected routes
+              <Route path="/dashboard/orders/:orderId" element={<OrderDetails />} />
             </Route>
           </Route>
 

@@ -13,9 +13,9 @@ const OrderStatusChart = ({ data }) => {
                 data: data?.values || [45, 30, 15, 10],
                 backgroundColor: [
                     '#10B981', // green
-                    '#3B82F6', // blue
-                    '#EF4444', // red
                     '#F59E0B', // yellow
+                    '#EF4444', // red
+                    '#3B82F6', // blue
                 ],
                 borderColor: [
                     '#FFFFFF', // white border

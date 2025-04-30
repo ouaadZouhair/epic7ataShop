@@ -43,17 +43,17 @@ const DashProducts = () => {
   // Filter and sort products
   const getFilteredProducts = () => {
     let filtered = [...products];
-  
+
     if (searchQuery) {
       filtered = filtered.filter(product => {
         const matchesTitle = product.title.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesTags = product.tags?.some(tag => 
+        const matchesTags = product.tags?.some(tag =>
           tag.toLowerCase().includes(searchQuery.toLowerCase())
         );
         return matchesTitle || matchesTags;
       });
     }
-  
+
     // Rest of your sorting logic remains the same
     switch (filter) {
       case "newest":
@@ -74,7 +74,7 @@ const DashProducts = () => {
       default:
         break;
     }
-  
+
     return filtered;
   };
 
@@ -91,7 +91,7 @@ const DashProducts = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <section className="w-full h-[600px] scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-transparent overflow-y-scroll">
+    <section className="w-full">
       {/* Add Product Popup */}
       {isPopupOpen && (
         <AddProductsForm
@@ -112,7 +112,7 @@ const DashProducts = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-          <div className="relative w-full md:w-64">
+            <div className="relative w-full md:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <IoMdSearch className="text-gray-400" />
               </div>
@@ -127,6 +127,7 @@ const DashProducts = () => {
                 className="block w-full pl-10 pr-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
               />
             </div>
+
             <div className="relative w-full md:w-auto">
               <label htmlFor="filter" className="sr-only">Filter</label>
               <select
@@ -154,9 +155,6 @@ const DashProducts = () => {
               <span>Add Product</span>
             </button>
           </div>
-
-          {/* Filter Dropdown */}
-
         </div>
       </div>
 

@@ -13,7 +13,7 @@ ChartJS.register(
 );
 
 const RevenueChart = () => {
-  const [timeRange, setTimeRange] = useState('monthly');
+  const [timeRange, setTimeRange] = useState('daily');
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -31,7 +31,7 @@ const DashHome = () => {
   );
 
   return (
-    <section className="w-full h-[600px] scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-transparent overflow-y-scroll">
+    <section className="w-full h-[600px] ">
       <div className="flex justify-between items-center gap-1 w-full h-[120px] my-2 pr-1">
         <StatCard
           icon={<FaChartLine className="text-green-500 text-2xl" />}
@@ -70,7 +70,7 @@ const DashHome = () => {
         />
       </div>
 
-      <div className="flex justify-around items-center gap-2 w-full h-[450px] my-2 pr-1">
+      <div className="flex justify-around items-center gap-2 w-full h-[450px]">
         
           <RevenueChart />
        

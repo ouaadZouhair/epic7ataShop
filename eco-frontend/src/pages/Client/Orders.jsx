@@ -4,7 +4,8 @@ import { MdRemoveShoppingCart } from "react-icons/md";
 import { LuChevronsRight } from "react-icons/lu";
 import { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchOrder } from "../../redux/slice/CheckoutSlice";
+import { TiCancel } from "react-icons/ti";
+import { fetchOrder, cancelOrder } from "../../redux/slice/CheckoutSlice";
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -27,6 +28,18 @@ const Orders = () => {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
+  const handleCancelOrder = async (e, orderId ) => {
+    try {
+      e.stopPropagation();
+      await dispatch(cancelOrder({ orderId })).unwrap();
+      await dispatch(fetchOrder()).unwrap();
+      console.log("Item removed successfully");
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+    }
+  }
+
+
   useEffect(() => {
     dispatch(fetchOrder())
       .unwrap()
@@ -35,11 +48,12 @@ const Orders = () => {
       });
   }, [dispatch]);
 
+  
   const calculateSubtotal = (products) => {
     return products.reduce((total, item) => {
-        return total + (item.product?.price || 0) * item.quantity;
+      return total + (item.product?.price || 0) * item.quantity;
     }, 0);
-};
+  };
 
   return (
     <div className="bg-gray-50">
@@ -77,11 +91,19 @@ const Orders = () => {
             {order.map((orderItem, i) => (
               <div key={i} className="relative bg-white p-4 rounded-3xl shadow mb-4 overflow-hidden">
                 <div className="flex flex-col md:flex-row justify-between items-start gap-3 md:gap-0 md:items-center mb-4">
-                  <div className="flex flex-col">
-                    <p className="font-semibold text-base md:text-xl">Order <span className="text-gray-400 truncate">#{orderItem._id}</span></p>
-                    <p className="text-gray-600 text-sm md:text-lg">Placed on: {new Date(orderItem.createdAt).toDateString()}</p>
+                  <div className="flex justify-between items-center gap-2 w-[450px]">
+                    <div className="flex flex-col">
+                      <p className="font-semibold text-base md:text-xl">Order <span className="text-gray-400 truncate">#{orderItem._id}</span></p>
+                      <p className="text-gray-600 text-sm md:text-lg">Placed on: {new Date(orderItem.createdAt).toDateString()}</p>
+                    </div>
+                    <p className={`px-3 py-2 ${orderItem.status === 'Pending' && 'bg-blue-400'}  ${orderItem.status === 'Canceled' && 'bg-red-500'} ${orderItem.status === 'Processing' && 'bg-yellow-400'} ${orderItem.status === 'Delivering' && 'bg-orange-400'} ${orderItem.status === 'Completed' && 'bg-green-400'} ${orderItem.status === 'Printing' && 'bg-teal-400'} rounded-full text-white font-semibold`}> {orderItem.status}</p>
                   </div>
-                  <p className="px-3 py-2 bg-blue-400 rounded-full text-white font-semibold"> {orderItem.status}</p>
+                  <button 
+                  className="text-white bg-red-500 rounded-full w-9 h-9 text-4xl text-center flex items-center justify-center hover:bg-red-600 hover:scale-110 hover:shadow-md duration-150" 
+                  onClick={(e) => handleCancelOrder(e, orderItem._id )}
+                  >
+                    <TiCancel />
+                  </button>
                 </div>
                 <div className="flex flex-col  md:flex-row md:justify-start md:items-center md:flex-wrap gap-2 md:gap-5 mb-4">
                   {orderItem.products.map((item, i) => (
@@ -130,7 +152,7 @@ const Orders = () => {
                         <h4 className="font-semibold text-xl underline text-center mt-4 mb-2">Shipping Information</h4>
                         <p className="text-lg text-gray-700"> <span className="font-semibold">Send to:</span>  {orderItem.firstName} {orderItem.lastName}</p>
                         <p className="text-lg text-gray-700"> <span className="font-semibold">Address:</span> {orderItem.address} {orderItem.city}</p>
-                        <p className="text-lg text-gray-700"> <span className="font-semibold">Payment method:</span> {orderItem.paymentMethod === 'creditCard' && 'Credit Cart' } {orderItem.paymentMethod === 'cashOnDelivery' && 'Cash On Delivery' }</p>
+                        <p className="text-lg text-gray-700"> <span className="font-semibold">Payment method:</span> {orderItem.paymentMethod === 'creditCard' && 'Credit Cart'} {orderItem.paymentMethod === 'cashOnDelivery' && 'Cash On Delivery'}</p>
                         <p className="text-lg text-gray-700"><span className="font-semibold">Phone:</span> {orderItem.phone}</p>
                       </div>
                     </div>

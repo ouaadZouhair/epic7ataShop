@@ -133,7 +133,7 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
                 </div>
 
                 {/* Product Info */}
-                <div className='p-3 bg-gray-50 group-hover:bg-red-500 duration-100 h-full'>
+                <div className='p-3 bg-white group-hover:bg-red-500 duration-100 h-full'>
                     <h1 className='text-xl md:text-lg lg:text-base font-semibold text-black group-hover:text-white py-2 text-center'>{title}</h1>
                     <div className='flex flex-row justify-between items-center px-14 md:px-8'>
                         <div className="text-xl font-medium md:text-base flex justify-center items-center gap-1 group-hover:text-white">

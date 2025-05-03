@@ -1,7 +1,49 @@
-import Product from "../Models/Product.js";
+import Notification from "../Models/Notification.js";
 import Order from "../Models/Order.js";
 import Cart from "../Models/Cart.js";
 import mongoose from "mongoose";
+import { emitNotification } from '../utils/socketNotifications.js';
+import User from '../Models/User.js'
+import { createNotification, notifyAdmin } from "../Helpers/notifiationHelper.js";
+
+// Helper function
+// const createNotification = async (io, userId, message, type, link = '') => {
+//     try {
+//         const notification = new Notification({
+//             user: userId,
+//             message,
+//             type,
+//             link
+//         });
+//         await notification.save();
+        
+//         // Emit socket event
+//         // const io = req.app.get('io');
+//         if (io) {
+//             emitNotification(io, userId, notification);
+//         }
+        
+//         return notification;
+//     } catch (error) {
+//         console.error("Error creating notification:", error);
+//     }
+// };
+
+// const notifyAdmin = async (io, message, type, link = '') => {
+//     try {
+//         // Find all admin users
+//         const admins = await User.find({ role: 'admin' });
+        
+//         // Create notifications for each admin
+//         const notificationPromises = admins.map(admin => 
+//             createNotification(io, admin._id, message, type, link)
+//         );
+        
+//         await Promise.all(notificationPromises);
+//     } catch (error) {
+//         console.error("Error notifying admins:", error);
+//     }
+// };
 
 
 // Add Order
@@ -66,6 +108,13 @@ export const addOrder = async (req, res) => {
 
         // Save the order
         const savedOrder = await newOrder.save();
+
+        await notifyAdmin(
+            req.app.get('io'),
+            `New order #${savedOrder._id} placed by ${firstName} ${lastName}`,
+            'info',
+            `/admin/orders/${savedOrder._id}`
+        );
 
         // Clear the cart after successful order creation
         await Cart.findOneAndUpdate(
@@ -253,6 +302,13 @@ export const cancelOrder = async (req, res) => {
         order.status = "Canceled"; // Ensure consistency with schema enum values
         await order.save();
 
+        await notifyAdmin(
+            req.app.get('io'),
+            `Order #${order._id} has been canceled by user`,
+            'warning',
+            `/admin/orders/${order._id}`
+        );
+
         return res.status(200).json({
             status: "success",
             message: "Order status canceled successfully"
@@ -288,6 +344,14 @@ export const editOrderStatus = async (req, res) => {
 
         order.status = newStatus;
         await order.save()
+
+        await createNotification(
+            req.app.get('io'),
+            order.user,
+            `Your order #${order._id} status has been updated to ${newStatus}`,
+            newStatus === 'Completed' ? 'success' : 'info',
+            `/orders/${order._id}`
+        );
 
         return res.status(200).json({
             status: "success",

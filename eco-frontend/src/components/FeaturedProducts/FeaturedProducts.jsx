@@ -29,7 +29,6 @@ const FeaturedProducts = () => {
         return products.filter(product => product?.isNewPr );
       }, [products]);
     
-    console.log(NewProducts)
 
     // Memoized navigation function
     const handleProductClick = useCallback((id) => {

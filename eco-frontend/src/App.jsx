@@ -51,8 +51,8 @@ function App() {
               <Route index element={<DashHome />} />
               <Route path="products" element={<DashProducts />} />
               <Route path="orders" element={<DashOrders />} />
-              <Route path="analytics" element={<DashAnalytics />} />
-              <Route path="clients" element={<DashClients />} />
+              {/* <Route path="analytics" element={<DashAnalytics />} /> */}
+              <Route path="customers" element={<DashClients />} />
               // In App.jsx, add this route inside the admin protected routes
               <Route path="/dashboard/orders/:orderId" element={<OrderDetails />} />
             </Route>

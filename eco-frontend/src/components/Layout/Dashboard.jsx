@@ -42,17 +42,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex h-screen bg-blue-50 overflow-hidden">
+    <div className="flex h-screen bg-blue-100 overflow-hidden">
       {/* Fixed Sidebar */}
-      <div className="fixed left-0 top-0 bottom-0 w-[250px]">
+      <div className="fixed left-0 top-0 bottom-0 w-[200px]">
         <NavDashboard />
       </div>
 
       {/* Scrollable Main Content */}
-      <div className="flex-1 ml-[250px] overflow-y-auto">
+      <div className="flex-1 ml-[200px] overflow-y-auto">
         <main className="min-h-screen flex flex-col">
           {/* Fixed Header */}
-          <header className="sticky top-0 z-10 flex justify-between items-center w-full h-[90px] bg-white shadow-sm p-5">
+          <header className="sticky top-0 z-10 flex justify-between items-center w-full h-[90px] bg-white p-5">
             <div>
               <h1 className="text-3xl font-semibold text-gray-800">
                 {getPageTitle()}
@@ -106,7 +106,7 @@ const Dashboard = () => {
           </header>
 
           {/* Scrollable Content */}
-          <div className="flex-1 p-3">
+          <div className="flex-1 p-3 ">
             <Outlet />
           </div>
         </main>

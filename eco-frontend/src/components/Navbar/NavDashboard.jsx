@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../../Context/AuthContext.jsx';
 import { HiMiniHome, HiShoppingCart } from "react-icons/hi2";
 import { FaFileAlt, FaUser } from "react-icons/fa";
-import { FaChartSimple } from "react-icons/fa6";
+// import { FaChartSimple } from "react-icons/fa6";
 import { TbLogout } from "react-icons/tb";
 import { useNavigate } from 'react-router-dom';
 
@@ -13,15 +13,15 @@ const NavDashboard = () => {
     const { user, logout } = useAuth();
 
     const navLinks = [
-        { path: '', text: 'Dashboard', icon: <HiMiniHome className="text-2xl" /> },
+        { path: '', text: 'Main', icon: <HiMiniHome className="text-2xl" /> },
         { path: 'products', text: 'Products', icon: <HiShoppingCart className="text-2xl" /> },
         { path: 'orders', text: 'Orders', icon: <FaFileAlt className="text-2xl" /> },
-        { path: 'analytics', text: 'Analytics', icon: <FaChartSimple className="text-2xl" /> },
-        { path: 'clients', text: 'Clients', icon: <FaUser className="text-2xl" /> },
+        { path: 'customers', text: 'Customers', icon: <FaUser className="text-2xl" /> },
+        // { path: 'analytics', text: 'Analytics', icon: <FaChartSimple className="text-2xl" /> },
     ];
 
     return (
-        <nav className='h-full flex flex-col justify-between  py-6 px-4 bg-blue-500 text-white shadow-lg'>
+        <nav className='h-full flex flex-col justify-between py-6 px-4 bg-blue-500 text-white shadow-lg'>
             <div>
                 <Link to="/" className='text-4xl font-normal text-center block mb-8'>Epic7ata</Link>
 

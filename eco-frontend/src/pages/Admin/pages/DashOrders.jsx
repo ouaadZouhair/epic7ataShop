@@ -50,12 +50,12 @@ const DashOrders = () => {
   };
 
   return (
-    <div className="py-4 w-full h-full">
+    <div className=" w-full h-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 bg-white p-3  rounded-lg shadow-sm">
-        <h1 className="text-xl font-semibold mb-2 sm:mb-0">Orders Management</h1>
+        <h1 className="text-xl font-semibold mb-2 sm:mb-0">Total {statusFilter !== 'all' && statusFilter.toLowerCase()} orders: {filteredOrders.length} </h1>
         <Select
           defaultValue="all"
-          style={{ width: 180 }}
+          style={{ width: 180, height: 45 }}
           onChange={(value) => setStatusFilter(value)}
         >
           <Option value="all">All Orders</Option>
@@ -83,7 +83,7 @@ const DashOrders = () => {
             showSizeChanger: false,
             size: 'medium'
           }}
-          className="compact-table bg-white text-lg"
+          className="compact-table rounded-lg bg-white text-lg"
           onRow={(record) => {
             return {
               onClick: (event) => {

@@ -388,9 +388,10 @@ export const Profiel = ({ data }) => {
   const { logout } = useAuth()
   return (
     <div className="absolute top-14 -right-1/2 md:right-12 z-50 bg-white shadow-lg rounded-xl w-60 overflow-hidden">
-      <p className="text-xl font-semibold px-4 py-2"> {data.fullName}</p>
-      {/* <span className='text-lg text-gray-700 px-4 capitalize' >{data.role}</span> */}
-      <p className="text-base text-gray-500 px-4 py-2">{data.email}</p>
+      <div className="px-4 py-2">
+        <p className="text-base font-semibold"> {data.fullName}</p>
+        <p className="text-sm text-gray-500">{data.email}</p>
+      </div>
       {data.role === 'admin' ? (
         <button
           className="text-white font-semibold mt-2 w-full py-2 bg-blue-600 hover:bg-blue-700 duration-100"

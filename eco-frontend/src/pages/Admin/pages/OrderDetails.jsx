@@ -42,7 +42,7 @@ const OrderDetails = () => {
     }
 
     return (
-        <div className="w-full p-3">
+        <div className="w-full ">
             <div className="max-w-7xl mx-auto">
                 {/* Main Content */}
                 <div className="flex flex-col lg:flex-row gap-6">
@@ -84,11 +84,6 @@ const OrderDetails = () => {
                                             <div className="flex items-center mt-1">
                                                 <div
                                                     className={`w-4 h-4 rounded-full mr-2 border border-gray-200 ${item.color === 'white' && 'bg-gray-50'} ${item.color === 'black' && 'bg-black'} ${item.color === 'blue' && 'bg-blue-800'} ${item.color === 'red' && 'bg-red-600'} ${item.color === 'orange' && 'bg-orange-500'} ${item.color === 'yellow' && 'bg-yellow-400'} ${item.color === 'green' && 'bg-green-600'} ${item.color === 'purple' && 'bg-purple-500'} ${item.color === 'gray' && 'bg-gray-400'}`}
-                                                // style={{
-                                                //     backgroundColor: item.color === 'gray' ? '#9CA3AF' :
-                                                //         item.color === 'black' ? '#000000' :
-                                                //             item.color === 'white' ? '#FFFFFF' : '#cccccc'
-                                                // }}
                                                 />
                                                 <span className="capitalize">{item.color}</span>
                                             </div>

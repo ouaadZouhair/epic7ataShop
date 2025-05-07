@@ -40,6 +40,20 @@ const corsOptions = {
     credentials: true, // Allow credentials (cookies)
 };
 
+// After initializing io
+io.on('connection', (socket) => {
+    console.log('A user connected');
+  
+    // Join user-specific room (for admins)
+    socket.on('join_admin_room', (userId) => {
+      socket.join(`user_${userId}`);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('User disconnected');
+    });
+  });
+
 // Middleware
 app.use(cors(corsOptions)); // Cross-Origin Resource Sharing
 app.use(express.json()); // Body parser 

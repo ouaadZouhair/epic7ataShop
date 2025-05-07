@@ -1,49 +1,7 @@
-import Notification from "../Models/Notification.js";
 import Order from "../Models/Order.js";
 import Cart from "../Models/Cart.js";
 import mongoose from "mongoose";
-import { emitNotification } from '../utils/socketNotifications.js';
-import User from '../Models/User.js'
 import { createNotification, notifyAdmin } from "../Helpers/notifiationHelper.js";
-
-// Helper function
-// const createNotification = async (io, userId, message, type, link = '') => {
-//     try {
-//         const notification = new Notification({
-//             user: userId,
-//             message,
-//             type,
-//             link
-//         });
-//         await notification.save();
-        
-//         // Emit socket event
-//         // const io = req.app.get('io');
-//         if (io) {
-//             emitNotification(io, userId, notification);
-//         }
-        
-//         return notification;
-//     } catch (error) {
-//         console.error("Error creating notification:", error);
-//     }
-// };
-
-// const notifyAdmin = async (io, message, type, link = '') => {
-//     try {
-//         // Find all admin users
-//         const admins = await User.find({ role: 'admin' });
-        
-//         // Create notifications for each admin
-//         const notificationPromises = admins.map(admin => 
-//             createNotification(io, admin._id, message, type, link)
-//         );
-        
-//         await Promise.all(notificationPromises);
-//     } catch (error) {
-//         console.error("Error notifying admins:", error);
-//     }
-// };
 
 
 // Add Order
@@ -283,46 +241,6 @@ export const getAllOrders = async (req, res) => {
     }
 };
 
-// Cancel Order
-export const cancelOrder = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const { orderId } = req.body;
-
-        const order = await Order.findOne({ _id: orderId, user: userId });
-
-        if (!order) {
-            return res.status(404).json({ status: "failed", message: "Order not found" });
-        }
-
-        if (order.status !== "Pending") { // Ensure case matches schema definition
-            return res.status(400).json({ status: "failed", message: `Order cannot be canceled  because is (${order.status})` });
-        }
-
-        order.status = "Canceled"; // Ensure consistency with schema enum values
-        await order.save();
-
-        await notifyAdmin(
-            req.app.get('io'),
-            `Order #${order._id} has been canceled by user`,
-            'warning',
-            `/admin/orders/${order._id}`
-        );
-
-        return res.status(200).json({
-            status: "success",
-            message: "Order status canceled successfully"
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            status: "failed",
-            message: "Something went wrong",
-            error: error.message
-        });
-    }
-};
-
 export const editOrderStatus = async (req, res) => {
     try {
         // const orderId = req.params.id;
@@ -348,7 +266,7 @@ export const editOrderStatus = async (req, res) => {
         await createNotification(
             req.app.get('io'),
             order.user,
-            `Your order #${order._id} status has been updated to ${newStatus}`,
+            `Your order #${order._id} is on ${newStatus}`,
             newStatus === 'Completed' ? 'success' : 'info',
             `/orders/${order._id}`
         );
@@ -368,3 +286,49 @@ export const editOrderStatus = async (req, res) => {
 
 
 }
+
+// Cancel Order
+export const cancelOrder = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { orderId } = req.body;
+
+        const order = await Order.findOne({ _id: orderId, user: userId })
+        .populate({
+            path: "user",
+            select: "fullName email"
+        });
+
+        if (!order) {
+            return res.status(404).json({ status: "failed", message: "Order not found" });
+        }
+
+        if (order.status !== "Pending") { // Ensure case matches schema definition
+            return res.status(400).json({ status: "failed", message: `Order cannot be canceled  because is (${order.status})` });
+        }
+
+        order.status = "Canceled"; // Ensure consistency with schema enum values
+        await order.save();
+
+        console.log(order)
+
+        await notifyAdmin(
+            req.app.get('io'),
+            `Order #${order._id} has been canceled by ${order.user.fullName}`,
+            'warning',
+            `/dashboard/orders/${order._id}`
+        );
+
+        return res.status(200).json({
+            status: "success",
+            message: "Order status canceled successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: "failed",
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+};

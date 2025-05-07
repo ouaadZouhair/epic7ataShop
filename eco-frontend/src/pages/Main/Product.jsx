@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ImgsProduct, DetailsProduct, InfoProduct, Footer, Loading } from "../../components/imports.jsx";
+import { ImgsProduct, DetailsProduct, InfoProduct, ReviewProduct, Loading } from "../../components/imports.jsx";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -70,7 +70,7 @@ const Product = () => {
         <DetailsProduct product={product} />
       </main>
       <InfoProduct product={product} onProductUpdated={fetchProduct} />
-      {/* <Footer /> */}
+      <ReviewProduct productId ={product._id}/>
     </>
   );
 };

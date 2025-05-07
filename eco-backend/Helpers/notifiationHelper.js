@@ -14,7 +14,6 @@ export const createNotification = async (io, userId, message, type, link = '') =
         await notification.save();
         
         // Emit socket event
-        // const io = req.app.get('io');
         if (io) {
             emitNotification(io, userId, notification);
         }

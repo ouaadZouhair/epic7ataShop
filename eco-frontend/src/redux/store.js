@@ -3,6 +3,7 @@ import CartShippingSlice from "./slice/CartShippingSlice";
 import ProductsShopSlice from "./slice/ProductsShopSlice";
 import WishlistSlice from "./slice/WishlistSlice";
 import CheckoutSlice from "./slice/CheckoutSlice";
+import ReviewsSlice from './slice/ReviewsSlice'
 
 const store = configureStore({
     
@@ -10,7 +11,8 @@ const store = configureStore({
         cart: CartShippingSlice,
         shop: ProductsShopSlice,
         wishlist: WishlistSlice,
-        order: CheckoutSlice
+        order: CheckoutSlice, 
+        review: ReviewsSlice
     }
 });
 

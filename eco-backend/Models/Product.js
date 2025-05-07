@@ -85,7 +85,7 @@ const ProductSchema = new mongoose.Schema({
 
     tags:{
         type: [String],
-        // required: true,
+        required: true,
         default: []
     }
 

@@ -38,8 +38,7 @@ const OvTshirtSizes = [
 
 
 const InfoProduct = ({ product }) => {
-
-    const [currentArray, setCurrentArray] = useState([])
+    const [currentArray, setCurrentArray] = useState([]);
 
     useEffect(() => {
         if (product.productType === "Classic-hoodie") {
@@ -55,92 +54,144 @@ const InfoProduct = ({ product }) => {
         }
     }, [product.productType]);
 
-
-
     return (
-        <section className='w-[95%] lg:w-[80%] mx-auto my-10'>
-            <div className='flex gap-1 items-center '>
-                <BsInfoCircleFill className="text-3xl text-blue-600" />
-                <h1 className="relative text-3xl font-semibold border-b-4 border-gray-200 p-1 w-full after:content-[''] after:absolute after:h-[3px] after:rounded-full after:-bottom-1 after:left-0 after:w-1/6 after:bg-blue-600">Product Info</h1>
+        <section className='w-[95%] lg:w-[80%] mx-auto my-16'>
+            {/* Header with modern underline effect */}
+            <div className='flex items-center mb-12'>
+                <BsInfoCircleFill className="text-3xl text-blue-500 mr-3" />
+                <h1 className="text-3xl font-bold text-gray-800 relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-16 after:h-1 after:bg-gradient-to-r from-blue-500 to-blue-300">
+                    Product Details
+                </h1>
             </div>
 
-            <div className="w-[90%] mx-auto flex flex-wrap md:flex-nowrap justify-center md:justify-between items-start my-8 ">
-                <div className="w-2/4 md:w-1/3 mb-2" >
-                    <span className="flex items-center gap-3">
-                        <BsStack className="text-4xl text-amber-400" />
-                        <h1 className="text-2xl font-semibold">Features</h1>
-                    </span>
-                    <ul className="w-full text-lg font-normal ml-5 text-gray-700">
-                        <li>Raglan sleeves</li>
-                        <li>Unisex</li>
-                        <li>Regular fit</li>
-                        <li>Neck tape</li>
-                        <li>Drawstrings </li>
+            {/* Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                {/* Features Card */}
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-amber-100 rounded-lg">
+                            <BsStack className="text-2xl text-amber-500" />
+                        </div>
+                        <h2 className="text-xl font-semibold text-gray-800">Features</h2>
+                    </div>
+                    <ul className="space-y-2 text-gray-600">
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-amber-400 rounded-full mr-2"></span>
+                            Raglan sleeves
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-amber-400 rounded-full mr-2"></span>
+                            Unisex design
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-amber-400 rounded-full mr-2"></span>
+                            Regular fit
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-amber-400 rounded-full mr-2"></span>
+                            Neck tape
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-amber-400 rounded-full mr-2"></span>
+                            Drawstrings
+                        </li>
                     </ul>
                 </div>
 
-                <div className="w-2/4 md:w-1/3">
-                    <span className="flex items-center gap-3">
-                        <GiCottonFlower className="text-4xl text-blue-500" />
-                        <h1 className="text-2xl font-semibold">Fabric</h1>
-                    </span>
-                    <ul className="w-full text-lg font-normal ml-5 text-gray-700">
-                        <li>100% cotton</li>
-                        <li>Fleece lining</li>
-                        <li>High-temperature</li>
-                        
+                {/* Fabric Card */}
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                            <GiCottonFlower className="text-2xl text-blue-500" />
+                        </div>
+                        <h2 className="text-xl font-semibold text-gray-800">Fabric</h2>
+                    </div>
+                    <ul className="space-y-2 text-gray-600">
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                            100% premium cotton
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                            Fleece lining (hoodies)
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                            High-temperature resistant
+                        </li>
                     </ul>
                 </div>
 
-                <div className="w-2/4 md:w-1/3">
-                    <span className="flex items-center gap-3">
-                        <GiSewingString className="text-4xl text-red-500" />
-                        <h1 className="text-2xl font-semibold">Process</h1>
-                    </span>
-                    <ul className="w-full text-lg font-normal ml-5 text-gray-700">
-                        <li>Side-seamed construction</li>
-                        <li>Taped neck</li>
-                        <li>Front kangaroo pocket</li>
+                {/* Process Card */}
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-red-100 rounded-lg">
+                            <GiSewingString className="text-2xl text-red-500" />
+                        </div>
+                        <h2 className="text-xl font-semibold text-gray-800">Construction</h2>
+                    </div>
+                    <ul className="space-y-2 text-gray-600">
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                            Side-seamed construction
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                            Reinforced taped neck
+                        </li>
+                        <li className="flex items-center">
+                            <span className="w-2 h-2 bg-red-400 rounded-full mr-2"></span>
+                            Spacious kangaroo pocket
+                        </li>
                     </ul>
                 </div>
-
             </div>
 
-            <div className="w-full">
-                <h2 className="text-3xl font-normal text-center mb-4 text-gray-950 underline">
-                    {product.productType.includes("Hoodie") ? "Hoodie" : "T-Shirt"} Size Guide
-                </h2>
-            </div>
+            {/* Size Guide Section */}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                <div className="p-6 border-b border-gray-100">
+                    <h2 className="text-2xl font-bold text-gray-800">
+                        {product.productType.includes("Hoodie") ? "Hoodie" : "T-Shirt"} Size Guide
+                    </h2>
+                    <p className="text-gray-500 mt-1">Find your perfect fit with our detailed measurements</p>
+                </div>
 
-            <div className="w-full flex flex-col md:flex-row justify-evenly items-center">
-                {(product.productType === 'Classic-hoodie' || product.productType === 'Oversize-hoodie') && <img src={hoodieImg} alt="hoodie size" className="w-[300px] md:w-1/3" />}
-                {(product.productType === 'Classic-tshirt' || product.productType === 'Oversize-tshirt') && <img src={tshirtImg} alt="thirt size" className="w-[300px] md:w-1/3" />}
-                <div className="flex justify-center mt-10">
-                    <div className=" rounded-lg p-6 w-96">
-                        <table className="w-full border-collapse border border-gray-300 rounded-lg">
+                <div className="flex flex-col lg:flex-row p-6 gap-8">
+                    {/* Product Image */}
+                    <div className="flex-1 flex justify-center items-center bg-gray-50 rounded-lg p-4">
+                        {(product.productType === 'Classic-hoodie' || product.productType === 'Oversize-hoodie') && (
+                            <img src={hoodieImg} alt="hoodie size" className="max-w-1/2 h-auto" />
+                        )}
+                        {(product.productType === 'Classic-tshirt' || product.productType === 'Oversize-tshirt') && (
+                            <img src={tshirtImg} alt="t-shirt size" className="max-w-1/2 h-auto" />
+                        )}
+                    </div>
+
+                    {/* Size Table */}
+                    <div className="flex-1 overflow-x-auto">
+                        <table className="w-full rounded-lg overflow-hidden">
                             <thead>
-                                <tr className="bg-gray-500 text-white">
-                                    <th className="border border-gray-300 px-4 py-2">Size</th>
-                                    <th className="border border-gray-300 px-4 py-2">Width</th>
-                                    <th className="border border-gray-300 px-4 py-2">Height</th>
+                                <tr className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+                                    <th className="px-6 py-3 text-left font-medium">Size</th>
+                                    <th className="px-6 py-3 text-left font-medium">Width</th>
+                                    <th className="px-6 py-3 text-left font-medium">Height</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {currentArray.map((item) => (
-                                    <tr key={item.size} className="text-center">
-                                        <td className="border border-gray-300 px-4 py-2">{item.size}</td>
-                                        <td className="border border-gray-300 px-4 py-2">{item.width}</td>
-                                        <td className="border border-gray-300 px-4 py-2">{item.height}</td>
+                            <tbody className="divide-y divide-gray-200">
+                                {currentArray.map((item, index) => (
+                                    <tr key={item.size} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                        <td className="px-6 py-4 font-medium text-gray-900">{item.size}</td>
+                                        <td className="px-6 py-4 text-gray-600">{item.width}</td>
+                                        <td className="px-6 py-4 text-gray-600">{item.height}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
-
             </div>
         </section>
-    )
-}
+    );
+};
 
 export default InfoProduct

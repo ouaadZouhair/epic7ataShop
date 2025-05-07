@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import Rating from "../Models/Rating.js";
 import Product from "../Models/Product.js"
-import mongoose from "mongoose";
+import User from "../Models/User.js";
+import { createNotification, notifyAdmin } from "../Helpers/notifiationHelper.js";
 
 // Helper function to update product rating and count
 async function updateProductRating(productId, session = null) {
@@ -78,6 +80,15 @@ export const createRating = async (req, res) => {
         });
         await newRating.save();
 
+        const user = await User.findOne({_id: userId})
+
+         await notifyAdmin(
+                req.app.get('io'),
+                `New review has been posted from ${user.fullName}`,
+                'info',
+                ``
+            );
+
         // Update product's average rating and count
         await updateProductRating(productId);
 
@@ -88,10 +99,9 @@ export const createRating = async (req, res) => {
     }
 }
 
-export const getProductRating = async (req, res) => {
-    try{
+export const getReviews = async (req, res) => {
+    try {
         const { productId } = req.params;
-        console.log(productId)
 
         if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ 
@@ -100,7 +110,21 @@ export const getProductRating = async (req, res) => {
             });
         }
 
+    } catch {
 
+    }
+}
+
+export const getProductRating = async (req, res) => {
+    try{
+        const { productId } = req.params;
+
+        if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ 
+                status: 'error', 
+                msg: "Invalid product ID format" 
+            });
+        }
 
         const ratings = await Rating.find({ product: productId }).populate("user", "fullName").sort({ createdAt: -1 });
         res.status(201).json({status:'success', message: "Rating fetched successfully", ratings });

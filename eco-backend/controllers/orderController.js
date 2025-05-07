@@ -310,8 +310,6 @@ export const cancelOrder = async (req, res) => {
         order.status = "Canceled"; // Ensure consistency with schema enum values
         await order.save();
 
-        console.log(order)
-
         await notifyAdmin(
             req.app.get('io'),
             `Order #${order._id} has been canceled by ${order.user.fullName}`,

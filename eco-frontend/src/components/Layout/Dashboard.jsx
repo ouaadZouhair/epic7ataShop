@@ -135,32 +135,66 @@ const Dashboard = () => {
           {notifications.length === 0 ? (
             <p className="text-gray-500 text-sm text-center py-4">No new notifications</p>
           ) : (
-            notifications.map(notification => (
-              <div
-                key={notification._id}
-                className={`p-3 mb-2 rounded-lg cursor-pointer transition-colors duration-200 ${!notification.isRead
-                  ? 'bg-blue-50 hover:bg-blue-100'
-                  : 'hover:bg-gray-50'
-                  }`}
-                onClick={() => !notification.isRead && markAsRead(notification._id)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${!notification.isRead ? 'bg-blue-500' : 'bg-transparent'
-                    }`} />
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-800 font-medium">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {new Date(notification.createdAt).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
+            notifications.map(notification => {
+              // Determine colors based on notification type
+              const typeStyles = {
+                info: {
+                  bg: 'bg-blue-50',
+                  hover: 'hover:bg-blue-100',
+                  dot: 'bg-blue-500'
+                },
+                success: {
+                  bg: 'bg-green-50',
+                  hover: 'hover:bg-green-100',
+                  dot: 'bg-green-500'
+                },
+                warning: {
+                  bg: 'bg-yellow-50',
+                  hover: 'hover:bg-yellow-100',
+                  dot: 'bg-yellow-500'
+                },
+                error: {
+                  bg: 'bg-red-50',
+                  hover: 'hover:bg-red-100',
+                  dot: 'bg-red-500'
+                },
+                // Default fallback
+                default: {
+                  bg: 'bg-gray-50',
+                  hover: 'hover:bg-gray-100',
+                  dot: 'bg-gray-500'
+                }
+              };
+
+              const styles = typeStyles[notification.type] || typeStyles.default;
+
+              return (
+                <div
+                  key={notification._id}
+                  className={`p-3 mb-2 rounded-lg cursor-pointer transition-colors duration-200 ${!notification.isRead
+                      ? `${styles.bg} ${styles.hover}`
+                      : 'hover:bg-gray-50'
+                    }`}
+                  onClick={() => !notification.isRead && markAsRead(notification._id)}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${!notification.isRead ? styles.dot : 'bg-transparent'
+                      }`} />
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-800 font-medium">
+                        {notification.message}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(notification.createdAt).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
@@ -179,7 +213,7 @@ const Dashboard = () => {
       <div className="flex-1 ml-[200px] overflow-y-auto">
         <main className="min-h-screen flex flex-col">
           {/* Fixed Header */}
-          <header className="sticky top-0 z-10 flex justify-between items-center w-full h-[90px] bg-white p-5">
+          <header className="sticky top-0  flex justify-between items-center w-full h-[90px] bg-white p-5 z-20">
             <div>
               <h1 className="text-3xl font-semibold text-gray-800">
                 {getPageTitle()}

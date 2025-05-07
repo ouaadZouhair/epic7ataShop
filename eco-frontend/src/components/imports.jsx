@@ -24,6 +24,7 @@ export {default as CartProduct} from './Product/CartProduct/CartProduct.jsx';
 export {default as DetailsProduct} from './Product/detailsProduct/DetailsProduct.jsx';
 export {default as ImgsProduct} from './Product/ImgsProduct/ImgsProduct.jsx';
 export {default as InfoProduct} from './Product/InfoProduct/InfoProduct.jsx';
+export {default as ReviewProduct } from './Product/ReviewProduct/ReviewProduct.jsx'
 
 // import Container
 export {default as Container} from './Container/Container.jsx';

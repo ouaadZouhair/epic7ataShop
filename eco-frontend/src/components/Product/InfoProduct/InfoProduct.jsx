@@ -148,6 +148,7 @@ const InfoProduct = ({ product }) => {
             </div>
 
             {/* Size Guide Section */}
+            {product.productType.includes('hoodie')  || product.productType.includes('tshirt') && (
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
                     <h2 className="text-2xl font-bold text-gray-800">
@@ -160,10 +161,10 @@ const InfoProduct = ({ product }) => {
                     {/* Product Image */}
                     <div className="flex-1 flex justify-center items-center bg-gray-50 rounded-lg p-4">
                         {(product.productType === 'Classic-hoodie' || product.productType === 'Oversize-hoodie') && (
-                            <img src={hoodieImg} alt="hoodie size" className="max-w-1/2 h-auto" />
+                            <img src={hoodieImg} alt="hoodie size" className="w-[400px] h-auto" />
                         )}
                         {(product.productType === 'Classic-tshirt' || product.productType === 'Oversize-tshirt') && (
-                            <img src={tshirtImg} alt="t-shirt size" className="max-w-1/2 h-auto" />
+                            <img src={tshirtImg} alt="t-shirt size" className="w-[400px] h-auto" />
                         )}
                     </div>
 
@@ -190,6 +191,7 @@ const InfoProduct = ({ product }) => {
                     </div>
                 </div>
             </div>
+            )}
         </section>
     );
 };

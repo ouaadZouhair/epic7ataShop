@@ -1,7 +1,8 @@
 import { CartProduct, Loading } from '../../components/imports.jsx';
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { FiSearch } from "react-icons/fi";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/slice/ProductsShopSlice.js';
 import "./shop.css"
@@ -17,14 +18,12 @@ function Shop() {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector(state => state.shop);
 
-  // Fetch products on mount
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
   const navigate = useNavigate();
 
-  // Navigate to product details
   const handleProductClick = useCallback((id) => {
     navigate(`/product/${id}`);
   }, [navigate]);
@@ -32,17 +31,14 @@ function Shop() {
   const getFilteredProducts = () => {
     let filtered = [...(products || [])];
 
-    // Apply type filter
     if (selectedProductType) {
       filtered = filtered.filter(product => product.productType === selectedProductType);
     }
 
-    // Apply category filter
     if (selectedCategory) {
       filtered = filtered.filter(product => product.category === selectedCategory);
     }
 
-    // Apply search query
     if (searchQuery) {
       filtered = filtered.filter(product => {
         const matchesTitle = product.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -53,7 +49,6 @@ function Shop() {
       });
     }
 
-    // Apply sorting
     switch (filter) {
       case "newest":
         filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -77,139 +72,187 @@ function Shop() {
     return filtered;
   };
 
-  // Pagination logic
   const filteredProducts = getFilteredProducts();
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-  // Scroll to top when page changes
   useEffect(() => {
     window.scroll(0, 0);
   }, [currentProducts]);
 
-
-  // Handle filter changes
   const handleFilterChange = (setter) => (e) => {
     setter(e.target.value);
-    setCurrentPage(1); // Reset pagination
+    setCurrentPage(1);
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-5 my-10 w-full">
+    <div className="min-h-screen  py-8 px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Our Collection</h1>
+        <p className="text-gray-600 mt-2">Discover our premium selection of products</p>
+      </div>
 
-      {/* Filter Section */}
-      <div className="flex flex-col md:flex-row justify-start items-center w-[85%] md:w-[90%] lg:w-[80%] h-auto bg-blue-500 rounded-lg text-white text-lg p-4 gap-5">
-        <div className="flex items-center gap-2">
-          <label className="text-lg font-semibold">Products:</label>
-          <select
-            className="bg-white rounded-full w-40 h-9 text-gray-900 px-3 font-normal"
-            value={selectedProductType}
-            onChange={handleFilterChange(setSelectedProductType)}
-          >
-            <option value="">All</option>
-            <option value="Classic-tshirt">Classic Tshirts</option>
-            <option value="Oversize-tshirt">Oversize Tshirts</option>
-            <option value="Classic-hoodie">Classic Hoodies</option>
-            <option value="Oversize-hoodie">Oversize Hoodies</option>
-            <option value="Caps">Caps</option>
-            <option value="Mugs">Mugs</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-lg font-semibold">Categories:</label>
-          <select
-            className="bg-white rounded-full w-40 h-9 text-black px-3"
-            value={selectedCategory}
-            onChange={handleFilterChange(setSelectedCategory)}
-          >
-            <option value="">All</option>
-            <option value="Anime">Anime</option>
-            <option value="Sport">Sport</option>
-            <option value="Music">Music</option>
-            <option value="SuperCars">Super Cars</option>
-            <option value="Movies&Series">Movies & Series</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-lg font-semibold">Sort by:</label>
-          <select
-            className="bg-white rounded-full w-40 h-9 text-black px-3"
-            value={filter}
+      {/* Search and Filters */}
+      <div className="max-w-7xl mx-auto mb-8">
+        {/* <div className="relative mb-4">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FiSearch className="text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={searchQuery}
             onChange={(e) => {
-              setFilter(e.target.value);
+              setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-          >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="highest-rated">Highest Rated</option>
-            <option value="lowest-price">Lowest Price</option>
-            <option value="highest-price">Highest Price</option>
-          </select>
+          />
+        </div> */}
+
+        <div className="bg-white rounded-xl shadow-md p-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Product Type</label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={selectedProductType}
+                onChange={handleFilterChange(setSelectedProductType)}
+              >
+                <option value="">All Types</option>
+                <option value="Classic-tshirt">Classic Tshirts</option>
+                <option value="Oversize-tshirt">Oversize Tshirts</option>
+                <option value="Classic-hoodie">Classic Hoodies</option>
+                <option value="Oversize-hoodie">Oversize Hoodies</option>
+                <option value="Caps">Caps</option>
+                <option value="Mugs">Mugs</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={selectedCategory}
+                onChange={handleFilterChange(setSelectedCategory)}
+              >
+                <option value="">All Categories</option>
+                <option value="Anime">Anime</option>
+                <option value="Sport">Sport</option>
+                <option value="Music">Music</option>
+                <option value="SuperCars">Super Cars</option>
+                <option value="Movies&Series">Movies & Series</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+              <select
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={filter}
+                onChange={(e) => {
+                  setFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="newest">Newest Arrivals</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highest-rated">Highest Rated</option>
+                <option value="lowest-price">Price: Low to High</option>
+                <option value="highest-price">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Product Grid */}
-      <div className="flex flex-col justify-between items-center w-full h-auto">
-        {loading ? <Loading /> :
-          <div className="grid w-full md:w-[95%] lg:w-[85%] grid-cols-1 md:grid-cols-3 lg:grid-cols-4 justify-center gap-4 justify-items-center">
-            {currentProducts.map(({ _id, imageUrls, title, price, ratingAvg }) => (
-              <CartProduct
-                key={_id}
-                id={_id}
-                title={title}
-                frontMockups={imageUrls.frontMockups ? `${imageUrls.frontMockups}` : null}
-                backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
-                price={price}
-                viewProduct={() => handleProductClick(_id)}
-                ratingAvg={ratingAvg}
-              />
-            ))}
-          </div>}
-
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-6">
-            {/* Previous Button */}
-            <button
-              className={`px-2 py-2 rounded-lg text-lg ${currentPage === 1 ? "bg-gray-300 text-black cursor-not-allowed" : "bg-blue-500 text-white"
-                }`}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              <GrFormPrevious />
-            </button>
-
-            {/* Page Numbers */}
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                className={`px-3 py-1 rounded ${currentPage === index + 1 ? "bg-blue-600 text-white" : "bg-gray-300 hover:bg-gray-300 duration-100"
-                  }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-
-            {/* Next Button */}
-            <button
-              className={`px-2 py-2 rounded-lg text-lg ${currentPage === totalPages ? "bg-gray-300 text-black cursor-not-allowed" : "bg-blue-600 text-white"
-                }`}
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-            >
-              <GrFormNext />
-            </button>
+      {/* Products Grid */}
+      <div className="max-w-7xl mx-auto">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loading />
           </div>
+        ) : (
+          <>
+            {currentProducts.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {currentProducts.map(({ _id, imageUrls, title, price, ratingAvg }) => (
+                    <CartProduct
+                      key={_id}
+                      id={_id}
+                      title={title}
+                      frontMockups={imageUrls.frontMockups ? `${imageUrls.frontMockups}` : null}
+                      backMockups={imageUrls.backMockups ? `${imageUrls.backMockups}` : null}
+                      price={price}
+                      viewProduct={() => handleProductClick(_id)}
+                      ratingAvg={ratingAvg}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-8">
+                    <nav className="flex items-center space-x-2">
+                      <button
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                      >
+                        <GrFormPrevious className="inline" />
+                      </button>
+
+                      {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                          key={index + 1}
+                          onClick={() => setCurrentPage(index + 1)}
+                          className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'}`}
+                        >
+                          {index + 1}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className={`px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                      >
+                        <GrFormNext className="inline" />
+                      </button>
+                    </nav>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <div className="mx-auto h-24 w-24 text-yellow-500 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900">No products found</h3>
+                <p className="mt-1 text-sm text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+                <button
+                  onClick={() => {
+                    setSelectedProductType('');
+                    setSelectedCategory('');
+                    setSearchQuery('');
+                    setCurrentPage(1);
+                  }}
+                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Reset filters
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
-
   );
 }
 

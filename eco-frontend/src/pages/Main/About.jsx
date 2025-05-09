@@ -1,7 +1,8 @@
-import { Footer } from "../../components/imports.jsx";
+
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from "lucide-react";
-import bgP from "../../../src/assets/thsirts2.jpg";
+import bgP from "../../../src/assets/bgPrinting.jpg";
+// import bgP from "../../../src/assets/thsirts2.jpg";
 import thisrtImg from "../../../src/assets/tshirts.jpg";
 import quality from "../../../src/assets/icons/1.svg";
 import personalize from "../../../src/assets/icons/2.svg";
@@ -142,146 +143,205 @@ function About() {
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero Section - Redesigned with Depth */}
       <div
         style={{ backgroundImage: `url(${bgP})` }}
-        className="w-full h-[300px] bg-top bg-cover bg-no-repeat flex justify-center items-center"
+        className="w-full h-[250px] bg-center bg-cover bg-no-repeat flex justify-center items-center"
       >
-        <h1 className="text-7xl font-bold text-gray-50 backdrop-blur-sm w-full h-full flex justify-center items-center">
-          About Us
+        <h1 className="text-5xl w-full h-full backdrop-blur-sm flex justify-center bg-black/30 items-center sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-tight">
+          <span className="inline-block transform transition-all  duration-500 hover:scale-105">
+            About <span className="text-yellow-300 drop-shadow-lg">Us</span>
+          </span>
         </h1>
       </div>
 
-      {/* Our Story Section */}
-      <section className="flex flex-col md:flex-row-reverse justify-around items-center gap-8 my-10 mx-4 lg:mx-60">
-        <div className="flex flex-col justify-center items-start gap-4 max-w-[520px]">
-          <h1 className="text-blue-500 text-3xl text-center md:text-start w-full md:text-4xl font-medium">Our Story</h1>
-          <p className="text-gray-800 text-lg md:text-xl font-normal leading-9 text-justify">
-            Welcome to Epic7ata, a Moroccan brand born in 2024 with a passion for
-            creativity and self-expression. We believe that what you wear and use
-            should reflect who you are. That’s why we design unique t-shirts,
-            hoodies, mugs, and caps that speak to individuality and style. But we
-            don’t stop there—we give you the power to create! With our custom
-            design feature, you can upload your own artwork and turn it into
-            wearable art or everyday essentials. Whether you choose from our
-            exclusive collections or craft something personal, Epic7ata is here
-            to help you create, proud & live.
-          </p>
-        </div>
-        <img
-          src={thisrtImg}
-          className="w-[380px] h-auto rounded-2xl shadow-md"
-          alt="T-shirt design"
-        />
-      </section>
 
-      {/* Features Section */}
-      <section className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-2 lg:gap-10 my-28 mx-4">
-        {features.map((feature, index) => (
-          <div
-            key={index}
-            className={`${feature.bgColor} w-[99%] md:w-96 h-auto rounded-2xl px-4 lg:px-8 py-5 lg:py-10 shadow-sm hover:shadow-xl hover:scale-105 duration-150 flex flex-col items-center justify-start gap-1 cursor-pointer`}
-          >
-            <img
-              src={feature.icon}
-              className="w-28 h-28 md:w-20 md:h-20 lg:w-32 lg:h-32 mx-auto"
-              alt={feature.title}
-            />
-            <p className="text-justify h-40 text-base lg:text-lg text-white">
-              {feature.description}
-            </p>
-          </div>
-        ))}
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="bg-blue-200/40 w-full h-auto px-4 py-8 md:p-6 my-5">
-        <div className="flex flex-col items-center gap-2 w-full lg:w-[45%] mx-auto">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center">
-            What Our Clients Say
-          </h1>
-          <p className="text-base md:text-lg font-normal text-center w-full md:w-[90%] text-gray-600">
-            Discover why businesses choose our services and how we've helped them
-            achieve their goals.
-          </p>
-          <div className="h-[4px] md:h-[6px] w-16 md:w-24 bg-blue-500 rounded-full"></div>
-        </div>
-
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={20}
-          slidesPerView={1}
-          autoplay={{ delay: 3500 }}
-          loop
-          breakpoints={{
-            640: {
-              slidesPerView: 1,
-              spaceBetween: 30
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 30
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 40
-            },
-          }}
-          className="mySwiper mt-8 md:mt-10 px-2 md:px-0"
-        >
-          {reviews.map(({ id, name, rating, review, image }) => (
-            <SwiperSlide key={id}>
-              <div className="flex flex-col gap-3 w-full h-auto bg-white rounded-xl p-4 sm:p-5 mx-auto shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={image}
-                    alt={name}
-                    className="bg-blue-500 w-12 h-12 sm:w-[60px] sm:h-[60px] md:w-[70px] md:h-[70px] rounded-full object-cover"
-                  />
-                  <h1 className="text-base sm:text-lg font-medium">{name}</h1>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="flex items-center gap-1 text-amber-400 w-24 sm:w-28 text-lg sm:text-xl">
-                    {[...Array(rating)].map((_, i) => (
-                      <FaStar key={i} className="text-lg sm:text-xl" />
-                    ))}
-                  </span>
-                  <p className="text-sm sm:text-base md:text-lg italic font-light text-justify">
-                    "{review}"
-                  </p>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
-
-      <section className="max-w-3xl mx-auto p-6">
-        <div className="flex flex-col justify-center items-center gap-1 mb-5">
-          <h2 className="text-4xl font-semibold text-center my-6">Frequently Asked Questions</h2>
-          <div className="h-[6px] w-24 bg-blue-500 rounded-full"></div>
-        </div>
-        <div className="space-y-4">
-          {faqs.map((faq, index) => (
-            <div key={index} className="border-2 border-transparent shadow-md rounded-xl p-4 bg-white transition-all duration-300">
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="flex justify-between items-center w-full text-lg  font-semibold"
-              >
-                {faq.question}
-                {openIndex === index ? <ChevronUp /> : <ChevronDown />}
-              </button>
-              <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
-              >
-                <p className="mt-2 text-gray-600">{faq.answer}</p>
+      {/* Our Story Section - Enhanced Visual Storytelling */}
+      <section className="py-16 md:py-24 px-6 sm:px-8 lg:px-10 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Image with frame effect - Responsive sizing */}
+          <div className="relative order-2 lg:order-1 group">
+            <div className="absolute -inset-4 bg-gradient-to-br from-blue-400/20 via-red-400/20 to-yellow-300/20 rounded-2xl transform rotate-1 group-hover:rotate-0 transition duration-500"></div>
+            <div className="relative z-10 overflow-hidden rounded-xl shadow-2xl">
+              <img
+                src={thisrtImg}
+                className="w-full h-auto object-cover transition duration-700 group-hover:scale-105"
+                alt="Epic7ata product showcase"
+                style={{
+                  minHeight: '400px',
+                  maxHeight: '600px',
+                  objectPosition: 'center top'
+                }}
+              />
+              {/* Decorative badge */}
+              <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-md flex items-center">
+                <div className="w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-gray-800">Since 2024</span>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
 
-      {/* <Footer /> */}
+          <div className="order-1 lg:order-2">
+            <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4">
+              Our Journey
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              Crafting <span className="text-red-500">Identity</span> Through Design
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed mb-6">
+              Welcome to Epic7ata, a Moroccan brand born in 2024 with a passion for
+              creativity and self-expression. We believe that what you wear and use
+              should reflect who you are.
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              That's why we design unique t-shirts, hoodies, mugs, and caps that speak to
+              individuality and style. With our custom design feature, you can upload
+              your own artwork and turn it into wearable art or everyday essentials.
+            </p>
+            <div className="mt-8 flex items-center gap-3">
+              <div className="w-10 h-1 bg-blue-500 rounded-full"></div>
+              <div className="w-5 h-1 bg-yellow-400 rounded-full"></div>
+              <div className="w-3 h-1 bg-red-500 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+
+      </section >
+
+      {/* Features Section */}
+      <section section className="py-12 md:py-20 bg-gray-50" >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4">
+              Why Choose Us
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Our <span className="text-red-500">Core</span> Values
+            </h2>
+            <div className="w-24 h-1 bg-yellow-400 mx-auto rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+              >
+                <div className={`h-2 ${index === 0 ? 'bg-red-500' : index === 1 ? 'bg-blue-500' : 'bg-yellow-400'}`}></div>
+                <div className="p-6">
+                  <div className={`w-16 h-16 rounded-full ${index === 0 ? 'bg-red-500' : index === 1 ? 'bg-blue-500' : 'bg-yellow-400'} flex items-center justify-center mb-4`}>
+                    <img
+                      src={feature.icon}
+                      className="w-8 h-8"
+                      alt={feature.title}
+                    />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section >
+
+      {/* Testimonials Section */}
+      <section section className="py-12 md:py-20 bg-gradient-to-br from-blue-50 to-red-50" >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4">
+              Testimonials
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              What Our <span className="text-red-500">Clients</span> Say
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Discover why businesses choose our services and how we've helped them
+              achieve their goals.
+            </p>
+            <div className="w-24 h-1 bg-yellow-400 mx-auto mt-4 rounded-full"></div>
+          </div>
+
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={30}
+            slidesPerView={1}
+            autoplay={{ delay: 3500 }}
+            loop
+            breakpoints={{
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            className="pb-12"
+          >
+            {reviews.map(({ id, name, rating, review, image }) => (
+              <SwiperSlide key={id}>
+                <div className="bg-white rounded-xl shadow-md p-6 h-full">
+                  <div className="flex items-center gap-4 mb-4">
+                    <img
+                      src={image}
+                      alt={name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-yellow-300"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{name}</h3>
+                      <div className="flex items-center gap-1">
+                        {[...Array(rating)].map((_, i) => (
+                          <FaStar key={i} className="text-yellow-400" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 italic">"{review}"</p>
+                  <div className={`mt-4 w-8 h-1 rounded-full ${id % 2 === 0 ? 'bg-blue-500' : 'bg-red-500'}`}></div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </section >
+
+      {/* FAQ Section */}
+      <section section className="py-12 md:py-20 bg-white" >
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4">
+              Support
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked <span className="text-red-500">Questions</span>
+            </h2>
+            <div className="w-24 h-1 bg-yellow-400 mx-auto rounded-full"></div>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div
+                key={index}
+                className={`border border-gray-200 rounded-xl overflow-hidden transition-all duration-300 ${openIndex === index ? 'shadow-md' : 'shadow-sm'}`}
+              >
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  className={`flex justify-between items-center w-full p-5 text-left font-semibold ${openIndex === index ? 'text-blue-600' : 'text-gray-900'}`}
+                >
+                  <span>{faq.question}</span>
+                  {openIndex === index ? (
+                    <ChevronUp className={`w-5 h-5 ${openIndex === index ? 'text-red-500' : 'text-gray-500'}`} />
+                  ) : (
+                    <ChevronDown className={`w-5 h-5 ${openIndex === index ? 'text-red-500' : 'text-gray-500'}`} />
+                  )}
+                </button>
+                <div
+                  className={`px-5 pb-5 ${openIndex === index ? 'block' : 'hidden'}`}
+                >
+                  <p className="text-gray-600">{faq.answer}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section >
     </>
   );
 }

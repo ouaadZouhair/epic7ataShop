@@ -29,14 +29,12 @@ const Checkout = () => {
   const BASE_URL = 'http://localhost:3000';
 
   const updateQuantity = async (e, productId, newQuantity) => {
-    // Update the quantity in the cart
     try {
       e.stopPropagation()
       await dispatch(updateCartQuantity({ productId, quantity: newQuantity })).unwrap();
     } catch (err) {
       console.error("Failed to update quantity:", err);
     }
-
   }
 
   const cityDeliveryCost = [
@@ -48,16 +46,14 @@ const Checkout = () => {
 
   useEffect(() => {
     dispatch(fetchFromCart()).unwrap().catch(() => {
-      setlocalError('Failed to load data from  Cart. Please try again later.')
+      setlocalError('Failed to load data from Cart. Please try again later.')
     })
   }, [dispatch])
 
   useEffect(() => {
-    // Calculate delivery cost
     const cost = cityDeliveryCost.find(city => city.city === selectedCity)?.cost || 0;
     setDeliveryCost(cost);
 
-    // Calculate total items price
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
       setTotalItemPrice(0);
       return;
@@ -73,7 +69,6 @@ const Checkout = () => {
 
   const removeItem = async (e, { id, color, size }) => {
     try {
-      // Remove item from the cart
       e.stopPropagation()
       await dispatch(removeFromCart({ id, color, size })).unwrap();
     } catch (err) {
@@ -91,23 +86,18 @@ const Checkout = () => {
       paymentMethod: selected,
       deleviryCost: deliveryCost
     };
-  
+
     try {
-      // Send order to database through redux slice
       const response = await dispatch(createOrder(order));
-  
+
       if (response) {
         console.log("Order created successfully");
-  
-        // Clear shipping info inputs
         setFirstname('');
         setLastname('');
         setPhoneNumber('');
         setAddress('');
         setSelectedCity('');
         setSelected('');
-  
-        // Navigate to orders page
         navigate('/orders');
       } else {
         console.error("Order creation failed:", response);
@@ -120,218 +110,304 @@ const Checkout = () => {
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
   };
-  
 
   return (
-    <>
-      {/* Navigation to Shop page */}
+    <div className="min-h-screen bg-gray-50">
       <GoShopNav />
 
-      {/* Main Content */}
-      <div className="flex flex-col lg:flex-row gap-4 justify-around lg:items-start items-center w-[95%] lg:w-[90%] mx-auto lg:mx-20">
-        {/* Left Column - Checkout Cart */}
-        <section className="w-full md:w-[70%] lg:w-1/2">
-          <h1 className="text-2xl font-medium underline">Shopping Cart</h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
-          <div className="flex justify-between items-center">
-            <p className="text-base md:text-lg text-gray-900 my-5">You have {cart.length} items in your cart</p>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base md:text-lg">Sort by:</h1>
-              <select name="sort" id="sort" className="text-lg font-normal bg-transparent rounded-lg border p-1">
-                <option value="price">Price</option>
-                <option value="newer">Newer</option>
-                <option value="older">Older</option>
-              </select>
-            </div>
-          </div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Cart Section */}
+          <div className="lg:w-2/3">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                  <span className="w-2 h-6 bg-red-500 mr-2 rounded-full"></span>
+                  Your Cart ({cart.length} items)
+                </h2>
+              </div>
 
-          {/* Cart Items */}
-          <div className="flex flex-col justify-start items-center gap-3 w-full p-0 md:p-2 rounded-xl overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-white/50 h-[400px]">
-            {loading ? (
-              <Loading />
-            ) : cart.length > 0 ? (
-              cart.map(({ product }, i) => (
-                <div key={i} className="flex items-center justify-between bg-gray-100 shadow-sm text-black p-2 gap-2 w-full rounded-lg cursor-pointer" onClick={() => handleProductClick(product._id)}>
-                  <img src={`${BASE_URL}${product.imageUrls.frontMockups}`} className="w-[70px] h-[70px] md:w-[80px] md:h-[80px] rounded-lg" />
-                  <p className="text-sm md:text-lg font-semibold w-24 md:w-40 lg:w-48">{product.title}</p>
+              {loading ? (
+                <div className="p-8 flex justify-center">
+                  <Loading />
+                </div>
+              ) : cart.length > 0 ? (
+                <div className="divide-y divide-gray-200 max-h-[500px] overflow-y-auto">
+                  {cart.map(({ product }, i) => (
+                    <div
+                      key={`${product._id}-${product.color}-${product.size}`}
+                      className="group p-4 hover:bg-gray-50 transition-colors duration-200 cursor-pointer border-b border-gray-100 last:border-0"
+                      onClick={() => handleProductClick(product._id)}
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Product Image */}
+                        <div className="flex-shrink-0">
+                          <img
+                            src={`${BASE_URL}${product.imageUrls.frontMockups}`}
+                            className="w-20 h-20 sm:w-28 sm:h-28 object-cover rounded-lg border border-gray-200 group-hover:border-blue-300 transition-colors"
+                            alt={product.title}
+                          />
+                        </div>
 
-                  <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 border-gray-500 ${product.color} ${ product.color === 'white' && 'bg-gray-50'} ${ product.color === 'black' && 'bg-black'} ${ product.color === 'blue' && 'bg-blue-900'} ${ product.color === 'red' && 'bg-red-500'} ${ product.color === 'orange' && 'bg-orange-500'} ${product.color === 'yellow' && 'bg-yellow-400'} ${ product.color === 'green' && 'bg-green-600'} ${ product.color === 'purple' && 'bg-purple-500'} ${ product.color === 'gray' && 'bg-gray-300'}`}></div>
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base sm:text-lg font-medium text-gray-900 line-clamp-2">
+                            {product.title}
+                          </h3>
 
-                  {/* Quantity Controller */}
-                  <div className="flex flex-col md:flex-row items-center">
-                    <button onClick={(e) => { updateQuantity(e, product._id, product.quantity + 1) }} className="text-sm md:text-xl p-2 hover:text-blue-500 hover:scale-110 duration-100 ">
-                      <FaPlus />
-                    </button>
-                    <input
-                      type="text"
-                      name="quantity"
-                      id="quantity"
-                      value={product.quantity}
-                      readOnly
-                      className="w-8 h-8 md:w-10 md:h-10 text-center rounded-lg p-1 border-2 bg-white border-black/50"
-                    />
-                    <button onClick={(e) => { updateQuantity(e, product._id, Math.max(1, product.quantity - 1)) }} className="text-sm md:text-xl p-2 hover:text-blue-500 hover:scale-110 duration-100 ">
-                      <FaMinus />
-                    </button>
-                  </div>
+                          <div className="mt-2 flex items-center">
+                            {/* Color Indicator */}
+                            <div
+                              className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-gray-300 mr-2 ${product.color === 'white' ? 'bg-gray-50' :
+                                  product.color === 'black' ? 'bg-black' :
+                                    product.color === 'blue' ? 'bg-blue-600' :
+                                      product.color === 'red' ? 'bg-red-500' :
+                                        product.color === 'orange' ? 'bg-orange-500' :
+                                          product.color === 'yellow' ? 'bg-yellow-400' :
+                                            product.color === 'green' ? 'bg-green-600' :
+                                              product.color === 'purple' ? 'bg-purple-500' :
+                                                product.color === 'gray' ? 'bg-gray-300' : 'bg-white'
+                                }`}
+                              title={product.color}
+                            ></div>
 
-                  <h1 className="text-base w-16 md:text-lg font-bold">{product.fullPrice} Dh</h1>
-                  {/* Remove Item */}
-                  <button onClick={(e) => { removeItem(e, { id: product._id, color: product.color, size: product.size }) }} className="text-2xl text-gray-500 hover:text-red-500 hover:scale-110 duration-100 ">
-                    <FaTrashAlt />
+                            {/* Size */}
+                            <span className="text-sm text-gray-500 capitalize">
+                              {product.coler}  Size: {product.size}
+                            </span>
+                          </div>
+
+                          {/* Quantity Controls */}
+                          <div className="mt-3 flex items-center">
+                            <div className="flex items-center border border-gray-200 rounded-lg">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateQuantity(e, product._id, Math.max(1, product.quantity - 1));
+                                }}
+                                className="px-2 py-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-l-lg transition-colors"
+                                aria-label="Decrease quantity"
+                              >
+                                <FaMinus size={12} />
+                              </button>
+
+                              <span className="px-2 text-center w-8 text-sm font-medium">
+                                {product.quantity}
+                              </span>
+
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateQuantity(e, product._id, product.quantity + 1);
+                                }}
+                                className="px-2 py-1 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-r-lg transition-colors"
+                                aria-label="Increase quantity"
+                              >
+                                <FaPlus size={12} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Price and Remove Button */}
+                        <div className="flex flex-col items-center justify-between h-full">
+                          <span className="text-lg font-bold text-gray-900 whitespace-nowrap">
+                            {(product.fullPrice * product.quantity).toFixed(2)} Dh
+                          </span>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeItem(e, { id: product._id, color: product.color, size: product.size });
+                            }}
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                            aria-label="Remove item"
+                          >
+                            <FaTrashAlt size={22} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center">
+                  <MdRemoveShoppingCart className="mx-auto text-gray-300 text-5xl mb-4" />
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">Your cart is empty</h3>
+                  <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet</p>
+                  <button
+                    onClick={() => navigate('/shop')}
+                    className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Shop Now
                   </button>
                 </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center w-full h-64">
-                <MdRemoveShoppingCart className='text-black text-7xl' />
-                <h3 className="text-2xl font-light text-black mb-2">Your cart is empty</h3>
-                <p className="text-sm md:text-base font-medium text-gray-500 mb-4">Looks like you haven't added anything to your cart yet</p>
-                <button
-                  onClick={() => navigate('/shop')}
-                  className="px-6 py-2 bg-white border-2 font-semibold border-blue-500 text-blue-500 rounded-full hover:bg-blue-500 hover:text-white duration-150 transition-colors"
-                >
-                  Shop Now
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div className="p-7 rounded-xl w-full mx-auto bg-red-500 mt-5 text-white ">
-            <h2 className="text-3xl text-center mb-2 font-semibold">Order Summary</h2>
-            <div className="border-b-2 pb-2 border-gray-100">
-              <p className="text-lg md:text-xl lg:text-lg"><span className="font-semibold">Delivery cost:</span> {deliveryCost.toFixed(2)} Dh</p>
-              <p className="text-lg md:text-xl lg:text-lg"><span className="font-semibold">Items Price:</span> {totalItemPrice.toFixed(2)} Dh</p>
-            </div>
-            <p className="text-2xl font-semibold text-center">
-              Total: {(totalItemPrice + deliveryCost).toFixed(2)} Dh
-            </p>
-          </div>
-          
-        </section>
-
-        <form className="w-full md:w-[70%] lg:w-2/5 bg-gray-600 backdrop-blur-lg h-auto rounded-xl p-4 md:p-8 shadow-xl">
-          <h1 className="text-3xl text-white text-center mb-2 font-semibold">Shipping Info</h1>
-
-          <div className="w-full flex flex-col md:flex-row justify-center gap-0 md:gap-5 items-center">
-            <div className="flex flex-col my-3 w-full">
-              <label htmlFor="firstname" className="text-lg text-white font-semibold ">Firstname:</label>
-              <input
-                type="text"
-                placeholder="Enter your Firstname"
-                className="border-b-4 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full  outline-none"
-                onChange={(e) => { setFirstname(e.target.value) }}
-                required />
+              )}
             </div>
 
-            <div className="flex flex-col my-3 w-full">
-              <label htmlFor="lastname" className="text-lg text-white font-semibold">Lastname:</label>
-              <input
-                type="text"
-                placeholder="Enter your Lastname"
-                className="border-b-4 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full outline-none"
-                onChange={(e) => { setLastname(e.target.value) }}
-                required />
-            </div>
-          </div>
+            {/* Order Summary */}
+            <div className="bg-white rounded-xl shadow-md mt-6 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span className="w-2 h-6 bg-yellow-500 mr-2 rounded-full"></span>
+                Order Summary
+              </h2>
 
-          <div className="flex flex-col my-3">
-            <label htmlFor="phone" className="text-lg text-white font-semibold">Phone number:</label>
-            <input
-              type="tel"
-              placeholder="Enter your Phone Number"
-              className="border-b-4 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full outline-none"
-              onChange={(e) => { setPhoneNumber(e.target.value) }}
-              required />
-          </div>
-
-          <div className="flex flex-col my-3">
-            <label htmlFor="address" className="text-lg text-white font-semibold">Address:</label>
-            <input
-              type="text"
-              placeholder="Enter your Postal Address"
-              className="border-b-4 bg-white/40 rounded-lg text-white placeholder-white p-2 w-full outline-none"
-              onChange={(e) => { setAddress(e.target.value) }}
-            />
-          </div>
-
-          <div className="flex items-center justify-start w-[90%]">
-            <div className="flex items-center gap-2 my-3 w-1/2">
-              <label htmlFor="city" className="text-lg text-white font-semibold">City:</label>
-              <Listbox value={selectedCity} onChange={setSelectedCity}>
-                <div className="relative z-10">
-                  <Listbox.Button className="border-b-4 bg-white/40 rounded-lg text-white placeholder-white p-2 w-[150px] text-left">
-                    {selectedCity || "Select your City"}
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-2 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-auto">
-                    {cities.map((city, index) => (
-                      <Listbox.Option key={index} value={city} className="cursor-pointer p-2 font-medium hover:bg-blue-600 hover:text-white">
-                        {city}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
+              <div className="space-y-3 mb-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Items Subtotal</span>
+                  <span className="font-medium">{totalItemPrice.toFixed(2)} Dh</span>
                 </div>
-              </Listbox>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Delivery</span>
+                  <span className="font-medium">{deliveryCost.toFixed(2)} Dh</span>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex justify-between">
+                  <span className="text-lg font-bold text-gray-900">Total</span>
+                  <span className="text-lg font-bold text-blue-600">{(totalItemPrice + deliveryCost).toFixed(2)} Dh</span>
+                </div>
+              </div>
             </div>
-
-            {/* <div className="flex items-center gap-1 justify-start my-3 w-[200px]">
-              <label htmlFor="ZIP" className="text-lg text-white font-semibold w-full">ZIP Code:</label>
-              <input type="number" className="border-b-4 bg-white/40 rounded-lg text-white placeholder-white p-2 w-[90px] outline-none" required />
-            </div> */}
-
           </div>
 
-          <div className="flex flex-row gap-3 md:gap-0 justify-around items-center w-full mt-4">
-            {/* Payment Online Option */}
-            <label className="relative cursor-pointer">
-              <input
-                type="radio"
-                name="payment"
-                value="creditCard"
-                checked={selected === "creditCard"}
-                onChange={() => setSelected("creditCard")}
-                className="hidden peer"
-              />
-              <div className="flex justify-between items-center gap-5 border-2 text-white border-white rounded-lg w-36 h-20 p-3 cursor-pointer duration-150 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:text-white hover:bg-blue-600 hover:border-blue-600 group">
-                <PiCreditCardFill className="text-6xl md:text-5xl group-hover:text-white peer-checked:text-blue-500" />
-                <h1 className="text-base md:text-lg font-semibold group-hover:text-white peer-checked:text-blue-500">
-                  Credit Card
-                </h1>
+          {/* Shipping & Payment Section */}
+          <div className="lg:w-1/3">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-6 bg-blue-600">
+                <h2 className="text-xl font-semibold text-white flex items-center">
+                  <span className="w-2 h-6 bg-white mr-2 rounded-full"></span>
+                  Shipping Information
+                </h2>
               </div>
-            </label>
 
-            {/* Cash on Delivery Option */}
-            <label className="relative cursor-pointer">
-              <input
-                type="radio"
-                name="payment"
-                value="cashOnDelivery"
-                checked={selected === "cashOnDelivery"}
-                onChange={() => setSelected("cashOnDelivery")}
-                className="hidden peer"
-              />
-              <div className="flex justify-between items-center gap-5 border-2 text-white border-white rounded-lg w-36 h-20 p-3 cursor-pointer duration-150 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:text-white hover:bg-blue-600 hover:border-blue-600 group">
-                <BsCashCoin className="text-6xl md:text-6xl group-hover:text-white peer-checked:text-blue-500" />
-                <h1 className="text-base md:text-lg font-semibold group-hover:text-white peer-checked:text-blue-500">
-                  Cash on Delivery
-                </h1>
+              <div className="p-6">
+                <form>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                      <input
+                        type="text"
+                        placeholder="John"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        onChange={(e) => setFirstname(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                      <input
+                        type="text"
+                        placeholder="Doe"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        onChange={(e) => setLastname(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input
+                      type="tel"
+                      placeholder="+212 6 12 34 56 78"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <input
+                      type="text"
+                      placeholder="123 Main Street"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      onChange={(e) => setAddress(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <Listbox value={selectedCity} onChange={setSelectedCity}>
+                      <div className="relative">
+                        <Listbox.Button className="w-full px-4 py-2 border border-gray-300 rounded-lg text-left focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                          {selectedCity || "Select your city"}
+                        </Listbox.Button>
+                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-lg py-1 max-h-60 overflow-auto">
+                          {cities.map((city, index) => (
+                            <Listbox.Option
+                              key={index}
+                              value={city}
+                              className={({ active }) => `${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'} cursor-pointer px-4 py-2`}
+                            >
+                              {city}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </div>
+                    </Listbox>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="text-sm font-medium text-gray-700 mb-3">Payment Method</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <label className="relative">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="creditCard"
+                          checked={selected === "creditCard"}
+                          onChange={() => setSelected("creditCard")}
+                          className="sr-only peer"
+                        />
+                        <div className="flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:border-blue-300 transition-colors">
+                          <PiCreditCardFill className="text-3xl text-blue-500 mb-2" />
+                          <span className="text-sm font-medium">Credit Card</span>
+                        </div>
+                      </label>
+
+                      <label className="relative">
+                        <input
+                          type="radio"
+                          name="payment"
+                          value="cashOnDelivery"
+                          checked={selected === "cashOnDelivery"}
+                          onChange={() => setSelected("cashOnDelivery")}
+                          className="sr-only peer"
+                        />
+                        <div className="flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-red-500 peer-checked:bg-red-50 hover:border-red-300 transition-colors">
+                          <BsCashCoin className="text-3xl text-red-500 mb-2" />
+                          <span className="text-sm font-medium">Cash on Delivery</span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      sendToOrder();
+                    }}
+                    className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors shadow-md flex items-center justify-center"
+                  >
+                    <span className="mr-2">Place Order</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </form>
               </div>
-            </label>
+            </div>
           </div>
-
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              sendToOrder();
-            }}
-            className="text-lg p-4 text-white bg-white/40 font-semibold w-full mx-auto rounded-full my-4 hover:bg-blue-600 hover:text-white duration-100"
-          >
-            Order Commande
-          </button>
-        </form>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
-export default Checkout
+export default Checkout;

@@ -214,7 +214,7 @@ const Checkout = () => {
                         {/* Price and Remove Button */}
                         <div className="flex flex-col items-center justify-between h-full">
                           <span className="text-lg font-bold text-gray-900 whitespace-nowrap">
-                            {(product.fullPrice * product.quantity).toFixed(2)} Dh
+                            {product.fullPrice.toFixed(2)} Dh
                           </span>
 
                           <button

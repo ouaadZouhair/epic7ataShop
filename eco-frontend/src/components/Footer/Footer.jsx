@@ -60,7 +60,7 @@ const Footer = () => {
                             <p className="text-gray-300 font-bold">+212 716 486 381</p>
                         </div>
                         <div className="flex space-x-5">
-                            <a href="#" className="text-gray-400 hover:text-blue-500 transition-colors duration-200">
+                            <a href="#" className="text-gray-400 hover:text-blue-800 transition-colors duration-200">
                                 <FaFacebook className="text-xl" />
                             </a>
                             <a href="#" className="text-gray-400 hover:text-pink-500 transition-colors duration-200">

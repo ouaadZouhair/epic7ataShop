@@ -12,10 +12,10 @@ const Footer = () => {
     // Show button when page is scrolled down
     useEffect(() => {
         const toggleVisibility = () => {
-            if (window.pageYOffset > 300) {
-                setIsVisible(true);
-            } else {
+            if (window.pageYOffset === 0) {
                 setIsVisible(false);
+            } else {
+                setIsVisible(true);
             }
         };
 
@@ -34,7 +34,7 @@ const Footer = () => {
     return (
         <footer className="relative flex flex-col gap-2 items-center bg-black/95 text-white w-full h-auto -bottom-10">
             {/* Back to Top Button */}
-            {isVisible && (
+            {/* {isVisible && (
                 <button
                     onClick={scrollToTop}
                     className="fixed bottom-6 right-6 z-50 p-4 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
@@ -42,7 +42,7 @@ const Footer = () => {
                 >
                     <FaArrowUp className="text-white text-xl" />
                 </button>
-            )}
+            )} */}
 
             <div className="container mx-auto py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">

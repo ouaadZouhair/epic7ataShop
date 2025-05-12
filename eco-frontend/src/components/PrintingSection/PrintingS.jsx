@@ -4,7 +4,7 @@ import './PrintingS.css'
 
 const PrintingS = () => {
     return (
-        <section className='relative flex flex-wrap md:flex-nowrap flex-col md:flex-row justify-center items-center rounded-3xl w-[95%] h-[580px] md:h-[400px] mx-auto shadow-xl bg-black bg-gradient-to-l from-black to-white/10 hover:scale-105 my-24 duration-150 '>
+        <section className='relative flex flex-wrap md:flex-nowrap flex-col md:flex-row justify-center items-center rounded-3xl w-[95%] h-[580px] md:h-[400px] mx-auto shadow-md bg-black bg-gradient-to-l from-black to-white/10 hover:scale-105 hover:shadow-lg my-24 duration-300 '>
             <div className=" absolute -left-10 -bottom-32 md:bottom-0 md:-left-2 lg:left-14 h-full w-72 flex flex-col justify-center items-center">
                 <div className='flex flex-col text-red-600/80 text-5xl md:text-6xl lg:text-7xl font-black gap-4 items-end justify-start uppercase text-start z-10'>
                     <h1>Create</h1>

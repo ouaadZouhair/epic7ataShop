@@ -5,7 +5,7 @@ import tshirt from '/imgWebpage/2.png'
 const PrimaryHero = () => {
     return (
 
-        <div className="relative bg-gradient-to-r from-gray-400/70 to-gray-200 w-[95%] h-[250px] md:h-[450px] md:w-[93%] lg:w-full rounded-2xl shadow-lg overflow-hidden flex items-center justify-center hover:scale-105 duration-100">
+        <div className="relative bg-gradient-to-r from-gray-400/70 to-gray-200 w-[95%] h-[250px] md:h-[450px] md:w-[93%] lg:w-full rounded-2xl shadow-md overflow-hidden flex items-center justify-center hover:scale-105 hover:shadow-lg duration-300">
             {/* Large Title Background */}
 
             {/* T-Shirt Image */}

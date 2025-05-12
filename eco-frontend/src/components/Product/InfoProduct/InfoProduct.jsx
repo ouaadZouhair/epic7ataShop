@@ -148,11 +148,11 @@ const InfoProduct = ({ product }) => {
             </div>
 
             {/* Size Guide Section */}
-            {product.productType.includes('hoodie')  || product.productType.includes('tshirt') && (
+            {(product.productType.includes('hoodie')  || product.productType.includes('tshirt')) && (
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {product.productType.includes("Hoodie") ? "Hoodie" : "T-Shirt"} Size Guide
+                        {product.productType.includes("hoodie") ? "Hoodie" : "T-Shirt"} Size Guide
                     </h2>
                     <p className="text-gray-500 mt-1">Find your perfect fit with our detailed measurements</p>
                 </div>

@@ -56,3 +56,8 @@ export { default as EditProductForm } from './Forms/EditProductForm.jsx'
 export {default as DeleteConfi } from './UI/DeleteConfi.jsx'
 
 export {default as Skeleton} from './UI/Skeleton.jsx'
+
+export {default as Canvas} from './Printing/Canvas.jsx'
+export {default as Toolbar} from './Printing/Toolbar.jsx'
+export {default as TextEditor} from './Printing/TextEditor.jsx'
+export {default as ImageUploader} from './Printing/ImageUploader.jsx'

@@ -113,10 +113,10 @@ function Shop() {
           />
         </div> */}
 
-        <div className="bg-white rounded-xl shadow-md p-4">
+        <div className="bg-blue-900  rounded-xl shadow-md p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Product Type</label>
+              <label className="block text-sm font-medium text-white mb-1">Product Type</label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={selectedProductType}
@@ -133,7 +133,7 @@ function Shop() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-white mb-1">Category</label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={selectedCategory}
@@ -149,7 +149,7 @@ function Shop() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+              <label className="block text-sm font-medium text-white mb-1">Sort By</label>
               <select
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={filter}

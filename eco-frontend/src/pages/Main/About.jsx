@@ -150,7 +150,7 @@ function About() {
       >
         <h1 className="text-5xl w-full h-full backdrop-blur-sm flex justify-center bg-black/30 items-center sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-tight">
           <span className="inline-block transform transition-all  duration-500 hover:scale-105">
-            About <span className="text-yellow-300 drop-shadow-lg">Us</span>
+            About <span className="text-yellow-400 drop-shadow-lg">Us</span>
           </span>
         </h1>
       </div>
@@ -188,20 +188,20 @@ function About() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
               Crafting <span className="text-red-500">Identity</span> Through Design
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-6">
+            <p className="text-lg text-gray-600 leading-relaxed mb-6 text-justify">
               Welcome to Epic7ata, a Moroccan brand born in 2024 with a passion for
               creativity and self-expression. We believe that what you wear and use
               should reflect who you are.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed text-justify">
               That's why we design unique t-shirts, hoodies, mugs, and caps that speak to
               individuality and style. With our custom design feature, you can upload
               your own artwork and turn it into wearable art or everyday essentials.
             </p>
             <div className="mt-8 flex items-center gap-3">
-              <div className="w-10 h-1 bg-blue-500 rounded-full"></div>
-              <div className="w-5 h-1 bg-yellow-400 rounded-full"></div>
-              <div className="w-3 h-1 bg-red-500 rounded-full"></div>
+              <div className="w-14 h-3 bg-blue-500 rounded-full"></div>
+              <div className="w-9 h-3 bg-yellow-400 rounded-full"></div>
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
             </div>
           </div>
         </div>

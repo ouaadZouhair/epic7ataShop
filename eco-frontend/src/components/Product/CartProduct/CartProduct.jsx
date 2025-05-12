@@ -86,11 +86,13 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
     return (
         <>
             <div 
-                className='relative w-full h-full shadow-md overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg'
+                className='relative rounded-xl w-full h-full shadow-md overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg'
                 onClick={() => viewProduct(id)}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
+                
+
                 {/* Wishlist Button */}
                 {user?.role !== 'admin' && (
                     <button
@@ -142,7 +144,7 @@ const CartProduct = React.memo(({ id, frontMockups, backMockups, title, price, v
 
                 {/* Product Info */}
                 <div className='p-4 bg-white'>
-                    <h1 className='text-lg font-semibold text-gray-900 line-clamp-2 mb-2'>{title}</h1>
+                    <h1 className='text-base text-center font-semibold text-gray-900 line-clamp-2 mb-2'>{title}</h1>
                     <div className='flex justify-between items-center'>
                         <div className="flex items-center gap-1">
                             <FaStar className="text-amber-400" />

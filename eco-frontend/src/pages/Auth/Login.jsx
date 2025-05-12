@@ -1,5 +1,5 @@
 import brandLogo from '../../assets/epic7ata-logo.png';
-import pic from "../../assets/pic1.jpg"
+import authBg from "../../assets/pic1.jpg"
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../Context/AuthContext';
@@ -7,13 +7,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa6";
 import { FaGoogle, FaApple } from "react-icons/fa";
 
-
 const Login = () => {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const { login, user } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm();
-
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -31,7 +29,6 @@ const Login = () => {
   };
 
   useEffect(() => {
-
     if (user) {
       if (user.role === 'admin') {
         navigate('/dashboard');
@@ -42,87 +39,96 @@ const Login = () => {
   }, [user, navigate]);
 
   return (
-    <div className="bg-gray-50 h-screen w-full flex items-center justify-center">
-
-      <nav className='absolute top-0 w-full h-16 flex justify-between items-center text-gray-800 px-4'>
-        <button className='flex items-center group gap-2 bg-transparent hover:text-blue-500 group duration-100' onClick={() => navigate('/')}>
-          <FaArrowLeft className='text-xl group-hover:text-3xl duration-100' />
-          <span className='text-xl font-base group-hover:font-bold duration-100 '>Go back to Home page</span>
-        </button>
-        <img src={brandLogo} alt="brand Logo" className='w-12 h-12 object-cover' />
-      </nav>
-
-
-      <section className="bg-white rounded-3xl shadow-lg w-[1000px] h-auto flex flex-row justify-center items-center overflow-hidden">
-
-        <form className="w-[400px] flex flex-col justify-center items-center gap-1 p-8" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Log in to Account</h2>
-          <div className="relative w-full">
-            <label htmlFor="email" className='text-base font-medium'>Email:</label>
-            <input
-              {...register('email', { required: "Email is required", pattern: { value: /\S+@\S+\.\S+/, message: 'Invalid Email' } })}
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-3 border rounded-lg focus:ring-4 focus:ring-blue-500 mt-1 "
-            />
-            {errors.email && <p className='text-red-500 text-sm font-medium'>* {errors.email.message}</p>}
-
-          </div>
-
-          <div className="relative w-full">
-            <label htmlFor="password" className='text-base font-medium'>Password:</label>
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full px-4 py-3 border rounded-lg focus:ring-4 focus:ring-blue-500 mt-1 "
-              {...register('password', { required: 'Password is required' })}
-            />
-            {errors.password && <p className='text-red-500 text-sm font-medium'>* {errors.password.message}</p>}
-          </div>
-
-          <button
-            className="w-full bg-gray-900 text-white py-2 px-4 rounded-lg text-lg font-semibold hover:bg-blue-600 duration-150 mt-3 disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Log In"}
-          </button>
-
-          <p className="text-sm text-gray-600 mt-4 w-[300px] text-center">
-            Don't have an account?
-            <Link
-              to="/signup"
-              className="text-blue-600 mx-1 font-semibold hover:underline"
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <button 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600"
             >
-              Sign Up
-            </Link>
-          </p>
-        </form>
+              <FaArrowLeft className="text-sm" />
+              <span>Home</span>
+            </button>
+            <img src={brandLogo} alt="Brand Logo" className="w-8 h-8" />
+          </div>
 
-        <div className="relative w-[600px] h-[550px] bg-cover bg-center" style={{ backgroundImage: `url(${pic})` }} >
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h1>
+          <p className="text-sm text-gray-600 mb-6">Log in to your account</p>
+
           {message && (
-            <p
-              className={`absolute w-80 top-5 -left-0 translate-x-1/2 text-lg font-semibold p-3 border-l-8 rounded-xl ${message.type === "error" ? "text-red-500 border-red-500 bg-red-200" : "text-green-500 border-green-500 bg-green-200"} mb-2`}
-              role="alert"
-              aria-live="assertive"
-            >
+            <div className={`mb-4 p-3 text-sm rounded-lg border-l-4 ${
+              message.type === "error" 
+                ? "bg-red-50 border-red-500 text-red-700" 
+                : "bg-green-50 border-green-500 text-green-700"
+            }`}>
               {message.text}
-            </p>
+            </div>
           )}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
+              <input
+                {...register('email', { 
+                  required: "Email required", 
+                  pattern: { value: /\S+@\S+\.\S+/, message: 'Invalid email' } 
+                })}
+                type="email"
+                placeholder="your@email.com"
+                className={`w-full px-3 py-2 text-sm rounded-lg border focus:ring-2 focus:outline-none ${
+                  errors.email 
+                    ? "border-red-300 focus:ring-red-200" 
+                    : "border-gray-300 focus:ring-blue-200"
+                }`}
+              />
+              {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Password</label>
+              <input
+                {...register('password', { required: 'Password required' })}
+                type="password"
+                placeholder="••••••••"
+                className={`w-full px-3 py-2 text-sm rounded-lg border focus:ring-2 focus:outline-none ${
+                  errors.password 
+                    ? "border-red-300 focus:ring-red-200" 
+                    : "border-gray-300 focus:ring-blue-200"
+                }`}
+              />
+              {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>}
+            </div>
+
+            <div className="flex items-center justify-between text-xs">
+              <label className="flex items-center">
+                <input type="checkbox" className="h-3 w-3 text-blue-600 rounded" />
+                <span className="ml-2 text-gray-600">Remember me</span>
+              </label>
+              <Link to="/forgot-password" className="text-blue-600 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-2 px-4 rounded-lg text-sm font-medium text-white ${
+                loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+              }`}
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+
+          <div className="mt-4 text-center text-xs text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-blue-600 font-medium hover:underline">
+              Sign up
+            </Link>
+          </div>
         </div>
-
-        {/* <p className="text-sm text-gray-600 mt-4">Or log in with:</p> */}
-
-        {/* <div className="flex justify-center items-center gap-4 mt-2">
-          <button className="flex items-center justify-center gap-2 w-12 h-12 bg-red-500 text-white text-xl border-2 border-red-500 p-2 mx-auto rounded-full text-semibold hover:text-white hover:bg-red-600 hover:border-red-600 hover:scale-105 transition">
-            <FaGoogle />
-          </button>
-          <button className="flex items-center justify-center gap-2 w-12 h-12 bg-gray-950 text-white border-2 border-gray-950 p-2 mx-auto rounded-full text-xl text-semibold hover:text-white hover:bg-gray-800 hover:border-gray-800 hover:scale-105 transition">
-            <FaApple />
-          </button>
-        </div> */}
-
-
-      </section>
+      </div>
     </div>
   );
 };
